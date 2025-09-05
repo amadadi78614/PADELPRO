@@ -21,7 +21,7 @@ document.querySelectorAll('a[href^="#"]').forEach(a=>{
 function toggleMobileMenu(){ document.getElementById('mobileMenu').classList.toggle('hidden'); }
 window.toggleMobileMenu = toggleMobileMenu;
 
-// Polished: nav shadow on scroll
+// Nav shadow on scroll
 const topnav = document.getElementById('topnav');
 const navShadow = () => topnav.classList.toggle('shadow-lg', window.scrollY > 4);
 navShadow(); window.addEventListener('scroll', navShadow);
@@ -42,7 +42,8 @@ function toast(msg, kind='info'){
 }
 
 /* ----------------------------------------------------------------
-   SCHEDULE DATA — EXACTLY AS PROVIDED (order preserved)
+   SCHEDULE DATA — EXACTLY AS YOU PROVIDED
+   Note: playoffs have round:null so the Round cell renders blank
 -----------------------------------------------------------------*/
 const PREMIER = [
   {round:1, match:1,  tier:'Premier', venue:'Play360', date:'Monday, 15 September 2025', fixture:'Rulo Apaches - Samurai Kick Smashers'},
@@ -80,10 +81,10 @@ const PREMIER = [
   {round:7, match:27, tier:'Premier', venue:'Play360', date:'Tuesday, 11 November 2025',    fixture:'Sonic Viboras - Desert Falcons'},
   {round:7, match:28, tier:'Premier', venue:'Play360', date:'Thursday, 13 November 2025',   fixture:'Avalanche Aces - Samurai Kick Smashers'},
 
-  {round:'', match:29, tier:'Premier', venue:'Play360', date:'Monday, 24 November 2025',    fixture:'Play off 1'},
-  {round:'', match:30, tier:'Premier', venue:'Play360', date:'Tuesday, 25 November 2025',   fixture:'Play off 2'},
-  {round:'', match:31, tier:'Premier', venue:'Play360', date:'Monday, 01 December 2025',    fixture:'Play off 3'},
-  {round:'', match:32, tier:'Premier', venue:'Play360', date:'Saturday, 06 December 2025',  fixture:'FINALS: Premier'},
+  {round:null, match:29, tier:'Premier', venue:'Play360', date:'Monday, 24 November 2025',    fixture:'Play off 1'},
+  {round:null, match:30, tier:'Premier', venue:'Play360', date:'Tuesday, 25 November 2025',   fixture:'Play off 2'},
+  {round:null, match:31, tier:'Premier', venue:'Play360', date:'Monday, 01 December 2025',    fixture:'Play off 3'},
+  {round:null, match:32, tier:'Premier', venue:'Play360', date:'Saturday, 06 December 2025',  fixture:'FINALS: Premier'},
 ];
 
 const CHAMPIONSHIP = [
@@ -122,16 +123,16 @@ const CHAMPIONSHIP = [
   {round:7, match:27, tier:'Championship', venue:'PADEL24', date:'Wednesday, 12 November 2025',fixture:'Baltic Blades - Ice Breakers'},
   {round:7, match:28, tier:'Championship', venue:'PADEL24', date:'Wednesday, 12 November 2025',fixture:'Sonic Viboras - Desert Falcons'},
 
-  {round:'', match:29, tier:'Championship', venue:'PADEL24', date:'Wednesday, 26 November 2025',fixture:'Play off 1'},
-  {round:'', match:30, tier:'Championship', venue:'PADEL24', date:'Wednesday, 26 November 2025',fixture:'Play off 2'},
-  {round:'', match:31, tier:'Championship', venue:'PADEL24', date:'Tuesday, 02 December 2025',fixture:'Play off 3'},
-  {round:'', match:32, tier:'Championship', venue:'Play360', date:'Saturday, 06 December 2025',fixture:'FINALS: Championship'},
+  {round:null, match:29, tier:'Championship', venue:'PADEL24', date:'Wednesday, 26 November 2025',fixture:'Play off 1'},
+  {round:null, match:30, tier:'Championship', venue:'PADEL24', date:'Wednesday, 26 November 2025',fixture:'Play off 2'},
+  {round:null, match:31, tier:'Championship', venue:'PADEL24', date:'Tuesday, 02 December 2025',fixture:'Play off 3'},
+  {round:null, match:32, tier:'Championship', venue:'Play360', date:'Saturday, 06 December 2025',fixture:'FINALS: Championship'},
 ];
 
 const ALL_FIXTURES = [...PREMIER, ...CHAMPIONSHIP].map(x => ({...x, status:'Scheduled'}));
 
 /* ----------------------------------------------------------------
-   RENDER + FILTERS
+   RENDER + FILTERS (strict numeric sort by MATCH)
 -----------------------------------------------------------------*/
 const tbody = document.querySelector('#schedule-table tbody');
 const tierSel   = document.getElementById('filter-tier');
@@ -149,6 +150,8 @@ const filters = { tier:'all', status:'all', venue:'all' };
   });
 });
 
+const tierOrder = t => (t === 'Premier' ? 0 : 1);
+
 function renderSchedule(){
   const rows = ALL_FIXTURES.filter(f=>{
     if(filters.tier   !== 'all' && f.tier   !== filters.tier) return false;
@@ -156,12 +159,11 @@ function renderSchedule(){
     if(filters.venue  !== 'all' && f.venue  !== filters.venue) return false;
     return true;
   }).sort((a,b)=>{
-    // Ensure sequential numbering per tier (as requested)
-    if(filters.tier === 'all'){
-      if(a.tier !== b.tier) return a.tier.localeCompare(b.tier);
-      return a.match - b.match;
-    }
-    return a.match - b.match;
+    // Always sort by tier, then numeric match (1..32)
+    const to = tierOrder(a.tier) - tierOrder(b.tier);
+    if (filters.tier === 'all' && to !== 0) return to;
+    const am = Number(a.match), bm = Number(b.match);
+    return am - bm;
   });
 
   tbody.innerHTML = '';
@@ -169,7 +171,7 @@ function renderSchedule(){
     const tr = document.createElement('tr');
     tr.className = 'border-b border-white/5 hover:bg-white/5';
     tr.innerHTML = `
-      <td class="p-4">${r.round === '' ? '' : r.round}</td>
+      <td class="p-4">${Number.isFinite(r.round) ? r.round : ''}</td>
       <td class="p-4">${r.match}</td>
       <td class="p-4">${r.tier}</td>
       <td class="p-4">${r.venue}</td>
@@ -183,7 +185,7 @@ function renderSchedule(){
 renderSchedule();
 
 /* ----------------------------------------------------------------
-   AUTH / MODAL (unchanged, visible schedule even when logged out)
+   AUTH / MODAL (unchanged; schedule stays visible when logged out)
 -----------------------------------------------------------------*/
 
 // Modal DOM
@@ -265,7 +267,7 @@ document.addEventListener('click', (e)=>{
   }
 });
 
-// Auth state → UI (schedule remains visible regardless)
+// Auth state → UI
 onAuthStateChanged(auth, async (user) => {
   if (user) {
     try {
@@ -372,12 +374,12 @@ document.getElementById('getTempModal')?.addEventListener('click', async (e)=>{
 });
 
 // Sign out
-btnSignOut?.addEventListener('click', async ()=>{
-  await signOut(auth);
+document.getElementById('btnSignOut')?.addEventListener('click', async ()=>{
+  await getAuth().signOut();
   toast('Signed out', 'info');
 });
-mobileSignOut?.addEventListener('click', async ()=>{
-  await signOut(auth);
+document.getElementById('mobileSignOut')?.addEventListener('click', async ()=>{
+  await getAuth().signOut();
   document.getElementById('mobileMenu')?.classList.add('hidden');
   toast('Signed out', 'info');
 });

@@ -10,11 +10,11 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
   <link href="css/styles.css" rel="stylesheet">
 
-  <!-- PWA + Favicon -->
+  <!-- PWA / Icons -->
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#0b0f1a">
   <link rel="apple-touch-icon" href="icons/icon-192x192.png">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏓</text></svg>">
+  <link rel="icon" href="icons/icon-192x192.png">
 </head>
 
 <body class="bg-gray-900 text-white">
@@ -25,7 +25,7 @@
   <nav id="topnav" class="bg-black/70 backdrop-blur-sm fixed w-full z-50 transition-all">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex justify-between h-16 relative">
-        <a href="index.html" class="flex items-center gap-2">
+        <a href="#home" class="flex items-center gap-2">
           <span class="text-2xl">🏓</span>
           <h1 class="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
             Padel Pro
@@ -145,7 +145,7 @@
     </div>
   </section>
 
-  <!-- Franchises Section -->
+  <!-- Franchises -->
   <section id="franchises" class="scroll-mt-24 py-20 bg-gradient-to-br from-gray-900 to-black">
     <div class="max-w-7xl mx-auto px-4">
       <div class="text-center mb-12">
@@ -158,13 +158,10 @@
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-        <!-- Repeatable card pattern (8 teams) -->
-        <a href="franchise.html?team=desert-falcons"
-           class="group bg-gradient-to-br from-orange-900/40 to-yellow-900/40 rounded-2xl p-6 ring-1 ring-white/10 hover:ring-white/20 hover:-translate-y-1 transition-all">
+        <!-- Cards (unchanged assets) -->
+        <a href="franchise.html?team=desert-falcons" class="group bg-gradient-to-br from-orange-900/40 to-yellow-900/40 rounded-2xl p-6 ring-1 ring-white/10 hover:ring-white/20 hover:-translate-y-1 transition-all">
           <div class="text-center">
-            <video class="w-28 h-28 mx-auto mb-4 rounded-full object-cover ring-2 ring-white/20 group-hover:ring-white/30 transition"
-                   poster="assets/logos/desert-falcons.jpeg" autoplay muted loop playsinline preload="metadata"
-                   title="Desert Falcons logo animation">
+            <video class="w-28 h-28 mx-auto mb-4 rounded-full object-cover ring-2 ring-white/20 group-hover:ring-white/30 transition" poster="assets/logos/desert-falcons.jpeg" autoplay muted loop playsinline preload="metadata">
               <source src="assets/logos/desert-falcons.mp4" type="video/mp4"/>
               <img src="assets/logos/desert-falcons.jpeg" alt="Desert Falcons"/>
             </video>
@@ -173,12 +170,9 @@
           </div>
         </a>
 
-        <a href="franchise.html?team=globo-boomerangs"
-           class="group bg-gradient-to-br from-blue-900/40 to-red-900/40 rounded-2xl p-6 ring-1 ring-white/10 hover:ring-white/20 hover:-translate-y-1 transition-all">
+        <a href="franchise.html?team=globo-boomerangs" class="group bg-gradient-to-br from-blue-900/40 to-red-900/40 rounded-2xl p-6 ring-1 ring-white/10 hover:ring-white/20 hover:-translate-y-1 transition-all">
           <div class="text-center">
-            <video class="w-28 h-28 mx-auto mb-4 rounded-full object-cover ring-2 ring-white/20 group-hover:ring-white/30 transition"
-                   poster="assets/logos/globo-boomerangs.jpeg" autoplay muted loop playsinline preload="metadata"
-                   title="Globo Boomerangs logo animation">
+            <video class="w-28 h-28 mx-auto mb-4 rounded-full object-cover ring-2 ring-white/20 group-hover:ring-white/30 transition" poster="assets/logos/globo-boomerangs.jpeg" autoplay muted loop playsinline preload="metadata">
               <source src="assets/logos/globo-boomerangs.mp4" type="video/mp4"/>
               <img src="assets/logos/globo-boomerangs.jpeg" alt="Globo Boomerangs"/>
             </video>
@@ -187,12 +181,9 @@
           </div>
         </a>
 
-        <a href="franchise.html?team=ice-breakers"
-           class="group bg-gradient-to-br from-cyan-900/40 to-blue-900/40 rounded-2xl p-6 ring-1 ring-white/10 hover:ring-white/20 hover:-translate-y-1 transition-all">
+        <a href="franchise.html?team=ice-breakers" class="group bg-gradient-to-br from-cyan-900/40 to-blue-900/40 rounded-2xl p-6 ring-1 ring-white/10 hover:ring-white/20 hover:-translate-y-1 transition-all">
           <div class="text-center">
-            <video class="w-28 h-28 mx-auto mb-4 rounded-full object-cover ring-2 ring-white/20 group-hover:ring-white/30 transition"
-                   poster="assets/logos/ice-breakers.jpeg" autoplay muted loop playsinline preload="metadata"
-                   title="Ice Breakers logo animation">
+            <video class="w-28 h-28 mx-auto mb-4 rounded-full object-cover ring-2 ring-white/20 group-hover:ring-white/30 transition" poster="assets/logos/ice-breakers.jpeg" autoplay muted loop playsinline preload="metadata">
               <source src="assets/logos/ice-breakers.mp4" type="video/mp4"/>
               <img src="assets/logos/ice-breakers.jpeg" alt="Ice Breakers"/>
             </video>
@@ -201,12 +192,9 @@
           </div>
         </a>
 
-        <a href="franchise.html?team=baltic-blades"
-           class="group bg-gradient-to-br from-blue-900/40 to-purple-900/40 rounded-2xl p-6 ring-1 ring-white/10 hover:ring-white/20 hover:-translate-y-1 transition-all">
+        <a href="franchise.html?team=baltic-blades" class="group bg-gradient-to-br from-blue-900/40 to-purple-900/40 rounded-2xl p-6 ring-1 ring-white/10 hover:ring-white/20 hover:-translate-y-1 transition-all">
           <div class="text-center">
-            <video class="w-28 h-28 mx-auto mb-4 rounded-full object-cover ring-2 ring-white/20 group-hover:ring-white/30 transition"
-                   poster="assets/logos/baltic-blades.jpeg" autoplay muted loop playsinline preload="metadata"
-                   title="Baltic Blades logo animation">
+            <video class="w-28 h-28 mx-auto mb-4 rounded-full object-cover ring-2 ring-white/20 group-hover:ring-white/30 transition" poster="assets/logos/baltic-blades.jpeg" autoplay muted loop playsinline preload="metadata">
               <source src="assets/logos/baltic-blades.mp4" type="video/mp4"/>
               <img src="assets/logos/baltic-blades.jpeg" alt="Baltic Blades"/>
             </video>
@@ -215,12 +203,9 @@
           </div>
         </a>
 
-        <a href="franchise.html?team=avalanche-aces"
-           class="group bg-gradient-to-br from-blue-900/40 to-orange-900/40 rounded-2xl p-6 ring-1 ring-white/10 hover:ring-white/20 hover:-translate-y-1 transition-all">
+        <a href="franchise.html?team=avalanche-aces" class="group bg-gradient-to-br from-blue-900/40 to-orange-900/40 rounded-2xl p-6 ring-1 ring-white/10 hover:ring-white/20 hover:-translate-y-1 transition-all">
           <div class="text-center">
-            <video class="w-28 h-28 mx-auto mb-4 rounded-full object-cover ring-2 ring-white/20 group-hover:ring-white/30 transition"
-                   poster="assets/logos/avalanche-aces.jpeg" autoplay muted loop playsinline preload="metadata"
-                   title="Avalanche Aces logo animation">
+            <video class="w-28 h-28 mx-auto mb-4 rounded-full object-cover ring-2 ring-white/20 group-hover:ring-white/30 transition" poster="assets/logos/avalanche-aces.jpeg" autoplay muted loop playsinline preload="metadata">
               <source src="assets/logos/avalanche-aces.mp4" type="video/mp4"/>
               <img src="assets/logos/avalanche-aces.jpeg" alt="Avalanche Aces"/>
             </video>
@@ -229,12 +214,9 @@
           </div>
         </a>
 
-        <a href="franchise.html?team=rulo-apaches"
-           class="group bg-gradient-to-br from-red-900/40 to-orange-900/40 rounded-2xl p-6 ring-1 ring-white/10 hover:ring-white/20 hover:-translate-y-1 transition-all">
+        <a href="franchise.html?team=rulo-apaches" class="group bg-gradient-to-br from-red-900/40 to-orange-900/40 rounded-2xl p-6 ring-1 ring-white/10 hover:ring-white/20 hover:-translate-y-1 transition-all">
           <div class="text-center">
-            <video class="w-28 h-28 mx-auto mb-4 rounded-full object-cover ring-2 ring-white/20 group-hover:ring-white/30 transition"
-                   poster="assets/logos/rulo-apaches.jpeg" autoplay muted loop playsinline preload="metadata"
-                   title="Rulo Apaches logo animation">
+            <video class="w-28 h-28 mx-auto mb-4 rounded-full object-cover ring-2 ring-white/20 group-hover:ring-white/30 transition" poster="assets/logos/rulo-apaches.jpeg" autoplay muted loop playsinline preload="metadata">
               <source src="assets/logos/rulo-apaches.mp4" type="video/mp4"/>
               <img src="assets/logos/rulo-apaches.jpeg" alt="Rulo Apaches"/>
             </video>
@@ -243,12 +225,9 @@
           </div>
         </a>
 
-        <a href="franchise.html?team=samurai-kicksmashers"
-           class="group bg-gradient-to-br from-orange-900/40 to-blue-900/40 rounded-2xl p-6 ring-1 ring-white/10 hover:ring-white/20 hover:-translate-y-1 transition-all">
+        <a href="franchise.html?team=samurai-kicksmashers" class="group bg-gradient-to-br from-orange-900/40 to-blue-900/40 rounded-2xl p-6 ring-1 ring-white/10 hover:ring-white/20 hover:-translate-y-1 transition-all">
           <div class="text-center">
-            <video class="w-28 h-28 mx-auto mb-4 rounded-full object-cover ring-2 ring-white/20 group-hover:ring-white/30 transition"
-                   poster="assets/logos/samurai-kicksmashers.jpeg" autoplay muted loop playsinline preload="metadata"
-                   title="Samurai Kicksmashers logo animation">
+            <video class="w-28 h-28 mx-auto mb-4 rounded-full object-cover ring-2 ring-white/20 group-hover:ring-white/30 transition" poster="assets/logos/samurai-kicksmashers.jpeg" autoplay muted loop playsinline preload="metadata">
               <source src="assets/logos/samurai-kicksmashers.mp4" type="video/mp4"/>
               <img src="assets/logos/samurai-kicksmashers.jpeg" alt="Samurai Kicksmashers"/>
             </video>
@@ -257,12 +236,9 @@
           </div>
         </a>
 
-        <a href="franchise.html?team=sonic-viboras"
-           class="group bg-gradient-to-br from-purple-900/40 to-pink-900/40 rounded-2xl p-6 ring-1 ring-white/10 hover:ring-white/20 hover:-translate-y-1 transition-all">
+        <a href="franchise.html?team=sonic-viboras" class="group bg-gradient-to-br from-purple-900/40 to-pink-900/40 rounded-2xl p-6 ring-1 ring-white/10 hover:ring-white/20 hover:-translate-y-1 transition-all">
           <div class="text-center">
-            <video class="w-28 h-28 mx-auto mb-4 rounded-full object-cover ring-2 ring-white/20 group-hover:ring-white/30 transition"
-                   poster="assets/logos/sonic-viboras.jpeg" autoplay muted loop playsinline preload="metadata"
-                   title="Sonic Viboras logo animation">
+            <video class="w-28 h-28 mx-auto mb-4 rounded-full object-cover ring-2 ring-white/20 group-hover:ring-white/30 transition" poster="assets/logos/sonic-viboras.jpeg" autoplay muted loop playsinline preload="metadata">
               <source src="assets/logos/sonic-viboras.mp4" type="video/mp4"/>
               <img src="assets/logos/sonic-viboras.jpeg" alt="Sonic Viboras"/>
             </video>
@@ -274,10 +250,13 @@
     </div>
   </section>
 
-  <!-- Schedule Section (visible to all) -->
+  <!-- Schedule -->
   <section id="schedule" class="py-20 bg-gradient-to-br from-gray-900 to-black">
     <div class="max-w-7xl mx-auto px-4">
-      <h2 class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">Schedule</h2>
+      <h2 class="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+        Schedule
+      </h2>
+
       <div class="filters flex flex-wrap gap-3 mb-6">
         <select id="filter-tier" class="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-white">
           <option value="all">All Tiers</option>
@@ -298,6 +277,7 @@
         </select>
         <button id="export-csv" class="px-4 py-2 rounded-full bg-blue-500/80 hover:bg-blue-500">Export CSV</button>
       </div>
+
       <div class="overflow-x-auto">
         <table id="schedule-table" class="w-full text-left border-collapse">
           <thead>
@@ -313,43 +293,6 @@
           </thead>
           <tbody></tbody>
         </table>
-      </div>
-    </div>
-  </section>
-
-  <!-- Fantasy (gated) -->
-  <section id="fantasy" class="hidden py-20 bg-gradient-to-br from-gray-900 to-black">
-    <div class="max-w-7xl mx-auto px-4">
-      <h2 class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">Fantasy League</h2>
-      <p class="text-xl text-gray-400 mb-8">Build your dream team with R100k salary cap</p>
-      <div class="bg-white/5 p-6 rounded-xl">
-        <h3 class="text-2xl font-bold mb-4">Your Squad</h3>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="fantasy-squad"></div>
-        <div class="mt-6 flex justify-between items-center">
-          <p class="text-lg" id="fantasy-cost">Total Cost: R0 / R100,000</p>
-          <button class="py-2 px-6 rounded bg-blue-500/80 hover:bg-blue-500" id="save-squad">Save Squad</button>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Marketplace (gated) -->
-  <section id="marketplace" class="hidden py-20 bg-gradient-to-br from-gray-900 to-black">
-    <div class="max-w-7xl mx-auto px-4">
-      <h2 class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">Marketplace</h2>
-      <p class="text-xl text-gray-400 mb-8">Buy equipment, coaching, and more</p>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8" id="marketplace-listings"></div>
-      <button class="mt-8 py-2 px-6 rounded bg-green-500/80 hover:bg-green-500" id="add-listing">Add Listing</button>
-    </div>
-  </section>
-
-  <!-- Live Stream (gated) -->
-  <section id="live-stream" class="hidden py-20 bg-gradient-to-br from-gray-900 to-black">
-    <div class="max-w-7xl mx-auto px-4">
-      <h2 class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">Live Stream</h2>
-      <p class="text-xl text-gray-400 mb-8">Watch ongoing matches live</p>
-      <div class="bg-white/5 p-6 rounded-xl">
-        <iframe class="w-full h-96" src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Live Stream Placeholder" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
       </div>
     </div>
   </section>

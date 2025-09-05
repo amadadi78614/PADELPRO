@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><title>Franchise</title>
+<script src="https://cdn.tailwindcss.com"></script></head>
+<body class="bg-gray-900 text-white p-8">
+  <a href="index.html" class="underline">← Back</a>
+  <h1 class="text-3xl font-bold mt-4">Franchise Page</h1>
+  <p class="opacity-80">Coming soon. Query: <code id="q"></code></p>
+  <script>document.getElementById('q').textContent = new URL(location.href).searchParams.get('team') || '-';</script>
+</body></html>

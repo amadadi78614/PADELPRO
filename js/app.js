@@ -8,7 +8,6 @@ const sectionIds = ['fantasy','marketplace','live-stream','schedule'];
 document.querySelectorAll('a[href^="#"]').forEach(a=>{
   a.addEventListener('click', e=>{
     const id = a.getAttribute('href').slice(1);
-    // Toggle only for gated sections
     if (sectionIds.includes(id)) {
       sectionIds.forEach(s=>{
         const el = document.getElementById(s);
@@ -16,7 +15,6 @@ document.querySelectorAll('a[href^="#"]').forEach(a=>{
         el.classList.toggle('hidden', s!==id);
       });
     }
-    // Smooth scroll for any anchor target
     const target = document.getElementById(id);
     if (target) {
       e.preventDefault();
@@ -30,7 +28,7 @@ document.querySelectorAll('a[href^="#"]').forEach(a=>{
 function toggleMobileMenu(){ document.getElementById('mobileMenu').classList.toggle('hidden'); }
 window.toggleMobileMenu = toggleMobileMenu;
 
-// Polished: nav shadow on scroll
+// Nav shadow
 const topnav = document.getElementById('topnav');
 const navShadow = () => topnav.classList.toggle('shadow-lg', window.scrollY > 4);
 navShadow(); window.addEventListener('scroll', navShadow);
@@ -132,7 +130,6 @@ document.addEventListener('click', (e)=>{
 // Auth state → UI (home & franchises never hidden)
 onAuthStateChanged(auth, async (user) => {
   if (user) {
-    // Ensure user doc exists
     try {
       const uref = doc(db, 'users', user.uid);
       const snap = await getDoc(uref);
@@ -145,18 +142,16 @@ onAuthStateChanged(auth, async (user) => {
           createdAt: serverTimestamp()
         });
       }
-    } catch (e) { /* ok in read-only / locked rules */ }
+    } catch {}
 
     const name = user.displayName || (user.email?.split('@')[0] ?? 'Player');
     const init = (name?.trim()[0] || 'U').toUpperCase();
 
-    // Desktop: profile
     navGetStarted?.classList.add('hidden');
     profileBtn?.classList.remove('hidden');
     if (profileName) profileName.textContent = name;
     if (profileAvatar) profileAvatar.textContent = init;
 
-    // Buttons/sections
     ctaJoinNow?.classList.add('hidden'); ctaAdmin?.classList.remove('hidden');
     mobileGetStarted?.classList.add('hidden');
     mobileWelcome?.classList.remove('hidden');
@@ -259,7 +254,7 @@ mobileSignOut?.addEventListener('click', async ()=>{
 
 // ---------- SCHEDULE DATA + RENDERING ----------
 
-// Premier fixtures (from your sheet)
+// Premier fixtures
 function seedPremierSchedule() {
   const rows = [
     [1,1,"Premier","Play360","Monday, 15 September 2025","Rulo Apaches - Samurai Kick Smashers"],
@@ -301,16 +296,57 @@ function seedPremierSchedule() {
   }));
 }
 
-// Parse "Monday, 15 September 2025" safely
+// Championship fixtures (yours)
+function seedChampionshipSchedule() {
+  const rows = [
+    [1,1,"Championship","PADEL24","Monday, 15 September 2025","Globo Boomerangs - Sonic Viboras"],
+    [1,2,"Championship","PADEL24","Monday, 15 September 2025","Ice Breakers - Avalanche Aces"],
+    [1,3,"Championship","PADEL24","Wednesday, 17 September 2025","Rulo Apaches - Samurai Kicksmashers"],
+    [1,4,"Championship","PADEL24","Wednesday, 17 September 2025","Desert Falcons - Baltic Blades"],
+    [2,5,"Championship","PADEL24","Thursday, 25 September 2025","Avalanche Aces - Rulo Apaches"],
+    [2,6,"Championship","PADEL24","Thursday, 25 September 2025","Sonic Viboras - Ice Breakers"],
+    [2,7,"Championship","PADEL24","Monday, 22 September 2025","Samurai Kicksmashers  - Desert Falcons"],
+    [2,8,"Championship","PADEL24","Monday, 22 September 2025","Baltic Blades - Globo Boomerangs"],
+    [3,9,"Championship","PADEL24","Monday, 29 September 2025","Ice Breakers - Globo Boomerangs"],
+    [3,10,"Championship","PADEL24","Monday, 29 September 2025","Samurai Kicksmashers - Baltic Blades"],
+    [3,11,"Championship","PADEL24","Thursday, 16 October 2025","Rulo Apaches - Sonic Viboras"],
+    [3,12,"Championship","PADEL24","Thursday, 16 October 2025","Desert Falcons - Avalanche Aces"],
+    [4,13,"Championship","PADEL24","Monday, 20 October 2025","Desert Falcons - Rulo Apaches"],
+    [4,14,"Championship","PADEL24","Monday, 20 October 2025","Baltic Blades - Sonic Viboras"],
+    [4,15,"Championship","PADEL24","Wednesday, 22 October 2025","Samurai Kicksmashers  - Ice Breakers"],
+    [4,16,"Championship","PADEL24","Wednesday, 22 October 2025","Avalanche Aces - Globo Boomerangs"],
+    [5,17,"Championship","PADEL24","Monday, 27 October 2025","Sonic Viboras - Avalanche Aces"],
+    [5,18,"Championship","PADEL24","Monday, 27 October 2025","Rulo Apaches - Baltic Blades"],
+    [5,19,"Championship","PADEL24","Wednesday, 29 October 2025","Globo Boomerangs - Samurai Kicksmashers"],
+    [5,20,"Championship","PADEL24","Wednesday, 29 October 2025","Ice Breakers - Desert Falcons"],
+    [6,21,"Championship","PADEL24","Monday, 03 November 2025","Rulo Apaches - Ice Breakers"],
+    [6,22,"Championship","PADEL24","Monday, 03 November 2025","Baltic Blades - Avalanche Aces"],
+    [6,23,"Championship","PADEL24","Wednesday, 05 November 2025","Desert Falcons - Globo Boomerangs"],
+    [6,24,"Championship","PADEL24","Wednesday, 05 November 2025","Samurai Kicksmashers - Sonic Viboras"],
+    [7,25,"Championship","PADEL24","Monday, 10 November 2025","Globo Boomerangs - Rulo Apaches"],
+    [7,26,"Championship","PADEL24","Monday, 10 November 2025","Avalanche Aces - Samurai Kicksmashers"],
+    [7,27,"Championship","PADEL24","Wednesday, 12 November 2025","Baltic Blades - Ice Breakers"],
+    [7,28,"Championship","PADEL24","Wednesday, 12 November 2025","Sonic Viboras - Desert Falcons"],
+  ];
+  return rows.map(r=>({
+    round: r[0], match: r[1], tier: r[2], venue: r[3], dateStr: r[4], fixture: r[5],
+    status: 'Scheduled'
+  }));
+}
+
+// Combine + sort
+const allFixtures = [...seedPremierSchedule(), ...seedChampionshipSchedule()]
+  .sort((a,b)=> parseDate(a.dateStr) - parseDate(b.dateStr));
+
+// Date parser
 function parseDate(d) {
-  // Let browser try first
   const direct = new Date(d);
   if (!isNaN(direct.getTime())) return direct;
-  // Fallback basic parsing
-  const parts = d.split(',')[1]?.trim() || d; // "15 September 2025"
+  const parts = d.split(',')[1]?.trim() || d;
   return new Date(parts);
 }
 
+// Render helpers
 function renderScheduleRows(items, tbodyEl) {
   tbodyEl.innerHTML = '';
   const frag = document.createDocumentFragment();
@@ -330,7 +366,6 @@ function renderScheduleRows(items, tbodyEl) {
   });
   tbodyEl.appendChild(frag);
 }
-
 function renderHomePreview(items) {
   const body = document.getElementById('home-schedule-body');
   body.innerHTML = '';
@@ -350,22 +385,12 @@ function renderHomePreview(items) {
   body.appendChild(frag);
 }
 
-// Filters for full schedule
-const filterTier   = document.getElementById('filter-tier');
-const filterVenue  = document.getElementById('filter-venue');
-const filterStatus = document.getElementById('filter-status');
-
-const allFixtures = seedPremierSchedule(); // (Add championship later if needed)
-
-// Sort by date ascending
-allFixtures.sort((a,b)=> parseDate(a.dateStr) - parseDate(b.dateStr));
-
-// Home preview: next 8 upcoming (from today)
+// Home preview (next 8)
 (function renderHome(){
   const today = new Date();
   const upcoming = allFixtures
     .map(x=>({...x, date: parseDate(x.dateStr)}))
-    .filter(x=> x.date >= new Date(today.toDateString())) // midnight today
+    .filter(x=> x.date >= new Date(today.toDateString()))
     .slice(0, 8);
   renderHomePreview(upcoming);
 })();
@@ -376,22 +401,26 @@ allFixtures.sort((a,b)=> parseDate(a.dateStr) - parseDate(b.dateStr));
   renderScheduleRows(allFixtures, tbody);
 })();
 
+// Filters (venue case-insensitive)
+const filterTier   = document.getElementById('filter-tier');
+const filterVenue  = document.getElementById('filter-venue');
+const filterStatus = document.getElementById('filter-status');
+
 function applyFilters() {
-  const t = filterTier?.value || 'all';
-  const v = filterVenue?.value || 'all';
-  const s = filterStatus?.value || 'all';
+  const t = (filterTier?.value || 'all').toLowerCase();
+  const v = (filterVenue?.value || 'all').toLowerCase();
+  const s = (filterStatus?.value || 'all').toLowerCase();
   const tbody = document.querySelector('#schedule-table tbody');
 
   const filtered = allFixtures.filter(it=>{
-    const okT = (t==='all' || it.tier===t);
-    const okV = (v==='all' || it.venue===v);
-    const okS = (s==='all' || it.status===s);
+    const okT = (t==='all' || it.tier.toLowerCase()===t);
+    const okV = (v==='all' || it.venue.toLowerCase()===v);
+    const okS = (s==='all' || it.status.toLowerCase()===s);
     return okT && okV && okS;
   });
 
   renderScheduleRows(filtered, tbody);
 }
-
 filterTier?.addEventListener('change', applyFilters);
 filterVenue?.addEventListener('change', applyFilters);
 filterStatus?.addEventListener('change', applyFilters);

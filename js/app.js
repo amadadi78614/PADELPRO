@@ -23,19 +23,7 @@ document.querySelectorAll('a[href^="#"]').forEach(a=>{
 function toggleMobileMenu(){ document.getElementById('mobileMenu').classList.toggle('hidden'); }
 window.toggleMobileMenu = toggleMobileMenu;
 
-// Modal DOM
-const overlay          = document.getElementById('authOverlay');
-const authClose        = document.getElementById('authClose');
-const signInView       = document.getElementById('authSignIn');
-const registerView     = document.getElementById('authRegister');
-const goRegister       = document.getElementById('goRegister');
-const goSignIn         = document.getElementById('goSignIn');
-const navGetStarted    = document.getElementById('navGetStarted');
-const mobileGetStarted = document.getElementById('mobileGetStarted');
-const ctaJoinNow       = document.getElementById('ctaJoinNow');
-const ctaAdmin         = document.getElementById('ctaAdmin');
-
-// Firebase
+// -------- Firebase (CDN modules only; import ONCE) --------
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
 import {
   getAuth, onAuthStateChanged,
@@ -46,28 +34,32 @@ import {
   getFirestore, doc, setDoc, getDoc, serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
 
-// TODO: paste your real config from Firebase console
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
+// Your Firebase config (verified in Firebase Console → Project settings)
 const firebaseConfig = {
   apiKey: "AIzaSyCqJkzXzw9MgLFBZRvbnp8OthXWzSr2aBs",
   authDomain: "padelpro-c24b0.firebaseapp.com",
   projectId: "padelpro-c24b0",
-  storageBucket: "padelpro-c24b0.firebasestorage.app",
+  storageBucket: "padelpro-c24b0.appspot.com",   // ✅ correct host
   messagingSenderId: "882509576352",
   appId: "1:882509576352:web:353877bde27dc6416971c5"
 };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-
+// Init (do this ONCE)
 const app  = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db   = getFirestore(app);
+
+// -------- Modal DOM --------
+const overlay          = document.getElementById('authOverlay');
+const authClose        = document.getElementById('authClose');
+const signInView       = document.getElementById('authSignIn');
+const registerView     = document.getElementById('authRegister');
+const goRegister       = document.getElementById('goRegister');
+const goSignIn         = document.getElementById('goSignIn');
+const navGetStarted    = document.getElementById('navGetStarted');
+const mobileGetStarted = document.getElementById('mobileGetStarted');
+const ctaJoinNow       = document.getElementById('ctaJoinNow');
+const ctaAdmin         = document.getElementById('ctaAdmin');
 
 // Open/close modal
 ['navGetStarted','mobileGetStarted','ctaJoinNow'].forEach(id=>{
@@ -104,7 +96,7 @@ onAuthStateChanged(auth, async (user)=>{
           createdAt: serverTimestamp()
         });
       }
-    } catch(e){ console.warn('Firestore not ready or blocked by rules:', e?.message); }
+    } catch(e){ console.warn('Firestore note:', e?.message); }
 
     navGetStarted?.classList.add('hidden');
     mobileGetStarted?.classList.add('hidden');

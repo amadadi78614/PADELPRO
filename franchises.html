@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Padel Pro — Franchises</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <link href="css/styles.css" rel="stylesheet">
+</head>
+<body class="bg-gray-900 text-white">
+  <nav id="topnav" class="bg-black/70 backdrop-blur-sm fixed w-full z-50 transition-all">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between h-16 relative">
+        <a href="index.html#home" class="flex items-center gap-2">
+          <span class="text-2xl">🏓</span>
+          <h1 class="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+            Padel Pro
+          </h1>
+        </a>
+        <div class="hidden md:flex items-center space-x-8">
+          <a href="index.html#home" class="hover:text-blue-400 transition-colors">Home</a>
+          <a href="franchises.html" class="text-blue-400">Franchises</a>
+          <a href="fantasy.html" class="hover:text-blue-400 transition-colors">Fantasy</a>
+          <a href="marketplace.html" class="hover:text-blue-400 transition-colors">Marketplace</a>
+          <a href="livestream.html" class="hover:text-blue-400 transition-colors">Live Stream</a>
+          <a href="index.html#schedule" class="hover:text-blue-400 transition-colors">Schedule</a>
+          <a href="#" id="navGetStarted" class="bg-gradient-to-r from-blue-500 to-purple-600 px-6 py-2 rounded-lg hover:from-blue-600 hover:to-purple-700 transition-all">Sign In / Register</a>
+          <div class="relative">
+            <button id="profileBtn" class="hidden group relative flex items-center gap-3 rounded-full px-3 py-1.5 hover:bg-white/10 transition">
+              <span id="profileAvatar" class="h-8 w-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 grid place-items-center font-semibold">U</span>
+              <span id="profileName" class="text-sm"></span>
+              <i class="fa-solid fa-chevron-down text-xs opacity-70"></i>
+            </button>
+            <div id="profileMenu" class="hidden absolute right-0 mt-2 w-48 rounded-xl border border-white/10 bg-[#0b0f1a]/95 backdrop-blur shadow-2xl overflow-hidden">
+              <a href="dashboard.html" class="block px-4 py-2.5 hover:bg-white/5 text-sm">Dashboard</a>
+              <button id="btnSignOut" class="w-full text-left px-4 py-2.5 hover:bg-white/5 text-sm">Sign out</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+  <div class="h-16"></div>
+
+  <section class="py-16">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="text-center mb-12">
+        <h2 class="text-4xl md:text-5xl font-extrabold mb-3 tracking-tight bg-gradient-to-r from-blue-300 to-purple-300 bg-clip-text text-transparent">
+          Lowveld Padel Franchises
+        </h2>
+        <p class="text-sm md:text-base tracking-widest text-indigo-200/80">
+          MEET THE 8 POWERHOUSE FRANCHISES COMPETING FOR GLORY!!!
+        </p>
+      </div>
+
+      <!-- reuse the exact 8 franchise cards you already have -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <!-- paste the same 8 <a> cards from your index.html franchises section here -->
+      </div>
+    </div>
+  </section>
+
+  <footer class="bg-black py-12">
+    <div class="max-w-7xl mx-auto px-4 text-center text-gray-400">© <span id="year"></span> Nomz. All rights reserved.</div>
+  </footer>
+
+  <!-- Auth modal (same as index) -->
+  <!-- … keep your overlay markup here too if you want sign-in on this page … -->
+
+  <script type="module" src="js/app.js?v=7"></script>
+</body>
+</html>

@@ -1,9 +1,9 @@
-// js/app.js — Firebase Auth + UI wiring (no backend needed)
+// js/app.js — Firebase Auth + UI wiring
 
 // Footer year
 document.getElementById('year').textContent = new Date().getFullYear();
 
-// Section navigation helpers
+// Section navigation
 const sectionIds = ['home','franchises','fantasy','marketplace','live-stream','schedule'];
 function showSection(id){
   sectionIds.forEach(s=>{
@@ -23,7 +23,7 @@ document.querySelectorAll('a[href^="#"]').forEach(a=>{
 function toggleMobileMenu(){ document.getElementById('mobileMenu').classList.toggle('hidden'); }
 window.toggleMobileMenu = toggleMobileMenu;
 
-// -------- Firebase (CDN modules only; import ONCE) --------
+// ---------- Firebase (CDN modules only; import ONCE) ----------
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
 import {
   getAuth, onAuthStateChanged,
@@ -34,22 +34,22 @@ import {
   getFirestore, doc, setDoc, getDoc, serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
 
-// Your Firebase config (verified in Firebase Console → Project settings)
+// Your Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyCqJkzXzw9MgLFBZRvbnp8OthXWzSr2aBs",
   authDomain: "padelpro-c24b0.firebaseapp.com",
   projectId: "padelpro-c24b0",
-  storageBucket: "padelpro-c24b0.appspot.com",   // ✅ correct host
+  storageBucket: "padelpro-c24b0.appspot.com",
   messagingSenderId: "882509576352",
   appId: "1:882509576352:web:353877bde27dc6416971c5"
 };
 
-// Init (do this ONCE)
+// Init (ONE time)
 const app  = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db   = getFirestore(app);
 
-// -------- Modal DOM --------
+// ---------- Modal DOM ----------
 const overlay          = document.getElementById('authOverlay');
 const authClose        = document.getElementById('authClose');
 const signInView       = document.getElementById('authSignIn');
@@ -133,7 +133,7 @@ document.getElementById('signin_modal')?.addEventListener('submit', async (e)=>{
   }
 });
 
-// Register → create with temp pw, then send reset link
+// Register → temp pw then reset link
 document.getElementById('register_modal')?.addEventListener('submit', async (e)=>{
   e.preventDefault();
   const name  = document.getElementById('r_name').value.trim();
@@ -154,7 +154,7 @@ document.getElementById('register_modal')?.addEventListener('submit', async (e)=
   }
 });
 
-// Forgot password (Send reset link)
+// Forgot password
 const resetBtn   = document.getElementById('getTempModal');
 const resetMsgEl = document.getElementById('tempMsgModal');
 resetBtn?.addEventListener('click', async (e)=>{
@@ -176,7 +176,7 @@ resetBtn?.addEventListener('click', async (e)=>{
   }
 });
 
-// CSV export
+// CSV export, player modal
 document.getElementById('export-csv')?.addEventListener('click', ()=>{
   const rows = document.querySelectorAll('#schedule-table tbody tr');
   if (!rows.length) { alert('No schedule rows to export yet.'); return; }
@@ -190,11 +190,9 @@ document.getElementById('export-csv')?.addEventListener('click', ()=>{
   const url = URL.createObjectURL(new Blob([csv], {type:'text/csv'}));
   const a = document.createElement('a'); a.href=url; a.download='schedule.csv'; a.click(); URL.revokeObjectURL(url);
 });
-
-// Player quick modal close
 document.getElementById('pqmClose')?.addEventListener('click', ()=>{
   document.getElementById('playerQuickModal').classList.add('hidden');
 });
 
-// Optional: sign out from console
+// Console helper
 window.padelSignOut = ()=>signOut(auth);

@@ -1,280 +1,208 @@
-// js/app.js  (Firebase + UI wiring)
-// ---------------------------------
+// js/app.js — Firebase Auth + UI wiring (no backend needed)
 
 // Footer year
 document.getElementById('year').textContent = new Date().getFullYear();
 
 // Section navigation helpers
 const sectionIds = ['home','franchises','fantasy','marketplace','live-stream','schedule'];
-function showSection(id) {
-  sectionIds.forEach(s => {
-    const el = document.getElementById(s);
-    if (!el) return;
-    if (s === id) el.classList.remove('hidden');
-    else el.classList.add('hidden');
+function showSection(id){
+  sectionIds.forEach(s=>{
+    const el=document.getElementById(s); if(!el) return;
+    if(s===id) el.classList.remove('hidden'); else el.classList.add('hidden');
   });
-  const m = document.getElementById('mobileMenu');
-  if (m && !m.classList.contains('hidden')) m.classList.add('hidden');
-  const target = document.getElementById(id);
-  if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  const m=document.getElementById('mobileMenu');
+  if(m && !m.classList.contains('hidden')) m.classList.add('hidden');
+  document.getElementById(id)?.scrollIntoView({behavior:'smooth', block:'start'});
 }
-function wireAnchorToggles(scope=document) {
-  const links = scope.querySelectorAll('a[href^="#"]');
-  links.forEach(a => {
-    a.addEventListener('click', (e) => {
-      const id = a.getAttribute('href').slice(1);
-      if (sectionIds.includes(id)) {
-        e.preventDefault();
-        showSection(id);
-      }
-    });
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click', e=>{
+    const id=a.getAttribute('href').slice(1);
+    if(sectionIds.includes(id)){ e.preventDefault(); showSection(id); }
   });
-}
-wireAnchorToggles(document);
-
-// Grab DOM references
-const authOverlay        = document.getElementById('authOverlay');
-const authCloseBtn       = document.getElementById('authClose');
-const goRegisterBtn      = document.getElementById('goRegister');
-const goSignInBtn        = document.getElementById('goSignIn');
-const authSignInDiv      = document.getElementById('authSignIn');
-const authRegisterDiv    = document.getElementById('authRegister');
-
-const signInForm         = document.getElementById('signin_modal');
-const signInEmailInput   = document.getElementById('email');
-const signInPasswordInput= document.getElementById('password');
-const signInErrorMsg     = document.getElementById('error');
-const getTempModalBtn    = document.getElementById('getTempModal');
-const tempMsgModal       = document.getElementById('tempMsgModal');
-
-const registerForm       = document.getElementById('register_modal');
-const registerNameInput  = document.getElementById('r_name');
-const registerEmailInput = document.getElementById('r_email');
-const registerMsg        = document.getElementById('r_msg_modal');
-
-const navGetStartedBtn   = document.getElementById('navGetStarted');
-const mobileGetStartedBtn= document.getElementById('mobileGetStarted');
-const ctaJoinNowBtn      = document.getElementById('ctaJoinNow');
-const ctaAdminBtn        = document.getElementById('ctaAdmin');
-
-// “Public” nav links we’ll hide on login
-const navLinks   = document.querySelectorAll('nav a[href^="#"]');
-const mobileLinks= document.querySelectorAll('#mobileMenu a[href^="#"]');
-
-// Sections that are protected (hidden until login)
-const fantasySection     = document.getElementById('fantasy');
-const marketplaceSection = document.getElementById('marketplace');
-const liveStreamSection  = document.getElementById('live-stream');
-const scheduleSection    = document.getElementById('schedule');
-
-// Mobile menu toggle
-function toggleMobileMenu() {
-  const m = document.getElementById('mobileMenu');
-  m.classList.toggle('hidden');
-}
+});
+function toggleMobileMenu(){ document.getElementById('mobileMenu').classList.toggle('hidden'); }
 window.toggleMobileMenu = toggleMobileMenu;
 
-// -----------------------
-// Firebase (no backend)
-// -----------------------
+// Modal DOM
+const overlay          = document.getElementById('authOverlay');
+const authClose        = document.getElementById('authClose');
+const signInView       = document.getElementById('authSignIn');
+const registerView     = document.getElementById('authRegister');
+const goRegister       = document.getElementById('goRegister');
+const goSignIn         = document.getElementById('goSignIn');
+const navGetStarted    = document.getElementById('navGetStarted');
+const mobileGetStarted = document.getElementById('mobileGetStarted');
+const ctaJoinNow       = document.getElementById('ctaJoinNow');
+const ctaAdmin         = document.getElementById('ctaAdmin');
+
+// Firebase
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
 import {
   getAuth, onAuthStateChanged,
   signInWithEmailAndPassword, createUserWithEmailAndPassword,
   sendPasswordResetEmail, updateProfile, signOut
 } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js";
+import {
+  getFirestore, doc, setDoc, getDoc, serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
 
-// 1) Paste your config from Firebase console here:
+// TODO: paste your real config from Firebase console
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey:        "PASTE_API_KEY",
-  authDomain:    "PASTE_AUTH_DOMAIN",
-  projectId:     "PASTE_PROJECT_ID",
-  storageBucket: "PASTE_BUCKET",
-  messagingSenderId: "PASTE_SENDER_ID",
-  appId:         "PASTE_APP_ID"
+  apiKey: "AIzaSyCqJkzXzw9MgLFBZRvbnp8OthXWzSr2aBs",
+  authDomain: "padelpro-c24b0.firebaseapp.com",
+  projectId: "padelpro-c24b0",
+  storageBucket: "padelpro-c24b0.firebasestorage.app",
+  messagingSenderId: "882509576352",
+  appId: "1:882509576352:web:353877bde27dc6416971c5"
 };
 
-// 2) Init
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+
 const app  = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+const db   = getFirestore(app);
 
-// 3) UI updates based on auth state
-function updateUI(user) {
+// Open/close modal
+['navGetStarted','mobileGetStarted','ctaJoinNow'].forEach(id=>{
+  const btn=document.getElementById(id); if(!btn) return;
+  btn.addEventListener('click', e=>{
+    if(auth.currentUser) return;
+    e.preventDefault();
+    overlay.classList.remove('hidden'); overlay.classList.add('flex');
+    signInView.classList.remove('hidden'); registerView.classList.add('hidden');
+  });
+});
+authClose?.addEventListener('click', ()=>{
+  overlay.classList.add('hidden'); overlay.classList.remove('flex');
+});
+goRegister?.addEventListener('click', ()=>{
+  signInView.classList.add('hidden'); registerView.classList.remove('hidden');
+});
+goSignIn?.addEventListener('click', ()=>{
+  registerView.classList.add('hidden'); signInView.classList.remove('hidden');
+});
+
+// Auth state → toggle UI + ensure user doc
+onAuthStateChanged(auth, async (user)=>{
   if (user) {
-    const displayName = user.displayName || (user.email ? user.email.split('@')[0] : 'Player');
+    try {
+      const uref = doc(db,'users',user.uid);
+      const snap = await getDoc(uref);
+      if (!snap.exists()) {
+        await setDoc(uref, {
+          uid: user.uid,
+          name: user.displayName || '',
+          email: user.email || '',
+          role: 'player',
+          createdAt: serverTimestamp()
+        });
+      }
+    } catch(e){ console.warn('Firestore not ready or blocked by rules:', e?.message); }
 
-    // Convert the “Sign in” buttons to dashboard buttons
-    if (navGetStartedBtn) {
-      navGetStartedBtn.textContent = `Welcome, ${displayName}!`;
-      navGetStartedBtn.href = 'dashboard.html';
-      navGetStartedBtn.classList.remove('bg-gradient-to-r','from-blue-500','to-purple-600');
-      navGetStartedBtn.classList.add('bg-white','text-blue-600');
-    }
-    if (mobileGetStartedBtn) {
-      mobileGetStartedBtn.textContent = `Welcome, ${displayName}!`;
-      mobileGetStartedBtn.href = 'dashboard.html';
-      mobileGetStartedBtn.classList.remove('bg-gradient-to-r','from-blue-500','to-purple-600');
-      mobileGetStartedBtn.classList.add('bg-white','text-blue-600');
-    }
-    if (ctaJoinNowBtn) {
-      ctaJoinNowBtn.textContent = `Welcome, ${displayName}!`;
-      ctaJoinNowBtn.href = 'dashboard.html';
-    }
+    navGetStarted?.classList.add('hidden');
+    mobileGetStarted?.classList.add('hidden');
+    ctaJoinNow?.classList.add('hidden');
+    ctaAdmin?.classList.remove('hidden');
 
-    // Reveal protected sections
-    fantasySection?.classList.remove('hidden');
-    marketplaceSection?.classList.remove('hidden');
-    liveStreamSection?.classList.remove('hidden');
-    scheduleSection?.classList.remove('hidden');
-
-    // Hide public nav anchors (Franchises/Fantasy/Marketplace/Live/Schedule)
-    navLinks.forEach(a => a.style.display = 'none');
-    mobileLinks.forEach(a => a.style.display = 'none');
-
-    // Show dashboard link (keep admin hidden unless you add roles later)
-    ctaAdminBtn?.classList.remove('hidden');
-
+    ['fantasy','marketplace','live-stream','schedule'].forEach(id=>{
+      document.getElementById(id)?.classList.remove('hidden');
+    });
   } else {
-    // Logged out → reset buttons
-    if (navGetStartedBtn) {
-      navGetStartedBtn.textContent = 'Sign In / Register';
-      navGetStartedBtn.href = '#';
-      navGetStartedBtn.classList.add('bg-gradient-to-r','from-blue-500','to-purple-600');
-      navGetStartedBtn.classList.remove('bg-white','text-blue-600');
-    }
-    if (mobileGetStartedBtn) {
-      mobileGetStartedBtn.textContent = 'Sign In / Register';
-      mobileGetStartedBtn.href = '#';
-      mobileGetStartedBtn.classList.add('bg-gradient-to-r','from-blue-500','to-purple-600');
-      mobileGetStartedBtn.classList.remove('bg-white','text-blue-600');
-    }
-    if (ctaJoinNowBtn) {
-      ctaJoinNowBtn.textContent = 'Sign In / Register';
-      ctaJoinNowBtn.href = '#';
-    }
+    navGetStarted?.classList.remove('hidden');
+    mobileGetStarted?.classList.remove('hidden');
+    ctaJoinNow?.classList.remove('hidden');
+    ctaAdmin?.classList.add('hidden');
 
-    // Hide protected sections again
-    fantasySection?.classList.add('hidden');
-    marketplaceSection?.classList.add('hidden');
-    liveStreamSection?.classList.add('hidden');
-    scheduleSection?.classList.add('hidden');
-
-    // Show public nav anchors
-    navLinks.forEach(a => a.style.display = 'block');
-    mobileLinks.forEach(a => a.style.display = 'block');
-
-    // Hide dashboard link
-    ctaAdminBtn?.classList.add('hidden');
+    ['fantasy','marketplace','live-stream','schedule'].forEach(id=>{
+      document.getElementById(id)?.classList.add('hidden');
+    });
   }
-}
+});
 
-onAuthStateChanged(auth, (user) => updateUI(user));
-
-// 4) Open/close auth modal
-const openers = ['navGetStarted','mobileGetStarted','ctaJoinNow']
-  .map(id => document.getElementById(id))
-  .filter(Boolean);
-openers.forEach(btn => btn.addEventListener('click', (e) => {
-  if (auth.currentUser) return; // already logged in
+// Sign in
+document.getElementById('signin_modal')?.addEventListener('submit', async (e)=>{
   e.preventDefault();
-  authOverlay.classList.remove('hidden');
-  authOverlay.classList.add('flex');
-  authSignInDiv.classList.remove('hidden');
-  authRegisterDiv.classList.add('hidden');
-}));
-authCloseBtn?.addEventListener('click', () => {
-  authOverlay.classList.add('hidden');
-  authOverlay.classList.remove('flex');
-});
-
-// Switch sign-in/register views (fixed names)
-goRegisterBtn?.addEventListener('click', () => {
-  authSignInDiv.classList.add('hidden');
-  authRegisterDiv.classList.remove('hidden');
-});
-goSignInBtn?.addEventListener('click', () => {
-  authRegisterDiv.classList.add('hidden');
-  authSignInDiv.classList.remove('hidden');
-});
-
-// 5) Sign in form (Email/Password)
-signInForm?.addEventListener('submit', async (e) => {
-  e.preventDefault();
-  signInErrorMsg.textContent = '';
-  const email = signInEmailInput.value.trim();
-  const pw    = signInPasswordInput.value;
+  const email = document.getElementById('email').value.trim();
+  const pw    = document.getElementById('password').value;
+  const box   = document.getElementById('error');
+  box.textContent = '';
   try {
     await signInWithEmailAndPassword(auth, email, pw);
-    authOverlay.classList.add('hidden');
-    authOverlay.classList.remove('flex');
+    overlay.classList.add('hidden');
   } catch (err) {
-    signInErrorMsg.textContent = (err?.message || 'Sign-in failed').replace('Firebase: ','');
+    box.textContent = (err?.message || 'Sign-in failed').replace('Firebase: ','');
   }
 });
 
-// 6) Register form (create temp password, send reset email)
-registerForm?.addEventListener('submit', async (e) => {
+// Register → create with temp pw, then send reset link
+document.getElementById('register_modal')?.addEventListener('submit', async (e)=>{
   e.preventDefault();
-  registerMsg.textContent = '';
-  const name  = registerNameInput.value.trim();
-  const email = registerEmailInput.value.trim();
+  const name  = document.getElementById('r_name').value.trim();
+  const email = document.getElementById('r_email').value.trim();
+  const msg   = document.getElementById('r_msg_modal');
+  msg.textContent = '';
   const tempPw = Math.random().toString(36).slice(-10) + "Aa1!";
   try {
     const cred = await createUserWithEmailAndPassword(auth, email, tempPw);
     if (name) await updateProfile(cred.user, { displayName: name });
+    await setDoc(doc(db,'users',cred.user.uid), { uid:cred.user.uid, name, email, role:'player', createdAt: serverTimestamp() });
     await sendPasswordResetEmail(auth, email);
-    registerMsg.style.color = 'lightgreen';
-    registerMsg.textContent = 'Account created. Check your email to set your password.';
-    registerForm.reset();
-    setTimeout(() => {
-      authRegisterDiv.classList.add('hidden');
-      authSignInDiv.classList.remove('hidden');
-    }, 2500);
+    msg.style.color = 'lightgreen';
+    msg.textContent = 'Account created. Check your email to set your password.';
   } catch (err) {
-    registerMsg.style.color = 'salmon';
-    registerMsg.textContent = (err?.message || 'Registration failed').replace('Firebase: ','');
+    msg.style.color = 'salmon';
+    msg.textContent = (err?.message || 'Registration failed').replace('Firebase: ','');
   }
 });
 
-// 7) Forgot password
-getTempModalBtn?.addEventListener('click', async (e) => {
+// Forgot password (Send reset link)
+const resetBtn   = document.getElementById('getTempModal');
+const resetMsgEl = document.getElementById('tempMsgModal');
+resetBtn?.addEventListener('click', async (e)=>{
   e.preventDefault();
-  tempMsgModal.textContent = '';
-  const email = signInEmailInput.value.trim();
+  const email = document.getElementById('email').value.trim();
+  resetMsgEl.textContent = '';
   if (!email) {
-    tempMsgModal.style.color = 'salmon';
-    tempMsgModal.textContent = 'Please enter your email address first.';
+    resetMsgEl.style.color = 'salmon';
+    resetMsgEl.textContent = 'Enter your email above first.';
     return;
   }
   try {
     await sendPasswordResetEmail(auth, email);
-    tempMsgModal.style.color = 'lightgreen';
-    tempMsgModal.textContent = 'Reset link sent. Check your inbox.';
+    resetMsgEl.style.color = 'lightgreen';
+    resetMsgEl.textContent = 'Reset link sent. Check your inbox/spam.';
   } catch (err) {
-    tempMsgModal.style.color = 'salmon';
-    tempMsgModal.textContent = (err?.message || 'Could not send reset email').replace('Firebase: ','');
+    resetMsgEl.style.color = 'salmon';
+    resetMsgEl.textContent = (err?.message || 'Could not send reset email').replace('Firebase: ','');
   }
 });
 
-// 8) CSV export (unchanged)
-document.getElementById('export-csv')?.addEventListener('click', () => {
+// CSV export
+document.getElementById('export-csv')?.addEventListener('click', ()=>{
   const rows = document.querySelectorAll('#schedule-table tbody tr');
   if (!rows.length) { alert('No schedule rows to export yet.'); return; }
-  const headers = Array.from(document.querySelectorAll('#schedule-table thead th')).map(th => th.textContent.trim());
+  const headers = Array.from(document.querySelectorAll('#schedule-table thead th')).map(th=>th.textContent.trim());
   const data = [headers];
-  rows.forEach(tr => {
-    const cells = Array.from(tr.querySelectorAll('td')).map(td => td.textContent.trim());
+  rows.forEach(tr=>{
+    const cells = Array.from(tr.querySelectorAll('td')).map(td=>td.textContent.trim());
     data.push(cells);
   });
-  const csv = data.map(r => r.map(v => `"${(v||'').replace(/"/g,'""')}"`).join(',')).join('\n');
-  const blob = new Blob([csv], { type: 'text/csv' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = 'schedule.csv'; a.click();
-  URL.revokeObjectURL(url);
+  const csv = data.map(r=>r.map(v=>`"${(v||'').replace(/"/g,'""')}"`).join(',')).join('\n');
+  const url = URL.createObjectURL(new Blob([csv], {type:'text/csv'}));
+  const a = document.createElement('a'); a.href=url; a.download='schedule.csv'; a.click(); URL.revokeObjectURL(url);
 });
 
-// 9) Player quick modal (basic close)
-document.getElementById('pqmClose')?.addEventListener('click', () => {
+// Player quick modal close
+document.getElementById('pqmClose')?.addEventListener('click', ()=>{
   document.getElementById('playerQuickModal').classList.add('hidden');
 });
+
+// Optional: sign out from console
+window.padelSignOut = ()=>signOut(auth);

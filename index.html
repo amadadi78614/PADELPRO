@@ -355,6 +355,133 @@
     </div>
   </div>
 
-  <script src="js/app.js"></script>
+  <script type="module" src="js/app.js"></script>
+  <!-- Firebase: Auth + Firestore -->
+<script type="module">
+  // 1) Import Firebase (use the version shown in your Firebase console snippet if different)
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
+  import {
+    getAuth, onAuthStateChanged,
+    signInWithEmailAndPassword, createUserWithEmailAndPassword,
+    sendPasswordResetEmail, updateProfile, signOut
+  } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js";
+  import {
+    getFirestore, doc, setDoc, getDoc, serverTimestamp
+  } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
+
+  // 2) Your Firebase config (copy from Firebase console → Web app setup)
+  const firebaseConfig = {
+    apiKey: "PASTE_HERE",
+    authDomain: "PASTE_HERE",
+    projectId: "PASTE_HERE",
+    storageBucket: "PASTE_HERE",
+    messagingSenderId: "PASTE_HERE",
+    appId: "PASTE_HERE"
+  };
+
+  // 3) Init
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db   = getFirestore(app);
+
+  // ---- UI elements you already have ----
+  const overlay = document.getElementById('authOverlay');
+  const signInForm = document.getElementById('signin_modal');
+  const registerForm = document.getElementById('register_modal');
+  const errorBox = document.getElementById('error');
+  const getTempBtn = document.getElementById('getTempModal');
+  const tempMsg = document.getElementById('tempMsgModal');
+  const rMsg = document.getElementById('r_msg_modal');
+  const navGetStarted = document.getElementById('navGetStarted');
+  const mobileGetStarted = document.getElementById('mobileGetStarted');
+  const ctaJoinNow = document.getElementById('ctaJoinNow');
+  const ctaAdmin = document.getElementById('ctaAdmin');
+
+  // ---- Auth state → toggle UI ----
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      // Ensure a user profile doc exists
+      const uref = doc(db, 'users', user.uid);
+      const snap = await getDoc(uref);
+      if (!snap.exists()) {
+        await setDoc(uref, {
+          uid: user.uid,
+          name: user.displayName || '',
+          email: user.email || '',
+          role: 'player',
+          createdAt: serverTimestamp()
+        });
+      }
+
+      // Hide "Sign In / Register" buttons; show Dashboard link
+      navGetStarted?.classList.add('hidden');
+      mobileGetStarted?.classList.add('hidden');
+      ctaJoinNow?.classList.add('hidden');
+      ctaAdmin?.classList.remove('hidden');
+    } else {
+      // Logged out
+      navGetStarted?.classList.remove('hidden');
+      mobileGetStarted?.classList.remove('hidden');
+      ctaJoinNow?.classList.remove('hidden');
+      ctaAdmin?.classList.add('hidden');
+    }
+  });
+
+  // ---- Sign in ----
+  signInForm?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    errorBox.textContent = '';
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      overlay.classList.add('hidden');
+    } catch (err) {
+      errorBox.textContent = (err.message || String(err)).replace('Firebase: ', '');
+    }
+  });
+
+  // ---- Register (create account with a temp password, then email reset link) ----
+  registerForm?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    rMsg.textContent = '';
+    const name  = document.getElementById('r_name').value.trim();
+    const email = document.getElementById('r_email').value.trim();
+
+    // Generate a random temporary password
+    const tempPw = Math.random().toString(36).slice(-10) + "Aa1!";
+    try {
+      const cred = await createUserWithEmailAndPassword(auth, email, tempPw);
+      await updateProfile(cred.user, { displayName: name });
+      await setDoc(doc(db, 'users', cred.user.uid), {
+        uid: cred.user.uid, name, email, role: 'player', createdAt: serverTimestamp()
+      });
+      await sendPasswordResetEmail(auth, email);
+      rMsg.textContent = "Account created. Check your email to set your password.";
+    } catch (err) {
+      rMsg.textContent = (err.message || String(err)).replace('Firebase: ', '');
+    }
+  });
+
+  // ---- “Forgot password? Get a temporary password” → send reset email ----
+  getTempBtn?.addEventListener('click', async () => {
+    tempMsg.textContent = '';
+    const email = document.getElementById('email').value.trim();
+    if (!email) {
+      tempMsg.textContent = "Enter your email above first.";
+      return;
+    }
+    try {
+      await sendPasswordResetEmail(auth, email);
+      tempMsg.textContent = "Reset link sent. Check your inbox.";
+    } catch (err) {
+      tempMsg.textContent = (err.message || String(err)).replace('Firebase: ', '');
+    }
+  });
+
+  // Optional: expose a quick sign-out in the console
+  window.padelSignOut = () => signOut(auth);
+</script>
+
 </body>
 </html>

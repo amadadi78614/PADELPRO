@@ -1,38 +1,32 @@
-// Footer year
+// ===== Footer year =====
 document.getElementById('year').textContent = new Date().getFullYear();
 
-// Sections we hide/show (home & franchises always visible)
-const sectionIds = ['fantasy','marketplace','live-stream','schedule'];
-
-// Smooth in-page nav
+// ===== Smooth section toggles =====
+const sectionIds = ['home','franchises','schedule','fantasy','marketplace','live-stream'];
+function showSection(id){
+  sectionIds.forEach(s=>{
+    const el=document.getElementById(s); if(!el) return;
+    el.classList.toggle('hidden', s!==id);
+  });
+  const m=document.getElementById('mobileMenu');
+  if(m && !m.classList.contains('hidden')) m.classList.add('hidden');
+  document.getElementById(id)?.scrollIntoView({behavior:'smooth', block:'start'});
+}
 document.querySelectorAll('a[href^="#"]').forEach(a=>{
   a.addEventListener('click', e=>{
-    const id = a.getAttribute('href').slice(1);
-    if (sectionIds.includes(id)) {
-      sectionIds.forEach(s=>{
-        const el = document.getElementById(s);
-        if (!el) return;
-        el.classList.toggle('hidden', s!==id);
-      });
-    }
-    const target = document.getElementById(id);
-    if (target) {
-      e.preventDefault();
-      const m = document.getElementById('mobileMenu');
-      if (m && !m.classList.contains('hidden')) m.classList.add('hidden');
-      target.scrollIntoView({behavior:'smooth', block:'start'});
-    }
+    const id=a.getAttribute('href').slice(1);
+    if(sectionIds.includes(id)){ e.preventDefault(); showSection(id); }
   });
 });
 function toggleMobileMenu(){ document.getElementById('mobileMenu').classList.toggle('hidden'); }
 window.toggleMobileMenu = toggleMobileMenu;
 
-// Polished: nav shadow on scroll
+// ===== Polished: nav shadow on scroll =====
 const topnav = document.getElementById('topnav');
 const navShadow = () => topnav.classList.toggle('shadow-lg', window.scrollY > 4);
 navShadow(); window.addEventListener('scroll', navShadow);
 
-// Toasts
+// ===== Toasts =====
 const toastHost = document.getElementById('toastHost');
 function toast(msg, kind='info'){
   const base = document.createElement('div');
@@ -47,7 +41,7 @@ function toast(msg, kind='info'){
   setTimeout(()=>{ base.remove(); }, 3000);
 }
 
-// Modal DOM
+// ===== DOM refs =====
 const overlay          = document.getElementById('authOverlay');
 const authClose        = document.getElementById('authClose');
 const signInView       = document.getElementById('authSignIn');
@@ -55,7 +49,6 @@ const registerView     = document.getElementById('authRegister');
 const goRegister       = document.getElementById('goRegister');
 const goSignIn         = document.getElementById('goSignIn');
 
-// Nav DOM
 const navGetStarted    = document.getElementById('navGetStarted');
 const mobileGetStarted = document.getElementById('mobileGetStarted');
 const ctaJoinNow       = document.getElementById('ctaJoinNow');
@@ -70,7 +63,7 @@ const mobileWelcome= document.getElementById('mobileWelcome');
 const mobileSignOut= document.getElementById('mobileSignOut');
 const btnSignOut   = document.getElementById('btnSignOut');
 
-// Firebase
+// ===== Firebase (auth only; schedule is public) =====
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
 import {
   getAuth, onAuthStateChanged,
@@ -94,7 +87,7 @@ const app  = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db   = getFirestore(app);
 
-// Open/close auth modal
+// ===== Auth modal open/close =====
 ['navGetStarted','mobileGetStarted','ctaJoinNow'].forEach(id=>{
   const btn=document.getElementById(id); if(!btn) return;
   btn.addEventListener('click', (e)=>{
@@ -126,10 +119,9 @@ document.addEventListener('click', (e)=>{
   }
 });
 
-// Auth state → UI
+// ===== Auth state → UI (gated sections only; schedule stays visible) =====
 onAuthStateChanged(auth, async (user) => {
   if (user) {
-    // Ensure user doc exists
     try {
       const uref = doc(db, 'users', user.uid);
       const snap = await getDoc(uref);
@@ -142,24 +134,23 @@ onAuthStateChanged(auth, async (user) => {
           createdAt: serverTimestamp()
         });
       }
-    } catch {}
+    } catch (e) { /* ignore on locked rules */ }
 
     const name = user.displayName || (user.email?.split('@')[0] ?? 'Player');
     const init = (name?.trim()[0] || 'U').toUpperCase();
 
-    // Desktop: profile
     navGetStarted?.classList.add('hidden');
     profileBtn?.classList.remove('hidden');
     if (profileName) profileName.textContent = name;
     if (profileAvatar) profileAvatar.textContent = init;
 
-    // Buttons/sections
     ctaJoinNow?.classList.add('hidden'); ctaAdmin?.classList.remove('hidden');
     mobileGetStarted?.classList.add('hidden');
     mobileWelcome?.classList.remove('hidden');
     if (mobileWelcome) mobileWelcome.textContent = `Welcome, ${name}`;
     mobileSignOut?.classList.remove('hidden');
 
+    // unlock gated sections
     ['fantasy','marketplace','live-stream'].forEach(id =>
       document.getElementById(id)?.classList.remove('hidden')
     );
@@ -173,13 +164,14 @@ onAuthStateChanged(auth, async (user) => {
     mobileWelcome?.classList.add('hidden');
     mobileSignOut?.classList.add('hidden');
 
+    // keep schedule visible; hide gated
     ['fantasy','marketplace','live-stream'].forEach(id =>
       document.getElementById(id)?.classList.add('hidden')
     );
   }
 });
 
-// Sign in
+// ===== Sign in =====
 document.getElementById('signin_modal')?.addEventListener('submit', async (e)=>{
   e.preventDefault();
   const email = document.getElementById('email').value.trim();
@@ -197,7 +189,7 @@ document.getElementById('signin_modal')?.addEventListener('submit', async (e)=>{
   }
 });
 
-// Register
+// ===== Register =====
 document.getElementById('register_modal')?.addEventListener('submit', async (e)=>{
   e.preventDefault();
   const name  = document.getElementById('r_name').value.trim();
@@ -225,7 +217,7 @@ document.getElementById('register_modal')?.addEventListener('submit', async (e)=
   }
 });
 
-// Forgot password
+// ===== Forgot password =====
 document.getElementById('getTempModal')?.addEventListener('click', async (e)=>{
   e.preventDefault();
   const email = document.getElementById('email').value.trim();
@@ -243,7 +235,7 @@ document.getElementById('getTempModal')?.addEventListener('click', async (e)=>{
   }
 });
 
-// Sign out
+// ===== Sign out =====
 btnSignOut?.addEventListener('click', async ()=>{
   await signOut(auth);
   toast('Signed out', 'info');
@@ -254,177 +246,139 @@ mobileSignOut?.addEventListener('click', async ()=>{
   toast('Signed out', 'info');
 });
 
-// -------------------- SCHEDULE DATA --------------------
+// ===== Fixtures (Premier + Championship) =====
+const premier = [
+  {round:1, match:1, tier:'Premier', venue:'Play360', date:'Monday, 15 September 2025', fixture:'Rulo Apaches - Samurai Kick Smashers'},
+  {round:1, match:2, tier:'Premier', venue:'Play360', date:'Tuesday, 16 September 2025', fixture:'Desert Falcons - Baltic Blades'},
+  {round:1, match:3, tier:'Premier', venue:'Play360', date:'Wednesday, 17 September 2025', fixture:'Globo Boomerangs - Sonic Viboras'},
+  {round:1, match:4, tier:'Premier', venue:'Play360', date:'Thursday, 18 September 2025', fixture:'Ice Breakers - Avalanche Aces'},
+  {round:2, match:5, tier:'Premier', venue:'Play360', date:'Thursday, 25 September 2025', fixture:'Samurai Kick Smashers - Desert Falcons'},
+  {round:2, match:6, tier:'Premier', venue:'Play360', date:'Monday, 22 September 2025', fixture:'Avalanche Aces - Rulo Apaches'},
+  {round:2, match:7, tier:'Premier', venue:'Play360', date:'Tuesday, 23 September 2025', fixture:'Sonic Viboras - Ice Breakers'},
+  {round:2, match:8, tier:'Premier', venue:'Play360', date:'Friday, 26 September 2025', fixture:'Baltic Blades - Globo Boomerangs'},
+  {round:3, match:9, tier:'Premier', venue:'Play360', date:'Tuesday, 30 September 2025', fixture:'Desert Falcons - Avalanche Aces'},
+  {round:3, match:10, tier:'Premier', venue:'Play360', date:'Wednesday, 15 October 2025', fixture:'Samurai Kick Smashers - Baltic Blades'},
+  {round:3, match:11, tier:'Premier', venue:'Play360', date:'Monday, 29 September 2025', fixture:'Rulo Apaches - Sonic Viboras'},
+  {round:3, match:12, tier:'Premier', venue:'Play360', date:'Tuesday, 14 October 2025', fixture:'Ice Breakers - Globo Boomerangs'},
+  {round:4, match:13, tier:'Premier', venue:'Play360', date:'Thursday, 23 October 2025', fixture:'Baltic Blades - Sonic Viboras'},
+  {round:4, match:14, tier:'Premier', venue:'Play360', date:'Wednesday, 22 October 2025', fixture:'Desert Falcons - Rulo Apaches'},
+  {round:4, match:15, tier:'Premier', venue:'Play360', date:'Tuesday, 21 October 2025', fixture:'Avalanche Aces - Globo Boomerangs'},
+  {round:4, match:16, tier:'Premier', venue:'Play360', date:'Monday, 20 October 2025', fixture:'Samurai Kick Smashers - Ice Breakers'},
+  {round:5, match:17, tier:'Premier', venue:'Play360', date:'Thursday, 30 October 2025', fixture:'Rulo Apaches - Baltic Blades'},
+  {round:5, match:18, tier:'Premier', venue:'Play360', date:'Monday, 27 October 2025', fixture:'Globo Boomerangs - Samurai Kick Smashers'},
+  {round:5, match:19, tier:'Premier', venue:'Play360', date:'Tuesday, 28 October 2025', fixture:'Ice Breakers - Desert Falcons'},
+  {round:5, match:20, tier:'Premier', venue:'Play360', date:'Wednesday, 29 October 2025', fixture:'Sonic Viboras - Avalanche Aces'},
+  {round:6, match:21, tier:'Premier', venue:'Play360', date:'Thursday, 06 November 2025', fixture:'Baltic Blades - Avalanche Aces'},
+  {round:6, match:22, tier:'Premier', venue:'Play360', date:'Monday, 03 November 2025', fixture:'Desert Falcons - Globo Boomerangs'},
+  {round:6, match:23, tier:'Premier', venue:'Play360', date:'Wednesday, 05 November 2025', fixture:'Rulo Apaches - Ice Breakers'},
+  {round:6, match:24, tier:'Premier', venue:'Play360', date:'Tuesday, 04 November 2025', fixture:'Samurai Kick Smashers - Sonic Viboras'},
+  {round:7, match:25, tier:'Premier', venue:'Play360', date:'Wednesday, 12 November 2025', fixture:'Globo Boomerangs - Rulo Apaches'},
+  {round:7, match:26, tier:'Premier', venue:'Play360', date:'Monday, 10 November 2025', fixture:'Baltic Blades - Ice Breakers'},
+  {round:7, match:27, tier:'Premier', venue:'Play360', date:'Tuesday, 11 November 2025', fixture:'Sonic Viboras - Desert Falcons'},
+  {round:7, match:28, tier:'Premier', venue:'Play360', date:'Thursday, 13 November 2025', fixture:'Avalanche Aces - Samurai Kick Smashers'},
+  {round:29, match:29, tier:'Premier', venue:'Play360', date:'Monday, 24 November 2025', fixture:'Play off 1'},
+  {round:30, match:30, tier:'Premier', venue:'Play360', date:'Tuesday, 25 November 2025', fixture:'Play off 2'},
+  {round:31, match:31, tier:'Premier', venue:'Play360', date:'Monday, 01 December 2025', fixture:'Play off 3'},
+  {round:32, match:32, tier:'Premier', venue:'Play360', date:'Saturday, 06 December 2025', fixture:'FINALS: Premier'}
+];
 
-// Premier fixtures (Play360)
-function seedPremierSchedule() {
-  const rows = [
-    [1,1,"Premier","Play360","Monday, 15 September 2025","Rulo Apaches - Samurai Kick Smashers"],
-    [1,2,"Premier","Play360","Tuesday, 16 September 2025","Desert Falcons - Baltic Blades"],
-    [1,3,"Premier","Play360","Wednesday, 17 September 2025","Globo Boomerangs - Sonic Viboras"],
-    [1,4,"Premier","Play360","Thursday, 18 September 2025","Ice Breakers - Avalanche Aces"],
-    [2,5,"Premier","Play360","Thursday, 25 September 2025","Samurai Kick Smashers - Desert Falcons"],
-    [2,6,"Premier","Play360","Monday, 22 September 2025","Avalanche Aces - Rulo Apaches"],
-    [2,7,"Premier","Play360","Tuesday, 23 September 2025","Sonic Viboras - Ice Breakers"],
-    [2,8,"Premier","Play360","Friday, 26 September 2025","Baltic Blades - Globo Boomerangs"],
-    [3,9,"Premier","Play360","Tuesday, 30 September 2025","Desert Falcons - Avalanche Aces"],
-    [3,10,"Premier","Play360","Wednesday, 15 October 2025","Samurai Kick Smashers - Baltic Blades"],
-    [3,11,"Premier","Play360","Monday, 29 September 2025","Rulo Apaches - Sonic Viboras"],
-    [3,12,"Premier","Play360","Tuesday, 14 October 2025","Ice Breakers - Globo Boomerangs"],
-    [4,13,"Premier","Play360","Thursday, 23 October 2025","Baltic Blades - Sonic Viboras"],
-    [4,14,"Premier","Play360","Wednesday, 22 October 2025","Desert Falcons - Rulo Apaches"],
-    [4,15,"Premier","Play360","Tuesday, 21 October 2025","Avalanche Aces - Globo Boomerangs"],
-    [4,16,"Premier","Play360","Monday, 20 October 2025","Samurai Kick Smashers - Ice Breakers"],
-    [5,17,"Premier","Play360","Thursday, 30 October 2025","Rulo Apaches - Baltic Blades"],
-    [5,18,"Premier","Play360","Monday, 27 October 2025","Globo Boomerangs - Samurai Kick Smashers"],
-    [5,19,"Premier","Play360","Tuesday, 28 October 2025","Ice Breakers - Desert Falcons"],
-    [5,20,"Premier","Play360","Wednesday, 29 October 2025","Sonic Viboras - Avalanche Aces"],
-    [6,21,"Premier","Play360","Thursday, 06 November 2025","Baltic Blades - Avalanche Aces"],
-    [6,22,"Premier","Play360","Monday, 03 November 2025","Desert Falcons - Globo Boomerangs"],
-    [6,23,"Premier","Play360","Wednesday, 05 November 2025","Rulo Apaches - Ice Breakers"],
-    [6,24,"Premier","Play360","Tuesday, 04 November 2025","Samurai Kick Smashers - Sonic Viboras"],
-    [7,25,"Premier","Play360","Wednesday, 12 November 2025","Globo Boomerangs - Rulo Apaches"],
-    [7,26,"Premier","Play360","Monday, 10 November 2025","Baltic Blades - Ice Breakers"],
-    [7,27,"Premier","Play360","Tuesday, 11 November 2025","Sonic Viboras - Desert Falcons"],
-    [7,28,"Premier","Play360","Thursday, 13 November 2025","Avalanche Aces - Samurai Kick Smashers"],
-    [null,29,"Premier","Play360","Monday, 24 November 2025","Play off 1"],
-    [null,30,"Premier","Play360","Tuesday, 25 November 2025","Play off 2"],
-    [null,31,"Premier","Play360","Monday, 01 December 2025","Play off 3"],
-    [null,32,"Premier","Play360","Saturday, 06 December 2025","FINALS: Premier"],
-  ];
-  return rows.map(r=>({ round:r[0], match:r[1], tier:r[2], venue:r[3], dateStr:r[4], fixture:r[5], status:'Scheduled'}));
+const championship = [
+  {round:1, match:1, tier:'Championship', venue:'PADEL24', date:'Monday, 15 September 2025', fixture:'Globo Boomerangs - Sonic Viboras'},
+  {round:1, match:2, tier:'Championship', venue:'PADEL24', date:'Monday, 15 September 2025', fixture:'Ice Breakers - Avalanche Aces'},
+  {round:1, match:3, tier:'Championship', venue:'PADEL24', date:'Wednesday, 17 September 2025', fixture:'Rulo Apaches - Samurai Kicksmashers'},
+  {round:1, match:4, tier:'Championship', venue:'PADEL24', date:'Wednesday, 17 September 2025', fixture:'Desert Falcons - Baltic Blades'},
+  {round:2, match:5, tier:'Championship', venue:'PADEL24', date:'Thursday, 25 September 2025', fixture:'Avalanche Aces - Rulo Apaches'},
+  {round:2, match:6, tier:'Championship', venue:'PADEL24', date:'Thursday, 25 September 2025', fixture:'Sonic Viboras - Ice Breakers'},
+  {round:2, match:7, tier:'Championship', venue:'PADEL24', date:'Monday, 22 September 2025', fixture:'Samurai Kicksmashers  - Desert Falcons'},
+  {round:2, match:8, tier:'Championship', venue:'PADEL24', date:'Monday, 22 September 2025', fixture:'Baltic Blades - Globo Boomerangs'},
+  {round:3, match:9, tier:'Championship', venue:'PADEL24', date:'Monday, 29 September 2025', fixture:'Ice Breakers - Globo Boomerangs'},
+  {round:3, match:10, tier:'Championship', venue:'PADEL24', date:'Monday, 29 September 2025', fixture:'Samurai Kicksmashers - Baltic Blades'},
+  {round:3, match:11, tier:'Championship', venue:'PADEL24', date:'Thursday, 16 October 2025', fixture:'Rulo Apaches - Sonic Viboras'},
+  {round:3, match:12, tier:'Championship', venue:'PADEL24', date:'Thursday, 16 October 2025', fixture:'Desert Falcons - Avalanche Aces'},
+  {round:4, match:13, tier:'Championship', venue:'PADEL24', date:'Monday, 20 October 2025', fixture:'Desert Falcons - Rulo Apaches'},
+  {round:4, match:14, tier:'Championship', venue:'PADEL24', date:'Monday, 20 October 2025', fixture:'Baltic Blades - Sonic Viboras'},
+  {round:4, match:15, tier:'Championship', venue:'PADEL24', date:'Wednesday, 22 October 2025', fixture:'Samurai Kicksmashers  - Ice Breakers'},
+  {round:4, match:16, tier:'Championship', venue:'PADEL24', date:'Wednesday, 22 October 2025', fixture:'Avalanche Aces - Globo Boomerangs'},
+  {round:5, match:17, tier:'Championship', venue:'PADEL24', date:'Monday, 27 October 2025', fixture:'Sonic Viboras - Avalanche Aces'},
+  {round:5, match:18, tier:'Championship', venue:'PADEL24', date:'Monday, 27 October 2025', fixture:'Rulo Apaches - Baltic Blades'},
+  {round:5, match:19, tier:'Championship', venue:'PADEL24', date:'Wednesday, 29 October 2025', fixture:'Globo Boomerangs - Samurai Kicksmashers'},
+  {round:5, match:20, tier:'Championship', venue:'PADEL24', date:'Wednesday, 29 October 2025', fixture:'Ice Breakers - Desert Falcons'},
+  {round:6, match:21, tier:'Championship', venue:'PADEL24', date:'Monday, 03 November 2025', fixture:'Rulo Apaches - Ice Breakers'},
+  {round:6, match:22, tier:'Championship', venue:'PADEL24', date:'Monday, 03 November 2025', fixture:'Baltic Blades - Avalanche Aces'},
+  {round:6, match:23, tier:'Championship', venue:'PADEL24', date:'Wednesday, 05 November 2025', fixture:'Desert Falcons - Globo Boomerangs'},
+  {round:6, match:24, tier:'Championship', venue:'PADEL24', date:'Wednesday, 05 November 2025', fixture:'Samurai Kicksmashers - Sonic Viboras'},
+  {round:7, match:25, tier:'Championship', venue:'PADEL24', date:'Monday, 10 November 2025', fixture:'Globo Boomerangs - Rulo Apaches'},
+  {round:7, match:26, tier:'Championship', venue:'PADEL24', date:'Monday, 10 November 2025', fixture:'Avalanche Aces - Samurai Kicksmashers'},
+  {round:7, match:27, tier:'Championship', venue:'PADEL24', date:'Wednesday, 12 November 2025', fixture:'Baltic Blades - Ice Breakers'},
+  {round:7, match:28, tier:'Championship', venue:'PADEL24', date:'Wednesday, 12 November 2025', fixture:'Sonic Viboras - Desert Falcons'}
+];
+
+// Put both into a single array on window for re-renders
+window.PADEL_FIXTURES = [...premier, ...championship].map(g => ({...g, status: 'Scheduled'}));
+
+// ===== Schedule rendering with sequential match # per round =====
+function parseDateStr(s) {
+  // drop weekday for consistent parsing
+  return new Date(s.replace(/^[A-Za-z]+,\s*/, ''));
 }
 
-// Championship fixtures (PADEL24)
-function seedChampionshipSchedule() {
-  const rows = [
-    [1,1,"Championship","PADEL24","Monday, 15 September 2025","Globo Boomerangs - Sonic Viboras"],
-    [1,2,"Championship","PADEL24","Monday, 15 September 2025","Ice Breakers - Avalanche Aces"],
-    [1,3,"Championship","PADEL24","Wednesday, 17 September 2025","Rulo Apaches - Samurai Kicksmashers"],
-    [1,4,"Championship","PADEL24","Wednesday, 17 September 2025","Desert Falcons - Baltic Blades"],
-    [2,5,"Championship","PADEL24","Thursday, 25 September 2025","Avalanche Aces - Rulo Apaches"],
-    [2,6,"Championship","PADEL24","Thursday, 25 September 2025","Sonic Viboras - Ice Breakers"],
-    [2,7,"Championship","PADEL24","Monday, 22 September 2025","Samurai Kicksmashers  - Desert Falcons"],
-    [2,8,"Championship","PADEL24","Monday, 22 September 2025","Baltic Blades - Globo Boomerangs"],
-    [3,9,"Championship","PADEL24","Monday, 29 September 2025","Ice Breakers - Globo Boomerangs"],
-    [3,10,"Championship","PADEL24","Monday, 29 September 2025","Samurai Kicksmashers - Baltic Blades"],
-    [3,11,"Championship","PADEL24","Thursday, 16 October 2025","Rulo Apaches - Sonic Viboras"],
-    [3,12,"Championship","PADEL24","Thursday, 16 October 2025","Desert Falcons - Avalanche Aces"],
-    [4,13,"Championship","PADEL24","Monday, 20 October 2025","Desert Falcons - Rulo Apaches"],
-    [4,14,"Championship","PADEL24","Monday, 20 October 2025","Baltic Blades - Sonic Viboras"],
-    [4,15,"Championship","PADEL24","Wednesday, 22 October 2025","Samurai Kicksmashers  - Ice Breakers"],
-    [4,16,"Championship","PADEL24","Wednesday, 22 October 2025","Avalanche Aces - Globo Boomerangs"],
-    [5,17,"Championship","PADEL24","Monday, 27 October 2025","Sonic Viboras - Avalanche Aces"],
-    [5,18,"Championship","PADEL24","Monday, 27 October 2025","Rulo Apaches - Baltic Blades"],
-    [5,19,"Championship","PADEL24","Wednesday, 29 October 2025","Globo Boomerangs - Samurai Kicksmashers"],
-    [5,20,"Championship","PADEL24","Wednesday, 29 October 2025","Ice Breakers - Desert Falcons"],
-    [6,21,"Championship","PADEL24","Monday, 03 November 2025","Rulo Apaches - Ice Breakers"],
-    [6,22,"Championship","PADEL24","Monday, 03 November 2025","Baltic Blades - Avalanche Aces"],
-    [6,23,"Championship","PADEL24","Wednesday, 05 November 2025","Desert Falcons - Globo Boomerangs"],
-    [6,24,"Championship","PADEL24","Wednesday, 05 November 2025","Samurai Kicksmashers - Sonic Viboras"],
-    [7,25,"Championship","PADEL24","Monday, 10 November 2025","Globo Boomerangs - Rulo Apaches"],
-    [7,26,"Championship","PADEL24","Monday, 10 November 2025","Avalanche Aces - Samurai Kicksmashers"],
-    [7,27,"Championship","PADEL24","Wednesday, 12 November 2025","Baltic Blades - Ice Breakers"],
-    [7,28,"Championship","PADEL24","Wednesday, 12 November 2025","Sonic Viboras - Desert Falcons"],
-  ];
-  return rows.map(r=>({ round:r[0], match:r[1], tier:r[2], venue:r[3], dateStr:r[4], fixture:r[5], status:'Scheduled'}));
-}
+function renderSchedule(fixtures) {
+  const rows = fixtures.map(g => ({ ...g, dateObj: g.dateObj || parseDateStr(g.date) }));
 
-// Combine + sort
-const allFixtures = [...seedPremierSchedule(), ...seedChampionshipSchedule()]
-  .sort((a,b)=> parseDate(a.dateStr) - parseDate(b.dateStr));
+  const tierSel   = document.getElementById('filter-tier')?.value || 'all';
+  const statusSel = document.getElementById('filter-status')?.value || 'all';
+  const venueSel  = document.getElementById('filter-venue')?.value || 'all';
 
-// Date parser tolerant of “Monday, 15 September 2025”
-function parseDate(d) {
-  const direct = new Date(d);
-  if (!isNaN(direct.getTime())) return direct;
-  const parts = d.split(',')[1]?.trim() || d;
-  return new Date(parts);
-}
+  let filtered = rows.filter(r =>
+    (tierSel   === 'all' || r.tier   === tierSel) &&
+    (statusSel === 'all' || r.status === statusSel) &&
+    (venueSel  === 'all' || r.venue  === venueSel)
+  );
 
-// Renders
-function renderScheduleRows(items, tbodyEl) {
-  tbodyEl.innerHTML = '';
-  const frag = document.createDocumentFragment();
-  items.forEach(it=>{
-    const tr = document.createElement('tr');
-    tr.className = 'border-t border-white/5 hover:bg-white/5';
-    tr.innerHTML = `
-      <td class="p-3">${it.round ?? ''}</td>
-      <td class="p-3">${it.match ?? ''}</td>
-      <td class="p-3">${it.tier}</td>
-      <td class="p-3">${it.venue}</td>
-      <td class="p-3 whitespace-nowrap">${it.dateStr}</td>
-      <td class="p-3">${it.fixture}</td>
-      <td class="p-3">${it.status}</td>
-    `;
-    frag.appendChild(tr);
+  // sort by round then date
+  filtered.sort((a,b)=>{
+    if (a.round !== b.round) return a.round - b.round;
+    return a.dateObj - b.dateObj;
   });
-  tbodyEl.appendChild(frag);
-}
-function renderHomePreview(items) {
-  const body = document.getElementById('home-schedule-body');
-  if (!body) return;
-  body.innerHTML = '';
-  const frag = document.createDocumentFragment();
-  items.forEach(it=>{
-    const tr = document.createElement('tr');
-    tr.className = 'border-t border-white/5 hover:bg-white/5';
-    tr.innerHTML = `
-      <td class="p-3 whitespace-nowrap">${it.dateStr}</td>
-      <td class="p-3">${it.fixture}</td>
-      <td class="p-3 hidden sm:table-cell">${it.venue}</td>
-      <td class="p-3 hidden sm:table-cell">${it.tier}</td>
-      <td class="p-3">${it.status}</td>
-    `;
-    frag.appendChild(tr);
-  });
-  body.appendChild(frag);
-}
 
-// Home preview (next 8)
-(function renderHome(){
-  const today = new Date();
-  const upcoming = allFixtures
-    .map(x=>({...x, date: parseDate(x.dateStr)}))
-    .filter(x=> x.date >= new Date(today.toDateString()))
-    .slice(0, 8);
-  renderHomePreview(upcoming);
-})();
-
-// Full schedule
-(function renderFull(){
   const tbody = document.querySelector('#schedule-table tbody');
-  if (!tbody) return;
-  renderScheduleRows(allFixtures, tbody);
-})();
+  tbody.innerHTML = '';
 
-// Filters (case-insensitive)
-const filterTier   = document.getElementById('filter-tier');
-const filterVenue  = document.getElementById('filter-venue');
-const filterStatus = document.getElementById('filter-status');
+  let currentRound = null;
+  let nextMatchNo  = 0;
 
-function applyFilters() {
-  const t = (filterTier?.value || 'all').toLowerCase();
-  const v = (filterVenue?.value || 'all').toLowerCase();
-  const s = (filterStatus?.value || 'all').toLowerCase();
-  const tbody = document.querySelector('#schedule-table tbody');
-  if (!tbody) return;
+  for (const g of filtered) {
+    if (g.round !== currentRound) {
+      currentRound = g.round;
+      nextMatchNo = 1;
+    } else {
+      nextMatchNo += 1;
+    }
 
-  const filtered = allFixtures.filter(it=>{
-    const okT = (t==='all' || it.tier.toLowerCase()===t);
-    const okV = (v==='all' || it.venue.toLowerCase()===v);
-    const okS = (s==='all' || it.status.toLowerCase()===s);
-    return okT && okV && okS;
-  });
-
-  renderScheduleRows(filtered, tbody);
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td class="p-4">${g.round}</td>
+      <td class="p-4">${nextMatchNo}</td>
+      <td class="p-4">${g.tier}</td>
+      <td class="p-4">${g.venue}</td>
+      <td class="p-4">${g.date}</td>
+      <td class="p-4">${g.fixture}</td>
+      <td class="p-4">${g.status || 'Scheduled'}</td>
+    `;
+    tbody.appendChild(tr);
+  }
 }
-filterTier?.addEventListener('change', applyFilters);
-filterVenue?.addEventListener('change', applyFilters);
-filterStatus?.addEventListener('change', applyFilters);
 
-// CSV export
+// Wire filters
+['filter-tier','filter-status','filter-venue'].forEach(id=>{
+  const el = document.getElementById(id);
+  if (el) el.addEventListener('change', ()=>renderSchedule(window.PADEL_FIXTURES));
+});
+
+// Initial render
+renderSchedule(window.PADEL_FIXTURES);
+
+// ===== CSV export =====
 document.getElementById('export-csv')?.addEventListener('click', ()=>{
   const rows = document.querySelectorAll('#schedule-table tbody tr');
   if (!rows.length) { alert('No schedule rows to export yet.'); return; }
@@ -437,8 +391,3 @@ document.getElementById('export-csv')?.addEventListener('click', ()=>{
   const url = URL.createObjectURL(new Blob([csv], {type:'text/csv'}));
   const a = document.createElement('a'); a.href=url; a.download='schedule.csv'; a.click(); URL.revokeObjectURL(url);
 });
-
-// (Helpful counts in DevTools console)
-console.log('Premier rows:', seedPremierSchedule().length);
-console.log('Championship rows:', seedChampionshipSchedule().length);
-console.log('Total rows rendered:', allFixtures.length);

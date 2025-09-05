@@ -10,11 +10,11 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
   <link href="css/styles.css" rel="stylesheet">
 
-  <!-- PWA bits -->
+  <!-- PWA + Favicon -->
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#0b0f1a">
   <link rel="apple-touch-icon" href="icons/icon-192x192.png">
-  <link rel="icon" type="image/png" href="icons/icon-192x192.png">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏓</text></svg>">
 </head>
 
 <body class="bg-gray-900 text-white">
@@ -25,7 +25,7 @@
   <nav id="topnav" class="bg-black/70 backdrop-blur-sm fixed w-full z-50 transition-all">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex justify-between h-16 relative">
-        <a href="#home" class="flex items-center gap-2">
+        <a href="index.html" class="flex items-center gap-2">
           <span class="text-2xl">🏓</span>
           <h1 class="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
             Padel Pro
@@ -142,28 +142,6 @@
           </div>
         </div>
       </div>
-
-      <!-- Upcoming Matches preview -->
-      <div class="mt-16">
-        <div class="flex items-center justify-between mb-4">
-          <h3 class="text-2xl font-bold">Upcoming Matches</h3>
-          <a href="#schedule" class="text-sm text-blue-300 hover:text-blue-200 underline underline-offset-4">View full schedule</a>
-        </div>
-        <div class="overflow-x-auto">
-          <table class="w-full text-left border-collapse">
-            <thead>
-              <tr class="bg-white/5">
-                <th class="p-3">Date</th>
-                <th class="p-3">Fixture</th>
-                <th class="p-3 hidden sm:table-cell">Venue</th>
-                <th class="p-3 hidden sm:table-cell">Tier</th>
-                <th class="p-3">Status</th>
-              </tr>
-            </thead>
-            <tbody id="home-schedule-body"></tbody>
-          </table>
-        </div>
-      </div>
     </div>
   </section>
 
@@ -180,7 +158,7 @@
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-        <!-- 8 cards -->
+        <!-- Repeatable card pattern (8 teams) -->
         <a href="franchise.html?team=desert-falcons"
            class="group bg-gradient-to-br from-orange-900/40 to-yellow-900/40 rounded-2xl p-6 ring-1 ring-white/10 hover:ring-white/20 hover:-translate-y-1 transition-all">
           <div class="text-center">
@@ -296,8 +274,8 @@
     </div>
   </section>
 
-  <!-- Full Schedule Section -->
-  <section id="schedule" class="hidden py-20 bg-gradient-to-br from-gray-900 to-black">
+  <!-- Schedule Section (visible to all) -->
+  <section id="schedule" class="py-20 bg-gradient-to-br from-gray-900 to-black">
     <div class="max-w-7xl mx-auto px-4">
       <h2 class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">Schedule</h2>
       <div class="filters flex flex-wrap gap-3 mb-6">
@@ -339,25 +317,40 @@
     </div>
   </section>
 
-  <!-- Optional locked sections (show after sign-in) -->
+  <!-- Fantasy (gated) -->
   <section id="fantasy" class="hidden py-20 bg-gradient-to-br from-gray-900 to-black">
     <div class="max-w-7xl mx-auto px-4">
-      <h2 class="text-3xl font-bold mb-2">Fantasy League</h2>
-      <p class="text-gray-400">Sign in to build and save your fantasy squad.</p>
+      <h2 class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">Fantasy League</h2>
+      <p class="text-xl text-gray-400 mb-8">Build your dream team with R100k salary cap</p>
+      <div class="bg-white/5 p-6 rounded-xl">
+        <h3 class="text-2xl font-bold mb-4">Your Squad</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="fantasy-squad"></div>
+        <div class="mt-6 flex justify-between items-center">
+          <p class="text-lg" id="fantasy-cost">Total Cost: R0 / R100,000</p>
+          <button class="py-2 px-6 rounded bg-blue-500/80 hover:bg-blue-500" id="save-squad">Save Squad</button>
+        </div>
+      </div>
     </div>
   </section>
 
+  <!-- Marketplace (gated) -->
   <section id="marketplace" class="hidden py-20 bg-gradient-to-br from-gray-900 to-black">
     <div class="max-w-7xl mx-auto px-4">
-      <h2 class="text-3xl font-bold mb-2">Marketplace</h2>
-      <p class="text-gray-400">Sign in to list or buy gear, coaching and more.</p>
+      <h2 class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">Marketplace</h2>
+      <p class="text-xl text-gray-400 mb-8">Buy equipment, coaching, and more</p>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8" id="marketplace-listings"></div>
+      <button class="mt-8 py-2 px-6 rounded bg-green-500/80 hover:bg-green-500" id="add-listing">Add Listing</button>
     </div>
   </section>
 
+  <!-- Live Stream (gated) -->
   <section id="live-stream" class="hidden py-20 bg-gradient-to-br from-gray-900 to-black">
     <div class="max-w-7xl mx-auto px-4">
-      <h2 class="text-3xl font-bold mb-2">Live Stream</h2>
-      <p class="text-gray-400">Sign in to access premium live streams and replays.</p>
+      <h2 class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">Live Stream</h2>
+      <p class="text-xl text-gray-400 mb-8">Watch ongoing matches live</p>
+      <div class="bg-white/5 p-6 rounded-xl">
+        <iframe class="w-full h-96" src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Live Stream Placeholder" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      </div>
     </div>
   </section>
 
@@ -433,7 +426,6 @@
     </div>
   </div>
 
-  <!-- One script only (bump the version when you update js) -->
   <script type="module" src="js/app.js?v=6"></script>
 </body>
 </html>

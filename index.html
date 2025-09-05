@@ -26,14 +26,29 @@
             🏓 Padel Pro
           </h1>
         </a>
+
+        <!-- Desktop nav -->
         <div class="hidden md:flex items-center space-x-8">
           <a href="#franchises" class="hover:text-blue-400 transition-colors">Franchises</a>
           <a href="#fantasy" class="hover:text-blue-400 transition-colors">Fantasy</a>
           <a href="#marketplace" class="hover:text-blue-400 transition-colors">Marketplace</a>
           <a href="#live-stream" class="hover:text-blue-400 transition-colors">Live Stream</a>
           <a href="#schedule" class="hover:text-blue-400 transition-colors">Schedule</a>
-          <a href="#" id="navGetStarted" class="bg-gradient-to-r from-blue-500 to-purple-600 px-6 py-2 rounded-lg hover:from-blue-600 hover:to-purple-700 transition-all">Sign In / Register</a>
+
+          <!-- Becomes “Welcome, NAME” when logged in -->
+          <a href="#" id="navGetStarted"
+             class="bg-gradient-to-r from-blue-500 to-purple-600 px-6 py-2 rounded-lg hover:from-blue-600 hover:to-purple-700 transition-all">
+            Sign In / Register
+          </a>
+
+          <!-- NEW: who-am-I + sign out -->
+          <span id="whoami" class="hidden text-sm text-gray-300"></span>
+          <button id="btnSignOut" class="hidden px-4 py-2 rounded bg-white/10 hover:bg-white/20 transition">
+            Sign out
+          </button>
         </div>
+
+        <!-- Mobile menu button -->
         <div class="md:hidden flex items-center">
           <button onclick="toggleMobileMenu()" class="text-white" aria-label="Open menu">
             <i class="fas fa-bars text-xl"></i>
@@ -41,6 +56,8 @@
         </div>
       </div>
     </div>
+
+    <!-- Mobile menu -->
     <div id="mobileMenu" class="hidden md:hidden bg-black/95 backdrop-blur-sm">
       <div class="px-2 pt-2 pb-3 space-y-1">
         <a href="#franchises" class="block px-3 py-2 hover:bg-gray-800 rounded">Franchises</a>
@@ -48,7 +65,16 @@
         <a href="#marketplace" class="block px-3 py-2 hover:bg-gray-800 rounded">Marketplace</a>
         <a href="#live-stream" class="block px-3 py-2 hover:bg-gray-800 rounded">Live Stream</a>
         <a href="#schedule" class="block px-3 py-2 hover:bg-gray-800 rounded">Schedule</a>
-        <a href="#" id="mobileGetStarted" class="block w-full px-3 py-2 bg-gradient-to-r from-blue-500 to-purple-600 rounded">Sign In / Register</a>
+
+        <a href="#" id="mobileGetStarted"
+           class="block w-full px-3 py-2 bg-gradient-to-r from-blue-500 to-purple-600 rounded">
+          Sign In / Register
+        </a>
+
+        <!-- NEW: mobile sign out -->
+        <button id="mobileSignOut" class="hidden block w-full px-3 py-2 bg-white/10 hover:bg-white/20 rounded">
+          Sign out
+        </button>
       </div>
     </div>
   </nav>
@@ -58,7 +84,9 @@
   <section id="home" class="py-20 bg-gradient-to-br from-gray-900 to-black">
     <div class="max-w-7xl mx-auto px-4">
       <div class="text-center mb-16">
-        <h2 class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">Platform Features</h2>
+        <h2 class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+          Platform Features
+        </h2>
         <p class="text-xl text-gray-400">Everything you need for the ultimate padel experience</p>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -157,7 +185,7 @@
         </p>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-        <!-- 8 franchise cards (unchanged) -->
+        <!-- (cards unchanged) -->
         <a href="franchise.html?team=desert-falcons" class="franchise-card bg-gradient-to-br from-orange-900/50 to-yellow-900/50 rounded-xl p-6 hover:scale-105 transition-all cursor-pointer" aria-label="Open Desert Falcons franchise">
           <div class="text-center">
             <video class="w-28 h-28 mx-auto mb-4 rounded-full object-cover ring-2 ring-white/20" poster="assets/logos/desert-falcons.jpeg" autoplay muted loop playsinline preload="metadata" title="Desert Falcons logo animation">
@@ -368,7 +396,7 @@
     </div>
   </div>
 
-  <!-- One script only -->
-  <script type="module" src="js/app.js?v=2"></script>
+  <!-- Single app script -->
+  <script type="module" src="js/app.js?v=3"></script>
 </body>
 </html>

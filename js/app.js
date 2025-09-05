@@ -1,10 +1,11 @@
-// js/app.js — Firebase Auth + UI wiring
+// js/app.js — Firebase Auth + minimal Firestore profile + UI wiring
 
 // Footer year
 document.getElementById('year').textContent = new Date().getFullYear();
 
-// Section navigation
+// ------- Section nav helpers -------
 const sectionIds = ['home','franchises','fantasy','marketplace','live-stream','schedule'];
+
 function showSection(id){
   sectionIds.forEach(s=>{
     const el=document.getElementById(s); if(!el) return;
@@ -14,16 +15,43 @@ function showSection(id){
   if(m && !m.classList.contains('hidden')) m.classList.add('hidden');
   document.getElementById(id)?.scrollIntoView({behavior:'smooth', block:'start'});
 }
-document.querySelectorAll('a[href^="#"]').forEach(a=>{
-  a.addEventListener('click', e=>{
-    const id=a.getAttribute('href').slice(1);
-    if(sectionIds.includes(id)){ e.preventDefault(); showSection(id); }
+
+function wireAnchorToggles(scope=document){
+  const links = scope.querySelectorAll('a[href^="#"]');
+  links.forEach(a=>{
+    a.addEventListener('click', (e)=>{
+      const id = a.getAttribute('href').slice(1);
+      if (sectionIds.includes(id)) {
+        e.preventDefault();
+        showSection(id);
+      }
+    });
   });
-});
+}
+wireAnchorToggles(document);
+
+// Mobile menu toggle
 function toggleMobileMenu(){ document.getElementById('mobileMenu').classList.toggle('hidden'); }
 window.toggleMobileMenu = toggleMobileMenu;
 
-// ---------- Firebase (CDN modules only; import ONCE) ----------
+// ------- Modal DOM -------
+const overlay          = document.getElementById('authOverlay');
+const authClose        = document.getElementById('authClose');
+const signInView       = document.getElementById('authSignIn');
+const registerView     = document.getElementById('authRegister');
+const goRegister       = document.getElementById('goRegister');
+const goSignIn         = document.getElementById('goSignIn');
+
+const navGetStarted    = document.getElementById('navGetStarted');
+const mobileGetStarted = document.getElementById('mobileGetStarted');
+const ctaJoinNow       = document.getElementById('ctaJoinNow');
+const ctaAdmin         = document.getElementById('ctaAdmin');
+
+const whoami        = document.getElementById('whoami');
+const btnSignOut    = document.getElementById('btnSignOut');
+const mobileSignOut = document.getElementById('mobileSignOut');
+
+// ------- Firebase (modular v10) -------
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
 import {
   getAuth, onAuthStateChanged,
@@ -39,33 +67,20 @@ const firebaseConfig = {
   apiKey: "AIzaSyCqJkzXzw9MgLFBZRvbnp8OthXWzSr2aBs",
   authDomain: "padelpro-c24b0.firebaseapp.com",
   projectId: "padelpro-c24b0",
-  storageBucket: "padelpro-c24b0.appspot.com",
+  storageBucket: "padelpro-c24b0.firebasestorage.app",
   messagingSenderId: "882509576352",
   appId: "1:882509576352:web:353877bde27dc6416971c5"
 };
 
-// Init (ONE time)
 const app  = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db   = getFirestore(app);
 
-// ---------- Modal DOM ----------
-const overlay          = document.getElementById('authOverlay');
-const authClose        = document.getElementById('authClose');
-const signInView       = document.getElementById('authSignIn');
-const registerView     = document.getElementById('authRegister');
-const goRegister       = document.getElementById('goRegister');
-const goSignIn         = document.getElementById('goSignIn');
-const navGetStarted    = document.getElementById('navGetStarted');
-const mobileGetStarted = document.getElementById('mobileGetStarted');
-const ctaJoinNow       = document.getElementById('ctaJoinNow');
-const ctaAdmin         = document.getElementById('ctaAdmin');
-
-// Open/close modal
+// ------- Open/close auth modal -------
 ['navGetStarted','mobileGetStarted','ctaJoinNow'].forEach(id=>{
   const btn=document.getElementById(id); if(!btn) return;
-  btn.addEventListener('click', e=>{
-    if(auth.currentUser) return;
+  btn.addEventListener('click', (e)=>{
+    if (auth.currentUser) return; // don't open if already logged in
     e.preventDefault();
     overlay.classList.remove('hidden'); overlay.classList.add('flex');
     signInView.classList.remove('hidden'); registerView.classList.add('hidden');
@@ -81,11 +96,12 @@ goSignIn?.addEventListener('click', ()=>{
   registerView.classList.add('hidden'); signInView.classList.remove('hidden');
 });
 
-// Auth state → toggle UI + ensure user doc
-onAuthStateChanged(auth, async (user)=>{
+// ------- Auth state → UI -------
+onAuthStateChanged(auth, async (user) => {
   if (user) {
+    // Ensure /users/{uid} exists (safe if rules allow; wrapped in try/catch)
     try {
-      const uref = doc(db,'users',user.uid);
+      const uref = doc(db, 'users', user.uid);
       const snap = await getDoc(uref);
       if (!snap.exists()) {
         await setDoc(uref, {
@@ -96,29 +112,50 @@ onAuthStateChanged(auth, async (user)=>{
           createdAt: serverTimestamp()
         });
       }
-    } catch(e){ console.warn('Firestore note:', e?.message); }
+    } catch (e) {
+      console.warn('Firestore note:', e?.message);
+    }
 
-    navGetStarted?.classList.add('hidden');
-    mobileGetStarted?.classList.add('hidden');
-    ctaJoinNow?.classList.add('hidden');
-    ctaAdmin?.classList.remove('hidden');
+    const name = user.displayName || (user.email?.split('@')[0] ?? 'Player');
 
-    ['fantasy','marketplace','live-stream','schedule'].forEach(id=>{
-      document.getElementById(id)?.classList.remove('hidden');
-    });
+    // Who am I
+    whoami?.classList.remove('hidden');
+    whoami.textContent = `Logged in as ${name}`;
+
+    // Turn CTA into dashboard link
+    navGetStarted.textContent = `Welcome, ${name}`;
+    navGetStarted.href = 'dashboard.html';
+    navGetStarted.classList.remove('bg-gradient-to-r','from-blue-500','to-purple-600');
+    navGetStarted.classList.add('bg-white','text-blue-600');
+
+    // Show sign-out buttons
+    btnSignOut?.classList.remove('hidden');
+    mobileSignOut?.classList.remove('hidden');
+
+    // Reveal protected sections
+    ['fantasy','marketplace','live-stream','schedule'].forEach(id =>
+      document.getElementById(id)?.classList.remove('hidden')
+    );
   } else {
-    navGetStarted?.classList.remove('hidden');
-    mobileGetStarted?.classList.remove('hidden');
-    ctaJoinNow?.classList.remove('hidden');
-    ctaAdmin?.classList.add('hidden');
+    whoami?.classList.add('hidden');
+    whoami.textContent = '';
 
-    ['fantasy','marketplace','live-stream','schedule'].forEach(id=>{
-      document.getElementById(id)?.classList.add('hidden');
-    });
+    navGetStarted.textContent = 'Sign In / Register';
+    navGetStarted.href = '#';
+    navGetStarted.classList.add('bg-gradient-to-r','from-blue-500','to-purple-600');
+    navGetStarted.classList.remove('bg-white','text-blue-600');
+
+    btnSignOut?.classList.add('hidden');
+    mobileSignOut?.classList.add('hidden');
+
+    // Hide protected sections
+    ['fantasy','marketplace','live-stream','schedule'].forEach(id =>
+      document.getElementById(id)?.classList.add('hidden')
+    );
   }
 });
 
-// Sign in
+// ------- Sign in -------
 document.getElementById('signin_modal')?.addEventListener('submit', async (e)=>{
   e.preventDefault();
   const email = document.getElementById('email').value.trim();
@@ -127,19 +164,19 @@ document.getElementById('signin_modal')?.addEventListener('submit', async (e)=>{
   box.textContent = '';
   try {
     await signInWithEmailAndPassword(auth, email, pw);
-    overlay.classList.add('hidden');
+    overlay.classList.add('hidden'); overlay.classList.remove('flex');
   } catch (err) {
     box.textContent = (err?.message || 'Sign-in failed').replace('Firebase: ','');
   }
 });
 
-// Register → temp pw then reset link
+// ------- Register (temp pw + send reset link) -------
 document.getElementById('register_modal')?.addEventListener('submit', async (e)=>{
   e.preventDefault();
   const name  = document.getElementById('r_name').value.trim();
   const email = document.getElementById('r_email').value.trim();
   const msg   = document.getElementById('r_msg_modal');
-  msg.textContent = '';
+  msg.style.color = ''; msg.textContent = '';
   const tempPw = Math.random().toString(36).slice(-10) + "Aa1!";
   try {
     const cred = await createUserWithEmailAndPassword(auth, email, tempPw);
@@ -148,35 +185,42 @@ document.getElementById('register_modal')?.addEventListener('submit', async (e)=
     await sendPasswordResetEmail(auth, email);
     msg.style.color = 'lightgreen';
     msg.textContent = 'Account created. Check your email to set your password.';
+    // Switch back to Sign In after a moment
+    setTimeout(()=>{
+      signInView.classList.remove('hidden');
+      registerView.classList.add('hidden');
+    }, 2000);
   } catch (err) {
     msg.style.color = 'salmon';
     msg.textContent = (err?.message || 'Registration failed').replace('Firebase: ','');
   }
 });
 
-// Forgot password
-const resetBtn   = document.getElementById('getTempModal');
-const resetMsgEl = document.getElementById('tempMsgModal');
-resetBtn?.addEventListener('click', async (e)=>{
+// ------- Forgot password -------
+document.getElementById('getTempModal')?.addEventListener('click', async (e)=>{
   e.preventDefault();
   const email = document.getElementById('email').value.trim();
-  resetMsgEl.textContent = '';
+  const msg   = document.getElementById('tempMsgModal');
+  msg.style.color=''; msg.textContent='';
   if (!email) {
-    resetMsgEl.style.color = 'salmon';
-    resetMsgEl.textContent = 'Enter your email above first.';
-    return;
+    msg.style.color='salmon'; msg.textContent='Enter your email above first.'; return;
   }
   try {
     await sendPasswordResetEmail(auth, email);
-    resetMsgEl.style.color = 'lightgreen';
-    resetMsgEl.textContent = 'Reset link sent. Check your inbox/spam.';
+    msg.style.color='lightgreen'; msg.textContent='Reset link sent. Check your inbox/spam.';
   } catch (err) {
-    resetMsgEl.style.color = 'salmon';
-    resetMsgEl.textContent = (err?.message || 'Could not send reset email').replace('Firebase: ','');
+    msg.style.color='salmon'; msg.textContent=(err?.message || 'Could not send reset email').replace('Firebase: ','');
   }
 });
 
-// CSV export, player modal
+// ------- Sign out buttons -------
+btnSignOut?.addEventListener('click', async ()=>{ await signOut(auth); });
+mobileSignOut?.addEventListener('click', async ()=>{
+  await signOut(auth);
+  document.getElementById('mobileMenu')?.classList.add('hidden');
+});
+
+// ------- CSV export -------
 document.getElementById('export-csv')?.addEventListener('click', ()=>{
   const rows = document.querySelectorAll('#schedule-table tbody tr');
   if (!rows.length) { alert('No schedule rows to export yet.'); return; }
@@ -190,9 +234,11 @@ document.getElementById('export-csv')?.addEventListener('click', ()=>{
   const url = URL.createObjectURL(new Blob([csv], {type:'text/csv'}));
   const a = document.createElement('a'); a.href=url; a.download='schedule.csv'; a.click(); URL.revokeObjectURL(url);
 });
+
+// ------- Player quick modal close -------
 document.getElementById('pqmClose')?.addEventListener('click', ()=>{
   document.getElementById('playerQuickModal').classList.add('hidden');
 });
 
-// Console helper
+// Optional: quick sign out in console
 window.padelSignOut = ()=>signOut(auth);

@@ -120,7 +120,8 @@ document.addEventListener('click', (e)=>{
   }
 });
 
-// Auth state → UI
+// Auth state → UI (Schedule stays PUBLIC)
+const PROTECTED = ['fantasy','marketplace','live-stream'];
 onAuthStateChanged(auth, async (user) => {
   if (user) {
     // Ensure user doc exists
@@ -142,34 +143,32 @@ onAuthStateChanged(auth, async (user) => {
     const init = (name?.trim()[0] || 'U').toUpperCase();
 
     // Desktop: profile
-    navGetStarted.classList.add('hidden');
-    profileBtn.classList.remove('hidden');
-    profileName.textContent = name;
-    profileAvatar.textContent = init;
+    navGetStarted?.classList.add('hidden');
+    profileBtn?.classList.remove('hidden');
+    if (profileName) profileName.textContent = name;
+    if (profileAvatar) profileAvatar.textContent = init;
 
     // Buttons/sections
     ctaJoinNow?.classList.add('hidden'); ctaAdmin?.classList.remove('hidden');
-    mobileGetStarted.classList.add('hidden');
-    mobileWelcome.classList.remove('hidden');
-    mobileWelcome.textContent = `Welcome, ${name}`;
-    mobileSignOut.classList.remove('hidden');
+    mobileGetStarted?.classList.add('hidden');
+    mobileWelcome?.classList.remove('hidden');
+    if (mobileWelcome) mobileWelcome.textContent = `Welcome, ${name}`;
+    mobileSignOut?.classList.remove('hidden');
 
-    ['fantasy','marketplace','live-stream','schedule'].forEach(id =>
-      document.getElementById(id)?.classList.remove('hidden')
-    );
+    PROTECTED.forEach(id => document.getElementById(id)?.classList.remove('hidden'));
+    // schedule is intentionally NOT toggled
   } else {
-    profileBtn.classList.add('hidden');
-    profileMenu.classList.add('hidden');
-    navGetStarted.classList.remove('hidden');
+    profileBtn?.classList.add('hidden');
+    profileMenu?.classList.add('hidden');
+    navGetStarted?.classList.remove('hidden');
 
     ctaJoinNow?.classList.remove('hidden'); ctaAdmin?.classList.add('hidden');
-    mobileGetStarted.classList.remove('hidden');
-    mobileWelcome.classList.add('hidden');
-    mobileSignOut.classList.add('hidden');
+    mobileGetStarted?.classList.remove('hidden');
+    mobileWelcome?.classList.add('hidden');
+    mobileSignOut?.classList.add('hidden');
 
-    ['fantasy','marketplace','live-stream','schedule'].forEach(id =>
-      document.getElementById(id)?.classList.add('hidden')
-    );
+    PROTECTED.forEach(id => document.getElementById(id)?.classList.add('hidden'));
+    // schedule remains visible
   }
 });
 
@@ -261,3 +260,118 @@ document.getElementById('export-csv')?.addEventListener('click', ()=>{
   const url = URL.createObjectURL(new Blob([csv], {type:'text/csv'}));
   const a = document.createElement('a'); a.href=url; a.download='schedule.csv'; a.click(); URL.revokeObjectURL(url);
 });
+
+// ---------- PUBLIC SCHEDULE (no login required) ----------
+(() => {
+  const tableBody = document.querySelector('#schedule-table tbody');
+  if (!tableBody) return;
+
+  // Parse "Monday, 15 September 2025" -> Date (UTC-safe)
+  const MONTHS = {january:0,february:1,march:2,april:3,may:4,june:5,july:6,august:7,september:8,october:9,november:10,december:11};
+  const parsePrettyDate = (txt) => {
+    const m = txt.match(/(\d{1,2})\s+([A-Za-z]+)\s+(\d{4})/);
+    if (!m) return null;
+    const day = +m[1], mon = MONTHS[m[2].toLowerCase()], year = +m[3];
+    return new Date(Date.UTC(year, mon, day));
+  };
+
+  const statusFor = (d) => {
+    if (!d) return 'Scheduled';
+    const today = new Date();
+    const t = Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate());
+    const dd = Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate());
+    if (dd < t) return 'Completed';
+    if (dd === t) return 'Today';
+    return 'Scheduled';
+  };
+
+  // ------- Premier fixtures -------
+  const premier = [
+    { round:1, match:1, tier:'Premier', venue:'Play360', dateText:'Monday, 15 September 2025', fixture:'Rulo Apaches - Samurai Kick Smashers' },
+    { round:1, match:2, tier:'Premier', venue:'Play360', dateText:'Tuesday, 16 September 2025', fixture:'Desert Falcons - Baltic Blades' },
+    { round:1, match:3, tier:'Premier', venue:'Play360', dateText:'Wednesday, 17 September 2025', fixture:'Globo Boomerangs - Sonic Viboras' },
+    { round:1, match:4, tier:'Premier', venue:'Play360', dateText:'Thursday, 18 September 2025', fixture:'Ice Breakers - Avalanche Aces' },
+
+    { round:2, match:5, tier:'Premier', venue:'Play360', dateText:'Thursday, 25 September 2025', fixture:'Samurai Kick Smashers - Desert Falcons' },
+    { round:2, match:6, tier:'Premier', venue:'Play360', dateText:'Monday, 22 September 2025', fixture:'Avalanche Aces - Rulo Apaches' },
+    { round:2, match:7, tier:'Premier', venue:'Play360', dateText:'Tuesday, 23 September 2025', fixture:'Sonic Viboras - Ice Breakers' },
+    { round:2, match:8, tier:'Premier', venue:'Play360', dateText:'Friday, 26 September 2025', fixture:'Baltic Blades - Globo Boomerangs' },
+
+    { round:3, match:9,  tier:'Premier', venue:'Play360', dateText:'Tuesday, 30 September 2025', fixture:'Desert Falcons - Avalanche Aces' },
+    { round:3, match:10, tier:'Premier', venue:'Play360', dateText:'Wednesday, 15 October 2025', fixture:'Samurai Kick Smashers - Baltic Blades' },
+    { round:3, match:11, tier:'Premier', venue:'Play360', dateText:'Monday, 29 September 2025', fixture:'Rulo Apaches - Sonic Viboras' },
+    { round:3, match:12, tier:'Premier', venue:'Play360', dateText:'Tuesday, 14 October 2025', fixture:'Ice Breakers - Globo Boomerangs' },
+
+    { round:4, match:13, tier:'Premier', venue:'Play360', dateText:'Thursday, 23 October 2025', fixture:'Baltic Blades - Sonic Viboras' },
+    { round:4, match:14, tier:'Premier', venue:'Play360', dateText:'Wednesday, 22 October 2025', fixture:'Desert Falcons - Rulo Apaches' },
+    { round:4, match:15, tier:'Premier', venue:'Play360', dateText:'Tuesday, 21 October 2025', fixture:'Avalanche Aces - Globo Boomerangs' },
+    { round:4, match:16, tier:'Premier', venue:'Play360', dateText:'Monday, 20 October 2025', fixture:'Samurai Kick Smashers - Ice Breakers' },
+
+    { round:5, match:17, tier:'Premier', venue:'Play360', dateText:'Thursday, 30 October 2025', fixture:'Rulo Apaches - Baltic Blades' },
+    { round:5, match:18, tier:'Premier', venue:'Play360', dateText:'Monday, 27 October 2025', fixture:'Globo Boomerangs - Samurai Kick Smashers' },
+    { round:5, match:19, tier:'Premier', venue:'Play360', dateText:'Tuesday, 28 October 2025', fixture:'Ice Breakers - Desert Falcons' },
+    { round:5, match:20, tier:'Premier', venue:'Play360', dateText:'Wednesday, 29 October 2025', fixture:'Sonic Viboras - Avalanche Aces' },
+
+    { round:6, match:21, tier:'Premier', venue:'Play360', dateText:'Thursday, 06 November 2025', fixture:'Baltic Blades - Avalanche Aces' },
+    { round:6, match:22, tier:'Premier', venue:'Play360', dateText:'Monday, 03 November 2025', fixture:'Desert Falcons - Globo Boomerangs' },
+    { round:6, match:23, tier:'Premier', venue:'Play360', dateText:'Wednesday, 05 November 2025', fixture:'Rulo Apaches - Ice Breakers' },
+    { round:6, match:24, tier:'Premier', venue:'Play360', dateText:'Tuesday, 04 November 2025', fixture:'Samurai Kick Smashers - Sonic Viboras' },
+
+    { round:7, match:25, tier:'Premier', venue:'Play360', dateText:'Wednesday, 12 November 2025', fixture:'Globo Boomerangs - Rulo Apaches' },
+    { round:7, match:26, tier:'Premier', venue:'Play360', dateText:'Monday, 10 November 2025', fixture:'Baltic Blades - Ice Breakers' },
+    { round:7, match:27, tier:'Premier', venue:'Play360', dateText:'Tuesday, 11 November 2025', fixture:'Sonic Viboras - Desert Falcons' },
+    { round:7, match:28, tier:'Premier', venue:'Play360', dateText:'Thursday, 13 November 2025', fixture:'Avalanche Aces - Samurai Kick Smashers' },
+
+    { round:'PO', match:29, tier:'Premier', venue:'Play360', dateText:'Monday, 24 November 2025', fixture:'Play off 1' },
+    { round:'PO', match:30, tier:'Premier', venue:'Play360', dateText:'Tuesday, 25 November 2025', fixture:'Play off 2' },
+    { round:'PO', match:31, tier:'Premier', venue:'Play360', dateText:'Monday, 01 December 2025', fixture:'Play off 3' },
+    { round:'PO', match:32, tier:'Premier', venue:'Play360', dateText:'Saturday, 06 December 2025', fixture:'FINALS: Premier' },
+  ];
+
+  // Add Championship fixtures later
+  const championship = [
+    // { round:1, match:1, tier:'Championship', venue:'Padel24', dateText:'...', fixture:'...' },
+  ];
+
+  const ALL = [...premier, ...championship].map(f => ({ ...f, dateObj: parsePrettyDate(f.dateText) }));
+
+  const selTier   = document.getElementById('filter-tier');
+  const selStatus = document.getElementById('filter-status');
+  const selVenue  = document.getElementById('filter-venue');
+
+  const render = () => {
+    const tierV = selTier?.value || 'all';
+    const statusV = selStatus?.value || 'all';
+    const venueV = selVenue?.value || 'all';
+
+    const rows = ALL
+      .filter(f => tierV === 'all'  || f.tier === tierV)
+      .filter(f => venueV === 'all' || f.venue === venueV)
+      .filter(f => {
+        const s = statusFor(f.dateObj);
+        if (statusV === 'all') return true;
+        if (statusV === 'Today') return s === 'Today';
+        if (statusV === 'Live')  return false; // not tracking live times yet
+        return s === statusV; // Scheduled / Completed
+      })
+      .sort((a,b) => (a.dateObj - b.dateObj) || (+a.match - +b.match));
+
+    tableBody.innerHTML = rows.map(f => `
+      <tr class="border-b border-white/5 hover:bg-white/5">
+        <td class="p-3">${f.round ?? ''}</td>
+        <td class="p-3">${f.match}</td>
+        <td class="p-3">${f.tier}</td>
+        <td class="p-3">${f.venue}</td>
+        <td class="p-3">${f.dateText}</td>
+        <td class="p-3">${f.fixture}</td>
+        <td class="p-3">${statusFor(f.dateObj)}</td>
+      </tr>
+    `).join('');
+  };
+
+  selTier?.addEventListener('change', render);
+  selStatus?.addEventListener('change', render);
+  selVenue?.addEventListener('change', render);
+
+  render(); // initial
+})();

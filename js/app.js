@@ -1,10 +1,10 @@
 // Footer year
 document.getElementById('year').textContent = new Date().getFullYear();
 
-// Only toggle the gated sections; home & franchises should always be visible
+// Sections we hide/show (home & franchises always visible)
 const sectionIds = ['fantasy','marketplace','live-stream','schedule'];
 
-// Smooth in-page navigation + optional section toggling
+// Smooth in-page nav
 document.querySelectorAll('a[href^="#"]').forEach(a=>{
   a.addEventListener('click', e=>{
     const id = a.getAttribute('href').slice(1);
@@ -24,11 +24,10 @@ document.querySelectorAll('a[href^="#"]').forEach(a=>{
     }
   });
 });
-
 function toggleMobileMenu(){ document.getElementById('mobileMenu').classList.toggle('hidden'); }
 window.toggleMobileMenu = toggleMobileMenu;
 
-// Nav shadow
+// Polished: nav shadow on scroll
 const topnav = document.getElementById('topnav');
 const navShadow = () => topnav.classList.toggle('shadow-lg', window.scrollY > 4);
 navShadow(); window.addEventListener('scroll', navShadow);
@@ -127,9 +126,10 @@ document.addEventListener('click', (e)=>{
   }
 });
 
-// Auth state → UI (home & franchises never hidden)
+// Auth state → UI
 onAuthStateChanged(auth, async (user) => {
   if (user) {
+    // Ensure user doc exists
     try {
       const uref = doc(db, 'users', user.uid);
       const snap = await getDoc(uref);
@@ -147,11 +147,13 @@ onAuthStateChanged(auth, async (user) => {
     const name = user.displayName || (user.email?.split('@')[0] ?? 'Player');
     const init = (name?.trim()[0] || 'U').toUpperCase();
 
+    // Desktop: profile
     navGetStarted?.classList.add('hidden');
     profileBtn?.classList.remove('hidden');
     if (profileName) profileName.textContent = name;
     if (profileAvatar) profileAvatar.textContent = init;
 
+    // Buttons/sections
     ctaJoinNow?.classList.add('hidden'); ctaAdmin?.classList.remove('hidden');
     mobileGetStarted?.classList.add('hidden');
     mobileWelcome?.classList.remove('hidden');
@@ -252,9 +254,9 @@ mobileSignOut?.addEventListener('click', async ()=>{
   toast('Signed out', 'info');
 });
 
-// ---------- SCHEDULE DATA + RENDERING ----------
+// -------------------- SCHEDULE DATA --------------------
 
-// Premier fixtures
+// Premier fixtures (Play360)
 function seedPremierSchedule() {
   const rows = [
     [1,1,"Premier","Play360","Monday, 15 September 2025","Rulo Apaches - Samurai Kick Smashers"],
@@ -290,13 +292,10 @@ function seedPremierSchedule() {
     [null,31,"Premier","Play360","Monday, 01 December 2025","Play off 3"],
     [null,32,"Premier","Play360","Saturday, 06 December 2025","FINALS: Premier"],
   ];
-  return rows.map(r=>({
-    round: r[0], match: r[1], tier: r[2], venue: r[3], dateStr: r[4], fixture: r[5],
-    status: 'Scheduled'
-  }));
+  return rows.map(r=>({ round:r[0], match:r[1], tier:r[2], venue:r[3], dateStr:r[4], fixture:r[5], status:'Scheduled'}));
 }
 
-// Championship fixtures (yours)
+// Championship fixtures (PADEL24)
 function seedChampionshipSchedule() {
   const rows = [
     [1,1,"Championship","PADEL24","Monday, 15 September 2025","Globo Boomerangs - Sonic Viboras"],
@@ -328,17 +327,14 @@ function seedChampionshipSchedule() {
     [7,27,"Championship","PADEL24","Wednesday, 12 November 2025","Baltic Blades - Ice Breakers"],
     [7,28,"Championship","PADEL24","Wednesday, 12 November 2025","Sonic Viboras - Desert Falcons"],
   ];
-  return rows.map(r=>({
-    round: r[0], match: r[1], tier: r[2], venue: r[3], dateStr: r[4], fixture: r[5],
-    status: 'Scheduled'
-  }));
+  return rows.map(r=>({ round:r[0], match:r[1], tier:r[2], venue:r[3], dateStr:r[4], fixture:r[5], status:'Scheduled'}));
 }
 
 // Combine + sort
 const allFixtures = [...seedPremierSchedule(), ...seedChampionshipSchedule()]
   .sort((a,b)=> parseDate(a.dateStr) - parseDate(b.dateStr));
 
-// Date parser
+// Date parser tolerant of “Monday, 15 September 2025”
 function parseDate(d) {
   const direct = new Date(d);
   if (!isNaN(direct.getTime())) return direct;
@@ -346,7 +342,7 @@ function parseDate(d) {
   return new Date(parts);
 }
 
-// Render helpers
+// Renders
 function renderScheduleRows(items, tbodyEl) {
   tbodyEl.innerHTML = '';
   const frag = document.createDocumentFragment();
@@ -368,6 +364,7 @@ function renderScheduleRows(items, tbodyEl) {
 }
 function renderHomePreview(items) {
   const body = document.getElementById('home-schedule-body');
+  if (!body) return;
   body.innerHTML = '';
   const frag = document.createDocumentFragment();
   items.forEach(it=>{
@@ -395,13 +392,14 @@ function renderHomePreview(items) {
   renderHomePreview(upcoming);
 })();
 
-// Full schedule initial render
+// Full schedule
 (function renderFull(){
   const tbody = document.querySelector('#schedule-table tbody');
+  if (!tbody) return;
   renderScheduleRows(allFixtures, tbody);
 })();
 
-// Filters (venue case-insensitive)
+// Filters (case-insensitive)
 const filterTier   = document.getElementById('filter-tier');
 const filterVenue  = document.getElementById('filter-venue');
 const filterStatus = document.getElementById('filter-status');
@@ -411,6 +409,7 @@ function applyFilters() {
   const v = (filterVenue?.value || 'all').toLowerCase();
   const s = (filterStatus?.value || 'all').toLowerCase();
   const tbody = document.querySelector('#schedule-table tbody');
+  if (!tbody) return;
 
   const filtered = allFixtures.filter(it=>{
     const okT = (t==='all' || it.tier.toLowerCase()===t);
@@ -438,3 +437,8 @@ document.getElementById('export-csv')?.addEventListener('click', ()=>{
   const url = URL.createObjectURL(new Blob([csv], {type:'text/csv'}));
   const a = document.createElement('a'); a.href=url; a.download='schedule.csv'; a.click(); URL.revokeObjectURL(url);
 });
+
+// (Helpful counts in DevTools console)
+console.log('Premier rows:', seedPremierSchedule().length);
+console.log('Championship rows:', seedChampionshipSchedule().length);
+console.log('Total rows rendered:', allFixtures.length);

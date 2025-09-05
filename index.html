@@ -25,7 +25,7 @@
   <nav id="topnav" class="bg-black/70 backdrop-blur-sm fixed w-full z-50 transition-all">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex justify-between h-16 relative">
-        <a href="index.html" class="flex items-center gap-2">
+        <a href="#home" class="flex items-center gap-2">
           <span class="text-2xl">🏓</span>
           <h1 class="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
             Padel Pro
@@ -95,7 +95,7 @@
   </nav>
   <div class="h-16"></div>
 
-  <!-- Home + Feature tiles + Schedule Preview -->
+  <!-- Platform Features (Home) -->
   <section id="home" class="py-20 bg-gradient-to-br from-gray-900 to-black">
     <div class="max-w-7xl mx-auto px-4">
       <div class="text-center mb-16">
@@ -143,18 +143,16 @@
         </div>
       </div>
 
-      <!-- Schedule preview -->
+      <!-- Upcoming Matches preview -->
       <div class="mt-16">
         <div class="flex items-center justify-between mb-4">
-          <h3 class="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
-            Upcoming Fixtures
-          </h3>
-          <a href="#schedule" class="text-sm px-4 py-2 rounded-full bg-white/10 hover:bg-white/20">View full schedule</a>
+          <h3 class="text-2xl font-bold">Upcoming Matches</h3>
+          <a href="#schedule" class="text-sm text-blue-300 hover:text-blue-200 underline underline-offset-4">View full schedule</a>
         </div>
-        <div class="overflow-x-auto rounded-xl ring-1 ring-white/10">
-          <table class="w-full text-left">
-            <thead class="bg-white/5">
-              <tr>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="bg-white/5">
                 <th class="p-3">Date</th>
                 <th class="p-3">Fixture</th>
                 <th class="p-3 hidden sm:table-cell">Venue</th>
@@ -169,7 +167,7 @@
     </div>
   </section>
 
-  <!-- Franchises Section (always visible) -->
+  <!-- Franchises Section -->
   <section id="franchises" class="scroll-mt-24 py-20 bg-gradient-to-br from-gray-900 to-black">
     <div class="max-w-7xl mx-auto px-4">
       <div class="text-center mb-12">
@@ -182,7 +180,7 @@
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-        <!-- Desert Falcons -->
+        <!-- 8 cards -->
         <a href="franchise.html?team=desert-falcons"
            class="group bg-gradient-to-br from-orange-900/40 to-yellow-900/40 rounded-2xl p-6 ring-1 ring-white/10 hover:ring-white/20 hover:-translate-y-1 transition-all">
           <div class="text-center">
@@ -197,7 +195,6 @@
           </div>
         </a>
 
-        <!-- Globo Boomerangs -->
         <a href="franchise.html?team=globo-boomerangs"
            class="group bg-gradient-to-br from-blue-900/40 to-red-900/40 rounded-2xl p-6 ring-1 ring-white/10 hover:ring-white/20 hover:-translate-y-1 transition-all">
           <div class="text-center">
@@ -212,7 +209,6 @@
           </div>
         </a>
 
-        <!-- Ice Breakers -->
         <a href="franchise.html?team=ice-breakers"
            class="group bg-gradient-to-br from-cyan-900/40 to-blue-900/40 rounded-2xl p-6 ring-1 ring-white/10 hover:ring-white/20 hover:-translate-y-1 transition-all">
           <div class="text-center">
@@ -227,7 +223,6 @@
           </div>
         </a>
 
-        <!-- Baltic Blades -->
         <a href="franchise.html?team=baltic-blades"
            class="group bg-gradient-to-br from-blue-900/40 to-purple-900/40 rounded-2xl p-6 ring-1 ring-white/10 hover:ring-white/20 hover:-translate-y-1 transition-all">
           <div class="text-center">
@@ -242,7 +237,6 @@
           </div>
         </a>
 
-        <!-- Avalanche Aces -->
         <a href="franchise.html?team=avalanche-aces"
            class="group bg-gradient-to-br from-blue-900/40 to-orange-900/40 rounded-2xl p-6 ring-1 ring-white/10 hover:ring-white/20 hover:-translate-y-1 transition-all">
           <div class="text-center">
@@ -257,7 +251,6 @@
           </div>
         </a>
 
-        <!-- Rulo Apaches -->
         <a href="franchise.html?team=rulo-apaches"
            class="group bg-gradient-to-br from-red-900/40 to-orange-900/40 rounded-2xl p-6 ring-1 ring-white/10 hover:ring-white/20 hover:-translate-y-1 transition-all">
           <div class="text-center">
@@ -272,7 +265,6 @@
           </div>
         </a>
 
-        <!-- Samurai Kicksmashers -->
         <a href="franchise.html?team=samurai-kicksmashers"
            class="group bg-gradient-to-br from-orange-900/40 to-blue-900/40 rounded-2xl p-6 ring-1 ring-white/10 hover:ring-white/20 hover:-translate-y-1 transition-all">
           <div class="text-center">
@@ -287,7 +279,6 @@
           </div>
         </a>
 
-        <!-- Sonic Viboras -->
         <a href="franchise.html?team=sonic-viboras"
            class="group bg-gradient-to-br from-purple-900/40 to-pink-900/40 rounded-2xl p-6 ring-1 ring-white/10 hover:ring-white/20 hover:-translate-y-1 transition-all">
           <div class="text-center">
@@ -305,8 +296,8 @@
     </div>
   </section>
 
-  <!-- Schedule Section (full table) -->
-  <section id="schedule" class="py-20 bg-gradient-to-br from-gray-900 to-black">
+  <!-- Full Schedule Section -->
+  <section id="schedule" class="hidden py-20 bg-gradient-to-br from-gray-900 to-black">
     <div class="max-w-7xl mx-auto px-4">
       <h2 class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">Schedule</h2>
       <div class="filters flex flex-wrap gap-3 mb-6">
@@ -325,11 +316,11 @@
         <select id="filter-venue" class="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-white">
           <option value="all">All Venues</option>
           <option value="Play360">Play360</option>
-          <option value="Padel24">Padel24</option>
+          <option value="PADEL24">PADEL24</option>
         </select>
         <button id="export-csv" class="px-4 py-2 rounded-full bg-blue-500/80 hover:bg-blue-500">Export CSV</button>
       </div>
-      <div class="overflow-x-auto rounded-xl ring-1 ring-white/10">
+      <div class="overflow-x-auto">
         <table id="schedule-table" class="w-full text-left border-collapse">
           <thead>
             <tr class="bg-white/5">
@@ -348,42 +339,29 @@
     </div>
   </section>
 
-  <!-- Gated sections (hidden until login) -->
+  <!-- Optional locked sections (show after sign-in) -->
   <section id="fantasy" class="hidden py-20 bg-gradient-to-br from-gray-900 to-black">
     <div class="max-w-7xl mx-auto px-4">
-      <h2 class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">Fantasy League</h2>
-      <p class="text-xl text-gray-400 mb-8">Build your dream team with R100k salary cap</p>
-      <div class="bg-white/5 p-6 rounded-xl">
-        <h3 class="text-2xl font-bold mb-4">Your Squad</h3>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="fantasy-squad"></div>
-        <div class="mt-6 flex justify-between items-center">
-          <p class="text-lg" id="fantasy-cost">Total Cost: R0 / R100,000</p>
-          <button class="py-2 px-6 rounded bg-blue-500/80 hover:bg-blue-500" id="save-squad">Save Squad</button>
-        </div>
-      </div>
+      <h2 class="text-3xl font-bold mb-2">Fantasy League</h2>
+      <p class="text-gray-400">Sign in to build and save your fantasy squad.</p>
     </div>
   </section>
 
   <section id="marketplace" class="hidden py-20 bg-gradient-to-br from-gray-900 to-black">
     <div class="max-w-7xl mx-auto px-4">
-      <h2 class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">Marketplace</h2>
-      <p class="text-xl text-gray-400 mb-8">Buy equipment, coaching, and more</p>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8" id="marketplace-listings"></div>
-      <button class="mt-8 py-2 px-6 rounded bg-green-500/80 hover:bg-green-500" id="add-listing">Add Listing</button>
+      <h2 class="text-3xl font-bold mb-2">Marketplace</h2>
+      <p class="text-gray-400">Sign in to list or buy gear, coaching and more.</p>
     </div>
   </section>
 
   <section id="live-stream" class="hidden py-20 bg-gradient-to-br from-gray-900 to-black">
     <div class="max-w-7xl mx-auto px-4">
-      <h2 class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">Live Stream</h2>
-      <p class="text-xl text-gray-400 mb-8">Watch ongoing matches live</p>
-      <div class="bg-white/5 p-6 rounded-xl">
-        <iframe class="w-full h-96" src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Live Stream Placeholder" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-      </div>
+      <h2 class="text-3xl font-bold mb-2">Live Stream</h2>
+      <p class="text-gray-400">Sign in to access premium live streams and replays.</p>
     </div>
   </section>
 
-  <!-- CTA Section -->
+  <!-- CTA -->
   <section class="py-20 bg-gradient-to-r from-blue-600 to-purple-700">
     <div class="max-w-4xl mx-auto text-center px-4">
       <h2 class="text-4xl md:text-5xl font-bold mb-6 text-white">Ready to Dominate?</h2>
@@ -455,6 +433,7 @@
     </div>
   </div>
 
-  <script type="module" src="js/app.js?v=5"></script>
+  <!-- One script only (bump the version when you update js) -->
+  <script type="module" src="js/app.js?v=6"></script>
 </body>
 </html>

@@ -1,72 +1,145 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Padel Pro — Franchises</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Franchises – Padel Pro</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-  <link href="css/styles.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body class="bg-gray-900 text-white">
-  <nav id="topnav" class="bg-black/70 backdrop-blur-sm fixed w-full z-50 transition-all">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex justify-between h-16 relative">
-        <a href="index.html#home" class="flex items-center gap-2">
-          <span class="text-2xl">🏓</span>
-          <h1 class="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
-            Padel Pro
-          </h1>
-        </a>
-        <div class="hidden md:flex items-center space-x-8">
-          <a href="index.html#home" class="hover:text-blue-400 transition-colors">Home</a>
-          <a href="franchises.html" class="text-blue-400">Franchises</a>
-          <a href="fantasy.html" class="hover:text-blue-400 transition-colors">Fantasy</a>
-          <a href="marketplace.html" class="hover:text-blue-400 transition-colors">Marketplace</a>
-          <a href="livestream.html" class="hover:text-blue-400 transition-colors">Live Stream</a>
-          <a href="index.html#schedule" class="hover:text-blue-400 transition-colors">Schedule</a>
-          <a href="#" id="navGetStarted" class="bg-gradient-to-r from-blue-500 to-purple-600 px-6 py-2 rounded-lg hover:from-blue-600 hover:to-purple-700 transition-all">Sign In / Register</a>
-          <div class="relative">
-            <button id="profileBtn" class="hidden group relative flex items-center gap-3 rounded-full px-3 py-1.5 hover:bg-white/10 transition">
-              <span id="profileAvatar" class="h-8 w-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 grid place-items-center font-semibold">U</span>
-              <span id="profileName" class="text-sm"></span>
-              <i class="fa-solid fa-chevron-down text-xs opacity-70"></i>
-            </button>
-            <div id="profileMenu" class="hidden absolute right-0 mt-2 w-48 rounded-xl border border-white/10 bg-[#0b0f1a]/95 backdrop-blur shadow-2xl overflow-hidden">
-              <a href="dashboard.html" class="block px-4 py-2.5 hover:bg-white/5 text-sm">Dashboard</a>
-              <button id="btnSignOut" class="w-full text-left px-4 py-2.5 hover:bg-white/5 text-sm">Sign out</button>
-            </div>
-          </div>
-        </div>
+  <!-- Top Nav -->
+  <nav class="bg-black/70 backdrop-blur-sm fixed w-full z-50">
+    <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+      <a href="index.html" class="text-xl">🏓 Padel Pro</a>
+      <div class="hidden md:flex gap-6 text-sm">
+        <a href="index.html">Home</a>
+        <a href="franchises.html" class="text-blue-300">Franchises</a>
+        <a href="fantasy.html">Fantasy</a>
+        <a href="marketplace.html">Marketplace</a>
+        <a href="live.html">Live Stream</a>
+        <a href="schedule.html">Schedule</a>
       </div>
     </div>
   </nav>
   <div class="h-16"></div>
 
-  <section class="py-16">
-    <div class="max-w-7xl mx-auto px-4">
-      <div class="text-center mb-12">
-        <h2 class="text-4xl md:text-5xl font-extrabold mb-3 tracking-tight bg-gradient-to-r from-blue-300 to-purple-300 bg-clip-text text-transparent">
-          Lowveld Padel Franchises
-        </h2>
-        <p class="text-sm md:text-base tracking-widest text-indigo-200/80">
-          MEET THE 8 POWERHOUSE FRANCHISES COMPETING FOR GLORY!!!
-        </p>
+  <!-- Page -->
+  <section class="max-w-7xl mx-auto px-4 py-10">
+    <div class="text-center mb-8">
+      <h1 class="text-4xl md:text-5xl font-extrabold mb-3 tracking-tight bg-gradient-to-r from-blue-300 to-purple-300 bg-clip-text text-transparent">
+        Lowveld Padel Franchises
+      </h1>
+      <p class="text-sm md:text-base tracking-widest text-indigo-200/80">MEET THE 8 POWERHOUSE FRANCHISES COMPETING FOR GLORY!!!</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+
+      <!-- Desert Falcons -->
+      <div class="bg-white/[0.03] ring-1 ring-white/10 rounded-2xl p-6 text-center">
+        <video data-logo class="w-28 h-28 mx-auto mb-4 rounded-full object-cover ring-2 ring-white/20"
+               poster="assets/logos/desert-falcons.jpeg" autoplay muted loop playsinline preload="metadata"
+               title="Desert Falcons logo animation">
+          <source src="assets/videos/DesertFalcons.mp4" type="video/mp4" />
+          <img src="assets/logos/desert-falcons.jpeg" alt="Desert Falcons" />
+        </video>
+        <h3 class="text-2xl font-extrabold text-orange-300">Desert Falcons</h3>
+        <p class="text-indigo-100/80 text-sm">Soaring to victory with precision and power</p>
       </div>
 
-      <!-- reuse the exact 8 franchise cards you already have -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-        <!-- paste the same 8 <a> cards from your index.html franchises section here -->
+      <!-- Globo Boomerangs -->
+      <div class="bg-white/[0.03] ring-1 ring-white/10 rounded-2xl p-6 text-center">
+        <video data-logo class="w-28 h-28 mx-auto mb-4 rounded-full object-cover ring-2 ring-white/20"
+               poster="assets/logos/globo-boomerangs.jpeg" autoplay muted loop playsinline preload="metadata"
+               title="Globo Boomerangs logo animation">
+          <source src="assets/videos/globoboomerangs.mp4" type="video/mp4" />
+          <img src="assets/logos/globo-boomerangs.jpeg" alt="Globo Boomerangs" />
+        </video>
+        <h3 class="text-2xl font-extrabold text-blue-300">Globo Boomerangs</h3>
+        <p class="text-indigo-100/80 text-sm">What goes around, comes around stronger</p>
       </div>
+
+      <!-- Ice Breakers -->
+      <div class="bg-white/[0.03] ring-1 ring-white/10 rounded-2xl p-6 text-center">
+        <video data-logo class="w-28 h-28 mx-auto mb-4 rounded-full object-cover ring-2 ring-white/20"
+               poster="assets/logos/ice-breakers.jpeg" autoplay muted loop playsinline preload="metadata"
+               title="Ice Breakers logo animation">
+          <source src="assets/videos/icebreakers.mp4" type="video/mp4" />
+          <img src="assets/logos/ice-breakers.jpeg" alt="Ice Breakers" />
+        </video>
+        <h3 class="text-2xl font-extrabold text-cyan-300">Ice Breakers</h3>
+        <p class="text-indigo-100/80 text-sm">Breaking through with cool precision</p>
+      </div>
+
+      <!-- Baltic Blades -->
+      <div class="bg-white/[0.03] ring-1 ring-white/10 rounded-2xl p-6 text-center">
+        <video data-logo class="w-28 h-28 mx-auto mb-4 rounded-full object-cover ring-2 ring-white/20"
+               poster="assets/logos/baltic-blades.jpeg" autoplay muted loop playsinline preload="metadata"
+               title="Baltic Blades logo animation">
+          <source src="assets/videos/balticblades.mp4" type="video/mp4" />
+          <img src="assets/logos/baltic-blades.jpeg" alt="Baltic Blades" />
+        </video>
+        <h3 class="text-2xl font-extrabold text-blue-300">Baltic Blades</h3>
+        <p class="text-indigo-100/80 text-sm">Sharp, swift, and unstoppable</p>
+      </div>
+
+      <!-- Avalanche Aces -->
+      <div class="bg-white/[0.03] ring-1 ring-white/10 rounded-2xl p-6 text-center">
+        <video data-logo class="w-28 h-28 mx-auto mb-4 rounded-full object-cover ring-2 ring-white/20"
+               poster="assets/logos/avalanche-aces.jpeg" autoplay muted loop playsinline preload="metadata"
+               title="Avalanche Aces logo animation">
+          <source src="assets/videos/avalancheaces.mp4" type="video/mp4" />
+          <img src="assets/logos/avalanche-aces.jpeg" alt="Avalanche Aces" />
+        </video>
+        <h3 class="text-2xl font-extrabold text-blue-300">Avalanche Aces</h3>
+        <p class="text-indigo-100/80 text-sm">Unstoppable force of nature</p>
+      </div>
+
+      <!-- Rulo Apaches -->
+      <div class="bg-white/[0.03] ring-1 ring-white/10 rounded-2xl p-6 text-center">
+        <video data-logo class="w-28 h-28 mx-auto mb-4 rounded-full object-cover ring-2 ring-white/20"
+               poster="assets/logos/rulo-apaches.jpeg" autoplay muted loop playsinline preload="metadata"
+               title="Rulo Apaches logo animation">
+          <source src="assets/videos/ruloapaches.mp4" type="video/mp4" />
+          <img src="assets/logos/rulo-apaches.jpeg" alt="Rulo Apaches" />
+        </video>
+        <h3 class="text-2xl font-extrabold text-red-300">Rulo Apaches</h3>
+        <p class="text-indigo-100/80 text-sm">Warriors of the court</p>
+      </div>
+
+      <!-- Samurai Kicksmashers -->
+      <div class="bg-white/[0.03] ring-1 ring-white/10 rounded-2xl p-6 text-center">
+        <video data-logo class="w-28 h-28 mx-auto mb-4 rounded-full object-cover ring-2 ring-white/20"
+               poster="assets/logos/samurai-kicksmashers.jpeg" autoplay muted loop playsinline preload="metadata"
+               title="Samurai Kicksmashers logo animation">
+          <source src="assets/videos/samuraikicksmashers.mp4" type="video/mp4" />
+          <img src="assets/logos/samurai-kicksmashers.jpeg" alt="Samurai Kicksmashers" />
+        </video>
+        <h3 class="text-2xl font-extrabold text-orange-300">Samurai Kicksmashers</h3>
+        <p class="text-indigo-100/80 text-sm">Honor, discipline, victory</p>
+      </div>
+
+      <!-- Sonic Viboras -->
+      <div class="bg-white/[0.03] ring-1 ring-white/10 rounded-2xl p-6 text-center">
+        <video data-logo class="w-28 h-28 mx-auto mb-4 rounded-full object-cover ring-2 ring-white/20"
+               poster="assets/logos/sonic-viboras.jpeg" autoplay muted loop playsinline preload="metadata"
+               title="Sonic Viboras logo animation">
+          <source src="assets/videos/sonicviboras.mp4" type="video/mp4" />
+          <img src="assets/logos/sonic-viboras.jpeg" alt="Sonic Viboras" />
+        </video>
+        <h3 class="text-2xl font-extrabold text-purple-300">Sonic Viboras</h3>
+        <p class="text-indigo-100/80 text-sm">Lightning fast, deadly accurate</p>
+      </div>
+
     </div>
   </section>
 
-  <footer class="bg-black py-12">
-    <div class="max-w-7xl mx-auto px-4 text-center text-gray-400">© <span id="year"></span> Nomz. All rights reserved.</div>
-  </footer>
-
-  <!-- Auth modal (same as index) -->
-  <!-- … keep your overlay markup here too if you want sign-in on this page … -->
+  <!-- Respect reduced motion -->
+  <script>
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      document.querySelectorAll('video[data-logo]').forEach(v => { v.removeAttribute('autoplay'); v.pause(); });
+    }
+  </script>
 
   <script type="module" src="js/app.js?v=7"></script>
 </body>

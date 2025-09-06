@@ -5,26 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Padel Pro — Home</title>
 
-  <!-- Tailwind (CDN) -->
+  <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
-
-  <!-- Icons (optional) -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/>
 
-  <!-- App theme -->
   <meta name="theme-color" content="#0b0f1a"/>
   <link rel="manifest" href="manifest.json"/>
   <link rel="apple-touch-icon" href="icons/icon-192x192.png"/>
 
-  <style>
-    /* Optional: smooth text + slight antialiasing */
-    html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
-  </style>
+  <!-- Your site styles -->
+  <link href="css/styles.css" rel="stylesheet"/>
 </head>
 
 <body class="bg-gray-900 text-white">
-
-  <!-- Top nav (keep this exact block on all pages for consistency) -->
+  <!-- Top Nav (same block on ALL pages) -->
   <nav class="bg-black/80 backdrop-blur supports-[backdrop-filter]:bg-black/60 fixed inset-x-0 top-0 z-50 border-b border-white/10">
     <div class="max-w-7xl mx-auto px-4">
       <div class="h-14 flex items-center justify-between gap-6">
@@ -32,7 +26,6 @@
           <span class="text-xl">🏓</span>
           <span class="text-xl font-semibold">Padel Pro</span>
         </a>
-
         <div class="hidden md:flex items-center gap-6">
           <a href="index.html" class="hover:text-sky-300 transition">Home</a>
           <a href="franchises.html" class="hover:text-sky-300 transition">Franchises</a>
@@ -40,20 +33,14 @@
           <a href="marketplace.html" class="hover:text-sky-300 transition">Marketplace</a>
           <a href="live.html" class="hover:text-sky-300 transition">Live Stream</a>
           <a href="schedule.html" class="hover:text-sky-300 transition">Schedule</a>
-
           <a href="auth.html"
              class="px-3 py-1.5 rounded-lg bg-gradient-to-r from-sky-500 to-purple-600 hover:from-sky-600 hover:to-purple-700 transition">
             Sign In / Register
           </a>
         </div>
-
-        <button id="mobileBtn" class="md:hidden text-xl" aria-label="Open menu">
-          <i class="fa-solid fa-bars"></i>
-        </button>
+        <button id="mobileBtn" class="md:hidden text-xl"><i class="fa-solid fa-bars"></i></button>
       </div>
     </div>
-
-    <!-- Mobile menu -->
     <div id="mobileMenu" class="hidden md:hidden border-t border-white/10">
       <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col gap-2">
         <a class="py-2 rounded hover:bg-white/5" href="index.html">Home</a>
@@ -77,8 +64,6 @@
         </h2>
         <p class="text-white/70 mt-2">Everything you need for the ultimate padel experience</p>
       </div>
-
-      <!-- Five slim tiles -->
       <div class="grid md:grid-cols-5 gap-4">
         <a href="franchises.html" class="group no-underline">
           <div class="p-4 rounded-xl bg-white/5 ring-1 ring-white/10 group-hover:ring-white/20 transition">
@@ -89,7 +74,6 @@
             <div class="text-xs text-white/60 mt-1">Meet the 8 powerhouse teams</div>
           </div>
         </a>
-
         <a href="schedule.html" class="group no-underline">
           <div class="p-4 rounded-xl bg-white/5 ring-1 ring-white/10 group-hover:ring-white/20 transition">
             <div class="flex items-center gap-2">
@@ -99,17 +83,15 @@
             <div class="text-xs text-white/60 mt-1">All fixtures by tier & venue</div>
           </div>
         </a>
-
         <a href="live.html" class="group no-underline">
           <div class="p-4 rounded-xl bg-white/5 ring-1 ring-white/10 group-hover:ring-white/20 transition">
             <div class="flex items-center gap-2">
-              <span class="text-emerald-400"><i class="fa-solid fa-broadcast-tower"></i></span>
+              <span class="text-emerald-400"><i class="fa-solid fa-tower-broadcast"></i></span>
               <span class="font-semibold">Live Stream</span>
             </div>
             <div class="text-xs text-white/60 mt-1">Watch the action in real time</div>
           </div>
         </a>
-
         <a href="fantasy.html" class="group no-underline">
           <div class="p-4 rounded-xl bg-white/5 ring-1 ring-white/10 group-hover:ring-white/20 transition">
             <div class="flex items-center gap-2">
@@ -119,7 +101,6 @@
             <div class="text-xs text-white/60 mt-1">Pick your squad & compete</div>
           </div>
         </a>
-
         <a href="marketplace.html" class="group no-underline">
           <div class="p-4 rounded-xl bg-white/5 ring-1 ring-white/10 group-hover:ring-white/20 transition">
             <div class="flex items-center gap-2">
@@ -133,33 +114,23 @@
     </div>
   </section>
 
-  <!-- Round 1 Fixtures (compact cards) -->
-  <section id="home-round1" class="py-10 bg-gradient-to-b from-gray-900 to-black">
+  <!-- Round 1 Fixtures -->
+  <section class="py-10 bg-gradient-to-b from-gray-900 to-black">
     <div class="max-w-7xl mx-auto px-4">
       <div class="flex items-center justify-between mb-6">
         <h3 class="text-3xl md:text-4xl font-extrabold tracking-tight">Round 1 Fixtures</h3>
-        <a href="schedule.html" class="text-sm px-3 py-2 rounded-lg bg-white/5 hover:bg-white/10 transition">
-          View full schedule
-        </a>
+        <a href="schedule.html" class="text-sm px-3 py-2 rounded-lg bg-white/5 hover:bg-white/10 transition">View full schedule</a>
       </div>
 
       <div class="grid md:grid-cols-2 gap-8">
-        <!-- Premier -->
         <div>
-          <div class="flex items-center gap-2 mb-3">
-            <span class="h-2 w-2 rounded-full bg-sky-400"></span>
-            <span class="text-sm font-semibold text-white/80">Premier</span>
-          </div>
-          <div id="homePremier" class="grid sm:grid-cols-2 gap-4"></div>
+          <div class="flex items-center gap-2 mb-3"><span class="h-2 w-2 rounded-full bg-sky-400"></span><span class="text-sm font-semibold text-white/80">Premier</span></div>
+          <div id="homePremier" class="grid gap-4"></div>
         </div>
 
-        <!-- Championship -->
         <div>
-          <div class="flex items-center gap-2 mb-3">
-            <span class="h-2 w-2 rounded-full bg-rose-400"></span>
-            <span class="text-sm font-semibold text-white/80">Championship</span>
-          </div>
-          <div id="homeChamp" class="grid sm:grid-cols-2 gap-4"></div>
+          <div class="flex items-center gap-2 mb-3"><span class="h-2 w-2 rounded-full bg-rose-400"></span><span class="text-sm font-semibold text-white/80">Championship</span></div>
+          <div id="homeChampionship" class="grid gap-4"></div>
         </div>
       </div>
     </div>
@@ -168,23 +139,27 @@
   <!-- CTA -->
   <section class="py-16 bg-gradient-to-r from-sky-600 to-purple-700">
     <div class="max-w-3xl mx-auto text-center px-4">
-      <h2 class="text-3xl md:text-4xl font-extrabold mb-3">Ready to Dominate?</h2>
+      <h2 class="text-4xl md:text-5xl font-extrabold mb-4">Ready to Dominate?</h2>
       <p class="text-white/90 mb-6">Join Padel Pro and experience the future of padel competition</p>
-      <a href="auth.html"
-         class="inline-block bg-white text-sky-700 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition">
+      <a href="auth.html" class="inline-block px-8 py-3 rounded-lg bg-white text-sky-700 font-semibold hover:bg-gray-100 transition">
         Sign In / Register
       </a>
     </div>
   </section>
 
-  <!-- Footer -->
-  <footer class="bg-black py-8">
+  <footer class="bg-black py-10">
     <div class="max-w-7xl mx-auto px-4 text-center text-white/60">
       © <span id="year"></span> Nomz. All rights reserved.
     </div>
   </footer>
 
-  <!-- App JS -->
-  <script type="module" src="js/app.js?v=9"></script>
+  <!-- ONLY for the home page -->
+  <script src="js/home.js"></script>
+  <script>
+    // footer year + mobile menu
+    document.getElementById('year').textContent = new Date().getFullYear();
+    const mb = document.getElementById('mobileBtn'), mm = document.getElementById('mobileMenu');
+    mb?.addEventListener('click',()=>mm.classList.toggle('hidden'));
+  </script>
 </body>
 </html>

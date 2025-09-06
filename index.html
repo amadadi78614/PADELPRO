@@ -3,163 +3,165 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Padel Pro — Home</title>
+  <title>Padel Pro – Home</title>
 
-  <!-- Tailwind -->
+  <!-- Tailwind + Icons -->
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/>
 
-  <meta name="theme-color" content="#0b0f1a"/>
-  <link rel="manifest" href="manifest.json"/>
-  <link rel="apple-touch-icon" href="icons/icon-192x192.png"/>
-
-  <!-- Your site styles -->
-  <link href="css/styles.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/styles.css"/>
+  <meta name="theme-color" content="#0b0f1a">
 </head>
+<body class="bg-[#0b0f1a] text-white">
 
-<body class="bg-gray-900 text-white">
-  <!-- Top Nav (same block on ALL pages) -->
-  <nav class="bg-black/80 backdrop-blur supports-[backdrop-filter]:bg-black/60 fixed inset-x-0 top-0 z-50 border-b border-white/10">
-    <div class="max-w-7xl mx-auto px-4">
-      <div class="h-14 flex items-center justify-between gap-6">
-        <a href="index.html" class="flex items-center gap-2">
-          <span class="text-xl">🏓</span>
-          <span class="text-xl font-semibold">Padel Pro</span>
-        </a>
-        <div class="hidden md:flex items-center gap-6">
-          <a href="index.html" class="hover:text-sky-300 transition">Home</a>
-          <a href="franchises.html" class="hover:text-sky-300 transition">Franchises</a>
-          <a href="fantasy.html" class="hover:text-sky-300 transition">Fantasy</a>
-          <a href="marketplace.html" class="hover:text-sky-300 transition">Marketplace</a>
-          <a href="live.html" class="hover:text-sky-300 transition">Live Stream</a>
-          <a href="schedule.html" class="hover:text-sky-300 transition">Schedule</a>
-          <a href="auth.html"
-             class="px-3 py-1.5 rounded-lg bg-gradient-to-r from-sky-500 to-purple-600 hover:from-sky-600 hover:to-purple-700 transition">
-            Sign In / Register
-          </a>
+  <!-- NAV (identical on all pages) -->
+  <nav class="fixed inset-x-0 top-0 z-50 bg-black/70 backdrop-blur border-b border-white/10">
+    <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-2">
+        <span class="text-2xl">🏓</span>
+        <span class="text-xl font-bold">Padel Pro</span>
+      </a>
+
+      <!-- Desktop -->
+      <div class="hidden md:flex items-center gap-6">
+        <a class="navlink" href="index.html">Home</a>
+        <a class="navlink" href="franchises.html">Franchises</a>
+        <a class="navlink" href="schedule.html">Schedule</a>
+        <a class="navlink" href="live.html">Live Stream</a>
+        <a class="navlink" href="fantasy.html">Fantasy</a>
+        <a class="navlink" href="marketplace.html">Marketplace</a>
+
+        <!-- Auth (kept compatible with your existing Firebase code) -->
+        <a id="navGetStarted"
+           class="px-4 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 hover:opacity-90"
+           href="#">Sign In / Register</a>
+
+        <div class="relative">
+          <button id="profileBtn" class="hidden items-center gap-2 px-3 py-1.5 rounded hover:bg-white/10">
+            <span id="profileAvatar" class="h-8 w-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 grid place-items-center font-semibold">U</span>
+            <span id="profileName" class="text-sm"></span>
+            <i class="fa-solid fa-chevron-down text-xs opacity-70"></i>
+          </button>
+          <div id="profileMenu" class="hidden absolute right-0 mt-2 w-44 rounded-xl border border-white/10 bg-[#0b0f1a] shadow-xl overflow-hidden">
+            <a href="dashboard.html" class="block px-4 py-2.5 hover:bg-white/5 text-sm">Dashboard</a>
+            <button id="btnSignOut" class="w-full text-left px-4 py-2.5 hover:bg-white/5 text-sm">Sign out</button>
+          </div>
         </div>
-        <button id="mobileBtn" class="md:hidden text-xl"><i class="fa-solid fa-bars"></i></button>
       </div>
+
+      <!-- Mobile -->
+      <button id="hamburger" class="md:hidden p-2 rounded hover:bg-white/10" aria-label="Menu">
+        <i class="fa-solid fa-bars"></i>
+      </button>
     </div>
-    <div id="mobileMenu" class="hidden md:hidden border-t border-white/10">
-      <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col gap-2">
-        <a class="py-2 rounded hover:bg-white/5" href="index.html">Home</a>
-        <a class="py-2 rounded hover:bg-white/5" href="franchises.html">Franchises</a>
-        <a class="py-2 rounded hover:bg-white/5" href="fantasy.html">Fantasy</a>
-        <a class="py-2 rounded hover:bg-white/5" href="marketplace.html">Marketplace</a>
-        <a class="py-2 rounded hover:bg-white/5" href="live.html">Live Stream</a>
-        <a class="py-2 rounded hover:bg-white/5" href="schedule.html">Schedule</a>
-        <a class="py-2 rounded bg-white/10 hover:bg-white/15" href="auth.html">Sign In / Register</a>
+
+    <div id="mobileMenu" class="hidden md:hidden border-t border-white/10 bg-black/90">
+      <div class="max-w-7xl mx-auto px-4 py-3 grid gap-2">
+        <a class="mobilelink" href="index.html">Home</a>
+        <a class="mobilelink" href="franchises.html">Franchises</a>
+        <a class="mobilelink" href="schedule.html">Schedule</a>
+        <a class="mobilelink" href="live.html">Live Stream</a>
+        <a class="mobilelink" href="fantasy.html">Fantasy</a>
+        <a class="mobilelink" href="marketplace.html">Marketplace</a>
+
+        <a id="mobileGetStarted"
+           class="block text-center px-4 py-2 rounded bg-gradient-to-r from-blue-600 to-purple-600"
+           href="#">Sign In / Register</a>
+        <div id="mobileWelcome" class="hidden text-sm text-gray-300"></div>
+        <button id="mobileSignOut" class="hidden text-left px-3 py-2 rounded hover:bg-white/10">Sign out</button>
       </div>
     </div>
   </nav>
-  <div class="h-14"></div>
 
-  <!-- Platform Features -->
-  <section class="py-12">
+  <div class="h-16"></div>
+
+  <!-- Platform Features (Home tiles) -->
+  <section class="py-10">
     <div class="max-w-7xl mx-auto px-4">
-      <div class="mb-8">
-        <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight bg-gradient-to-r from-sky-300 to-purple-300 bg-clip-text text-transparent">
-          Platform Features
-        </h2>
-        <p class="text-white/70 mt-2">Everything you need for the ultimate padel experience</p>
-      </div>
-      <div class="grid md:grid-cols-5 gap-4">
-        <a href="franchises.html" class="group no-underline">
-          <div class="p-4 rounded-xl bg-white/5 ring-1 ring-white/10 group-hover:ring-white/20 transition">
-            <div class="flex items-center gap-2">
-              <span class="text-sky-400"><i class="fa-solid fa-flag"></i></span>
-              <span class="font-semibold">Lowveld Padel Franchises</span>
-            </div>
-            <div class="text-xs text-white/60 mt-1">Meet the 8 powerhouse teams</div>
+      <h2 class="text-3xl md:text-4xl font-extrabold mb-6">Platform Features</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+        <a href="franchises.html" class="feature-tile">
+          <i class="fa-solid fa-flag"></i>
+          <div>
+            <div class="title">Lowveld Padel Franchises</div>
+            <div class="hint">Meet the 8 powerhouse teams</div>
           </div>
         </a>
-        <a href="schedule.html" class="group no-underline">
-          <div class="p-4 rounded-xl bg-white/5 ring-1 ring-white/10 group-hover:ring-white/20 transition">
-            <div class="flex items-center gap-2">
-              <span class="text-sky-400"><i class="fa-regular fa-calendar"></i></span>
-              <span class="font-semibold">Schedules</span>
-            </div>
-            <div class="text-xs text-white/60 mt-1">All fixtures by tier & venue</div>
+        <a href="schedule.html" class="feature-tile">
+          <i class="fa-solid fa-calendar-days"></i>
+          <div>
+            <div class="title">Schedules</div>
+            <div class="hint">All fixtures by tier & venue</div>
           </div>
         </a>
-        <a href="live.html" class="group no-underline">
-          <div class="p-4 rounded-xl bg-white/5 ring-1 ring-white/10 group-hover:ring-white/20 transition">
-            <div class="flex items-center gap-2">
-              <span class="text-emerald-400"><i class="fa-solid fa-tower-broadcast"></i></span>
-              <span class="font-semibold">Live Stream</span>
-            </div>
-            <div class="text-xs text-white/60 mt-1">Watch the action in real time</div>
+        <a href="live.html" class="feature-tile">
+          <i class="fa-solid fa-tower-broadcast"></i>
+          <div>
+            <div class="title">Live Stream</div>
+            <div class="hint">Watch the action in real time</div>
           </div>
         </a>
-        <a href="fantasy.html" class="group no-underline">
-          <div class="p-4 rounded-xl bg-white/5 ring-1 ring-white/10 group-hover:ring-white/20 transition">
-            <div class="flex items-center gap-2">
-              <span class="text-pink-400"><i class="fa-solid fa-trophy"></i></span>
-              <span class="font-semibold">Fantasy League</span>
-            </div>
-            <div class="text-xs text-white/60 mt-1">Pick your squad & compete</div>
+        <a href="fantasy.html" class="feature-tile">
+          <i class="fa-solid fa-chess-knight"></i>
+          <div>
+            <div class="title">Fantasy League</div>
+            <div class="hint">Pick your squad & compete</div>
           </div>
         </a>
-        <a href="marketplace.html" class="group no-underline">
-          <div class="p-4 rounded-xl bg-white/5 ring-1 ring-white/10 group-hover:ring-white/20 transition">
-            <div class="flex items-center gap-2">
-              <span class="text-amber-400"><i class="fa-solid fa-store"></i></span>
-              <span class="font-semibold">Marketplace</span>
-            </div>
-            <div class="text-xs text-white/60 mt-1">Gear, coaching & more</div>
+        <a href="marketplace.html" class="feature-tile">
+          <i class="fa-solid fa-store"></i>
+          <div>
+            <div class="title">Marketplace</div>
+            <div class="hint">Gear, coaching & more</div>
           </div>
         </a>
       </div>
     </div>
   </section>
 
-  <!-- Round 1 Fixtures -->
-  <section class="py-10 bg-gradient-to-b from-gray-900 to-black">
+  <!-- Round 1 Fixtures (Preview) -->
+  <section class="pb-14">
     <div class="max-w-7xl mx-auto px-4">
       <div class="flex items-center justify-between mb-6">
-        <h3 class="text-3xl md:text-4xl font-extrabold tracking-tight">Round 1 Fixtures</h3>
-        <a href="schedule.html" class="text-sm px-3 py-2 rounded-lg bg-white/5 hover:bg-white/10 transition">View full schedule</a>
+        <h2 class="text-3xl md:text-4xl font-extrabold">Round 1 Fixtures</h2>
+        <a href="schedule.html" class="text-sm px-3 py-2 rounded bg-white/10 hover:bg-white/15">View full schedule</a>
       </div>
 
-      <div class="grid md:grid-cols-2 gap-8">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Premier -->
         <div>
-          <div class="flex items-center gap-2 mb-3"><span class="h-2 w-2 rounded-full bg-sky-400"></span><span class="text-sm font-semibold text-white/80">Premier</span></div>
-          <div id="homePremier" class="grid gap-4"></div>
+          <div class="flex items-center gap-2 mb-3">
+            <span class="h-2 w-2 rounded-full bg-blue-400"></span>
+            <h3 class="font-semibold tracking-wide text-blue-300">Premier</h3>
+          </div>
+          <div id="home-premier-grid" class="grid sm:grid-cols-2 gap-4"></div>
         </div>
 
+        <!-- Championship -->
         <div>
-          <div class="flex items-center gap-2 mb-3"><span class="h-2 w-2 rounded-full bg-rose-400"></span><span class="text-sm font-semibold text-white/80">Championship</span></div>
-          <div id="homeChampionship" class="grid gap-4"></div>
+          <div class="flex items-center gap-2 mb-3">
+            <span class="h-2 w-2 rounded-full bg-pink-400"></span>
+            <h3 class="font-semibold tracking-wide text-pink-300">Championship</h3>
+          </div>
+          <div id="home-champ-grid" class="grid sm:grid-cols-2 gap-4"></div>
         </div>
       </div>
     </div>
   </section>
 
   <!-- CTA -->
-  <section class="py-16 bg-gradient-to-r from-sky-600 to-purple-700">
-    <div class="max-w-3xl mx-auto text-center px-4">
+  <section class="py-14 bg-gradient-to-r from-blue-600 to-purple-700">
+    <div class="max-w-4xl mx-auto px-4 text-center">
       <h2 class="text-4xl md:text-5xl font-extrabold mb-4">Ready to Dominate?</h2>
-      <p class="text-white/90 mb-6">Join Padel Pro and experience the future of padel competition</p>
-      <a href="auth.html" class="inline-block px-8 py-3 rounded-lg bg-white text-sky-700 font-semibold hover:bg-gray-100 transition">
-        Sign In / Register
-      </a>
+      <p class="text-blue-100 mb-6">Join Padel Pro and experience the future of padel competition</p>
+      <a id="ctaJoinNow" href="#" class="inline-block bg-white text-blue-700 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100">Sign In / Register</a>
     </div>
   </section>
 
-  <footer class="bg-black py-10">
-    <div class="max-w-7xl mx-auto px-4 text-center text-white/60">
-      © <span id="year"></span> Nomz. All rights reserved.
-    </div>
+  <footer class="py-10 text-center text-gray-400">
+    © <span id="year"></span> Nomz. All rights reserved.
   </footer>
 
-  <!-- ONLY for the home page -->
-  <script src="js/home.js"></script>
-  <script>
-    // footer year + mobile menu
-    document.getElementById('year').textContent = new Date().getFullYear();
-    const mb = document.getElementById('mobileBtn'), mm = document.getElementById('mobileMenu');
-    mb?.addEventListener('click',()=>mm.classList.toggle('hidden'));
-  </script>
+  <script src="js/app.js?v=fix-core"></script>
 </body>
 </html>

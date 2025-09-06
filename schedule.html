@@ -4,53 +4,103 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Padel Pro – Schedule</title>
+
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="css/styles.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/styles.css"/>
+  <meta name="theme-color" content="#0b0f1a">
 </head>
-<body class="bg-gray-900 text-white">
-  <header id="siteHeader"></header>
+<body class="bg-[#0b0f1a] text-white">
 
-  <section class="pt-28 pb-8">
+  <!-- NAV (same) -->
+  <nav class="fixed inset-x-0 top-0 z-50 bg-black/70 backdrop-blur border-b border-white/10">
+    <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-2">
+        <span class="text-2xl">🏓</span>
+        <span class="text-xl font-bold">Padel Pro</span>
+      </a>
+      <div class="hidden md:flex items-center gap-6">
+        <a class="navlink" href="index.html">Home</a>
+        <a class="navlink" href="franchises.html">Franchises</a>
+        <a class="navlink active" href="schedule.html">Schedule</a>
+        <a class="navlink" href="live.html">Live Stream</a>
+        <a class="navlink" href="fantasy.html">Fantasy</a>
+        <a class="navlink" href="marketplace.html">Marketplace</a>
+        <a id="navGetStarted" class="px-4 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 hover:opacity-90" href="#">Sign In / Register</a>
+        <div class="relative">
+          <button id="profileBtn" class="hidden items-center gap-2 px-3 py-1.5 rounded hover:bg-white/10">
+            <span id="profileAvatar" class="h-8 w-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 grid place-items-center font-semibold">U</span>
+            <span id="profileName" class="text-sm"></span>
+            <i class="fa-solid fa-chevron-down text-xs opacity-70"></i>
+          </button>
+          <div id="profileMenu" class="hidden absolute right-0 mt-2 w-44 rounded-xl border border-white/10 bg-[#0b0f1a] shadow-xl overflow-hidden">
+            <a href="dashboard.html" class="block px-4 py-2.5 hover:bg-white/5 text-sm">Dashboard</a>
+            <button id="btnSignOut" class="w-full text-left px-4 py-2.5 hover:bg-white/5 text-sm">Sign out</button>
+          </div>
+        </div>
+      </div>
+      <button id="hamburger" class="md:hidden p-2 rounded hover:bg-white/10" aria-label="Menu">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+    </div>
+    <div id="mobileMenu" class="hidden md:hidden border-t border-white/10 bg-black/90">
+      <div class="max-w-7xl mx-auto px-4 py-3 grid gap-2">
+        <a class="mobilelink" href="index.html">Home</a>
+        <a class="mobilelink" href="franchises.html">Franchises</a>
+        <a class="mobilelink" href="schedule.html">Schedule</a>
+        <a class="mobilelink" href="live.html">Live Stream</a>
+        <a class="mobilelink" href="fantasy.html">Fantasy</a>
+        <a class="mobilelink" href="marketplace.html">Marketplace</a>
+        <a id="mobileGetStarted" class="block text-center px-4 py-2 rounded bg-gradient-to-r from-blue-600 to-purple-600" href="#">Sign In / Register</a>
+        <div id="mobileWelcome" class="hidden text-sm text-gray-300"></div>
+        <button id="mobileSignOut" class="hidden text-left px-3 py-2 rounded hover:bg-white/10">Sign out</button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="h-16"></div>
+
+  <section class="py-10">
     <div class="max-w-7xl mx-auto px-4">
-      <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight mb-6
-                 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
-        Schedule
-      </h1>
+      <h1 class="text-3xl md:text-4xl font-extrabold mb-6">Schedule</h1>
 
-      <div class="filters flex flex-wrap gap-3 mb-6">
-        <select id="filter-tier" class="pill-select">
-          <option value="all">All Tiers</option>
+      <div class="flex flex-wrap gap-3 mb-6">
+        <select id="filter-tier" class="filter">
+          <option value="all">All tiers</option>
           <option value="Premier">Premier</option>
           <option value="Championship">Championship</option>
         </select>
-        <select id="filter-venue" class="pill-select">
-          <option value="all">All Venues</option>
+        <select id="filter-venue" class="filter">
+          <option value="all">All venues</option>
           <option value="Play360">Play360</option>
           <option value="PADEL24">PADEL24</option>
         </select>
-        <button id="export-csv" class="px-4 py-2 rounded-full bg-blue-500/80 hover:bg-blue-500">Export CSV</button>
+        <button id="export-csv" class="px-3 py-2 rounded bg-white/10 hover:bg-white/15">Export CSV</button>
       </div>
 
       <div class="overflow-x-auto">
-        <table id="schedule-table" class="w-full text-left border-collapse">
+        <table class="w-full text-left border-separate border-spacing-y-2">
           <thead>
-            <tr class="bg-white/5">
-              <th class="p-4">Round</th>
-              <th class="p-4">Match</th>
-              <th class="p-4">Tier</th>
-              <th class="p-4">Venue</th>
-              <th class="p-4">Date</th>
-              <th class="p-4">Fixture</th>
-              <th class="p-4">Status</th>
+            <tr class="text-sm text-gray-300">
+              <th class="px-3 py-2">Round</th>
+              <th class="px-3 py-2">Match</th>
+              <th class="px-3 py-2">Tier</th>
+              <th class="px-3 py-2">Venue</th>
+              <th class="px-3 py-2">Date</th>
+              <th class="px-3 py-2">Fixture</th>
+              <th class="px-3 py-2">Status</th>
             </tr>
           </thead>
-          <tbody></tbody>
+          <tbody id="schedule-body"></tbody>
         </table>
       </div>
     </div>
   </section>
 
-  <footer id="siteFooter"></footer>
-  <script type="module" src="js/app.js?v=7"></script>
+  <footer class="py-10 text-center text-gray-400">
+    © <span id="year"></span> Nomz. All rights reserved.
+  </footer>
+
+  <script src="js/app.js?v=fix-core"></script>
 </body>
 </html>

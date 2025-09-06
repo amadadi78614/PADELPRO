@@ -1,35 +1,21 @@
-/* Shared look & feel */
-.feature-card {
-  @apply bg-white/5 ring-1 ring-white/10 rounded-2xl p-5 hover:ring-white/20 hover:-translate-y-1 transition-all block;
-}
-.icon-bubble {
-  @apply w-12 h-12 rounded-full grid place-items-center text-white text-xl mb-4;
-}
-.feature-title { @apply text-base font-semibold; }
-.feature-sub   { @apply text-sm text-gray-400; }
+/* shared helpers for a consistent feel */
+.navlink { color: #cbd5e1; }
+.navlink:hover { color: white; }
+.navlink.active { color: white; font-weight: 700; }
 
-.pill-select {
-  @apply px-4 py-2 rounded-full bg-white/5 border border-white/10 text-white;
-}
+.mobilelink { padding: 8px 12px; border-radius: 8px; color: #d1d5db; }
+.mobilelink:hover { background: rgba(255,255,255,.06); color: #fff; }
 
-/* Franchise cards */
-.frCard { @apply bg-gradient-to-br rounded-2xl p-6 ring-1 ring-white/10 hover:ring-white/20 hover:-translate-y-1 transition-all; }
-.frVideo { @apply w-28 h-28 mx-auto mb-4 rounded-full object-cover ring-2 ring-white/20; }
-.frName { @apply text-xl font-extrabold text-center mb-1; }
-.frSub  { @apply text-indigo-100/80 text-sm text-center; }
-
-/* Home Round 1 fixtures */
-.round-wrap { @apply bg-white/5 ring-1 ring-white/10 rounded-2xl p-4; }
-.round-title { @apply text-lg font-semibold mb-3; }
-.fixture-card {
-  @apply bg-white/5 ring-1 ring-white/10 rounded-xl p-4;
+.feature-tile{
+  display:flex; gap:12px; align-items:flex-start;
+  padding:14px; border-radius:14px; border:1px solid rgba(255,255,255,.08);
+  background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.02));
 }
-.fixture-row {
-  @apply grid grid-cols-[32px,1fr,28px,1fr,32px] items-center gap-3;
-}
-.logo32 { @apply w-8 h-8 rounded-full object-cover; }
-.team-name { @apply text-sm font-medium; white-space: normal; }
-.vs-chip { @apply text-xs px-2 py-0.5 rounded bg-white/10; }
+.feature-tile i{ font-size:18px; opacity:.9 }
+.feature-tile .title{ font-weight:700; margin-bottom:2px }
+.feature-tile .hint{ font-size:12px; opacity:.8 }
 
-/* Footer */
-.site-footer { @apply bg-black py-10; }
+.filter{
+  padding:8px 10px; background: rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.12); border-radius:10px;
+}

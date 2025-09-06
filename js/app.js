@@ -1,42 +1,15 @@
-/****************************************************
- * Footer year
- ****************************************************/
-document.getElementById('year').textContent = new Date().getFullYear();
+// Footer year
+document.getElementById('year') && (document.getElementById('year').textContent = new Date().getFullYear());
 
-/****************************************************
- * Smooth section toggles (anchors work everywhere)
- ****************************************************/
-const sectionIds = ['home','franchises','fantasy','marketplace','live-stream','schedule'];
-function showSection(id){
-  sectionIds.forEach(s=>{
-    const el=document.getElementById(s); if(!el) return;
-    el.classList.toggle('hidden', s!==id && s!=='home'); // keep home visible when going back
-  });
-  const m=document.getElementById('mobileMenu');
-  if(m && !m.classList.contains('hidden')) m.classList.add('hidden');
-  document.getElementById(id)?.scrollIntoView({behavior:'smooth', block:'start'});
-}
-document.querySelectorAll('a[href^="#"]').forEach(a=>{
-  a.addEventListener('click', e=>{
-    const id=a.getAttribute('href').slice(1);
-    if(sectionIds.includes(id)){ e.preventDefault(); showSection(id); }
-  });
-});
-function toggleMobileMenu(){ document.getElementById('mobileMenu').classList.toggle('hidden'); }
-window.toggleMobileMenu = toggleMobileMenu;
-
-/****************************************************
- * Polished: nav shadow on scroll
- ****************************************************/
+// Nav shadow on scroll
 const topnav = document.getElementById('topnav');
-const navShadow = () => topnav.classList.toggle('shadow-lg', window.scrollY > 4);
+const navShadow = () => topnav && topnav.classList.toggle('shadow-lg', window.scrollY > 4);
 navShadow(); window.addEventListener('scroll', navShadow);
 
-/****************************************************
- * Toasts
- ****************************************************/
+// Toasts
 const toastHost = document.getElementById('toastHost');
 function toast(msg, kind='info'){
+  if (!toastHost) return;
   const base = document.createElement('div');
   base.className = `px-4 py-3 rounded-xl text-sm shadow-2xl border ${
     kind==='error' ? 'bg-rose-600/90 border-rose-400/40' :
@@ -49,34 +22,9 @@ function toast(msg, kind='info'){
   setTimeout(()=>{ base.remove(); }, 3000);
 }
 
-/****************************************************
- * Auth modal DOM
- ****************************************************/
-const overlay          = document.getElementById('authOverlay');
-const authClose        = document.getElementById('authClose');
-const signInView       = document.getElementById('authSignIn');
-const registerView     = document.getElementById('authRegister');
-const goRegister       = document.getElementById('goRegister');
-const goSignIn         = document.getElementById('goSignIn');
-
-// Nav DOM
-const navGetStarted    = document.getElementById('navGetStarted');
-const mobileGetStarted = document.getElementById('mobileGetStarted');
-const ctaJoinNow       = document.getElementById('ctaJoinNow');
-const ctaAdmin         = document.getElementById('ctaAdmin');
-
-const profileBtn   = document.getElementById('profileBtn');
-const profileMenu  = document.getElementById('profileMenu');
-const profileName  = document.getElementById('profileName');
-const profileAvatar= document.getElementById('profileAvatar');
-
-const mobileWelcome= document.getElementById('mobileWelcome');
-const mobileSignOut= document.getElementById('mobileSignOut');
-const btnSignOut   = document.getElementById('btnSignOut');
-
-/****************************************************
- * Firebase (leave as-is; works if configured)
- ****************************************************/
+// ------------------------
+// Firebase (auth minimal)
+// ------------------------
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
 import {
   getAuth, onAuthStateChanged,
@@ -100,46 +48,64 @@ const app  = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db   = getFirestore(app);
 
-/****************************************************
- * Open/close auth modal
- ****************************************************/
+// Modal elements
+const overlay      = document.getElementById('authOverlay');
+const authClose    = document.getElementById('authClose');
+const signInView   = document.getElementById('authSignIn');
+const registerView = document.getElementById('authRegister');
+const goRegister   = document.getElementById('goRegister');
+const goSignIn     = document.getElementById('goSignIn');
+
+// Nav elements
+const navGetStarted    = document.getElementById('navGetStarted');
+const mobileGetStarted = document.getElementById('mobileGetStarted');
+const ctaJoinNow       = document.getElementById('ctaJoinNow');
+const ctaAdmin         = document.getElementById('ctaAdmin');
+
+const profileBtn   = document.getElementById('profileBtn');
+const profileMenu  = document.getElementById('profileMenu');
+const profileName  = document.getElementById('profileName');
+const profileAvatar= document.getElementById('profileAvatar');
+
+const mobileWelcome= document.getElementById('mobileWelcome');
+const mobileSignOut= document.getElementById('mobileSignOut');
+const btnSignOut   = document.getElementById('btnSignOut');
+
+// Open modal buttons (skip if already logged in)
 ['navGetStarted','mobileGetStarted','ctaJoinNow'].forEach(id=>{
   const btn=document.getElementById(id); if(!btn) return;
   btn.addEventListener('click', (e)=>{
     if(auth.currentUser) return;
     e.preventDefault();
-    overlay.classList.remove('hidden'); overlay.classList.add('flex');
-    signInView.classList.remove('hidden'); registerView.classList.add('hidden');
+    overlay?.classList.remove('hidden'); overlay?.classList.add('flex');
+    signInView?.classList.remove('hidden'); registerView?.classList.add('hidden');
   });
 });
 authClose?.addEventListener('click', ()=>{
-  overlay.classList.add('hidden'); overlay.classList.remove('flex');
+  overlay?.classList.add('hidden'); overlay?.classList.remove('flex');
 });
 goRegister?.addEventListener('click', ()=>{
-  signInView.classList.add('hidden'); registerView.classList.remove('hidden');
+  signInView?.classList.add('hidden'); registerView?.classList.remove('hidden');
 });
 goSignIn?.addEventListener('click', ()=>{
-  registerView.classList.add('hidden'); signInView.classList.remove('hidden');
+  registerView?.classList.add('hidden'); signInView?.classList.remove('hidden');
 });
 
 // Profile dropdown
 profileBtn?.addEventListener('click', (e)=>{
   e.stopPropagation();
-  profileMenu.classList.toggle('hidden');
+  profileMenu?.classList.toggle('hidden');
 });
 document.addEventListener('click', (e)=>{
-  if(!profileMenu.classList.contains('hidden')){
+  if(profileMenu && !profileMenu.classList.contains('hidden')){
     const within = profileMenu.contains(e.target) || profileBtn.contains(e.target);
     if(!within) profileMenu.classList.add('hidden');
   }
 });
 
-/****************************************************
- * Auth state → UI
- ****************************************************/
+// Auth state → UI
 onAuthStateChanged(auth, async (user) => {
   if (user) {
-    // Ensure user doc exists
     try {
       const uref = doc(db, 'users', user.uid);
       const snap = await getDoc(uref);
@@ -152,18 +118,16 @@ onAuthStateChanged(auth, async (user) => {
           createdAt: serverTimestamp()
         });
       }
-    } catch (e) { /* ok in read-only / locked rules */ }
+    } catch {}
 
     const name = user.displayName || (user.email?.split('@')[0] ?? 'Player');
     const init = (name?.trim()[0] || 'U').toUpperCase();
 
-    // Desktop: profile
-    navGetStarted.classList.add('hidden');
-    profileBtn.classList.remove('hidden');
-    profileName.textContent = name;
-    profileAvatar.textContent = init;
+    navGetStarted?.classList.add('hidden');
+    profileBtn?.classList.remove('hidden');
+    if (profileName) profileName.textContent = name;
+    if (profileAvatar) profileAvatar.textContent = init;
 
-    // Buttons/sections
     ctaJoinNow?.classList.add('hidden'); ctaAdmin?.classList.remove('hidden');
     mobileGetStarted?.classList.add('hidden');
     mobileWelcome?.classList.remove('hidden');
@@ -181,58 +145,56 @@ onAuthStateChanged(auth, async (user) => {
   }
 });
 
-/****************************************************
- * Sign in / Register / Reset / Sign out
- ****************************************************/
+// Sign in
 document.getElementById('signin_modal')?.addEventListener('submit', async (e)=>{
   e.preventDefault();
   const email = document.getElementById('email').value.trim();
   const pw    = document.getElementById('password').value;
   const box   = document.getElementById('error');
-  box.textContent = '';
+  if (box) box.textContent = '';
   try {
     await signInWithEmailAndPassword(auth, email, pw);
-    overlay.classList.add('hidden'); overlay.classList.remove('flex');
+    overlay?.classList.add('hidden'); overlay?.classList.remove('flex');
     toast('Signed in ✅', 'success');
   } catch (err) {
     const msg = (err?.message || 'Sign-in failed').replace('Firebase: ','');
-    box.textContent = msg;
+    if (box) box.textContent = msg;
     toast(msg, 'error');
   }
 });
 
+// Register
 document.getElementById('register_modal')?.addEventListener('submit', async (e)=>{
   e.preventDefault();
   const name  = document.getElementById('r_name').value.trim();
   const email = document.getElementById('r_email').value.trim();
   const msg   = document.getElementById('r_msg_modal');
-  msg.style.color = ''; msg.textContent = '';
+  if (msg) { msg.style.color = ''; msg.textContent = ''; }
   const tempPw = Math.random().toString(36).slice(-10) + "Aa1!";
   try {
     const cred = await createUserWithEmailAndPassword(auth, email, tempPw);
     if (name) await updateProfile(cred.user, { displayName: name });
     await setDoc(doc(db,'users',cred.user.uid), { uid:cred.user.uid, name, email, role:'player', createdAt: serverTimestamp() });
     await sendPasswordResetEmail(auth, email);
-    msg.style.color = 'lightgreen';
-    msg.textContent = 'Account created. Check your email to set your password.';
+    if (msg) { msg.style.color = 'lightgreen'; msg.textContent = 'Account created. Check your email to set your password.'; }
     toast('Account created. Reset link sent 📬', 'success');
     setTimeout(()=>{
-      signInView.classList.remove('hidden');
-      registerView.classList.add('hidden');
+      signInView?.classList.remove('hidden');
+      registerView?.classList.add('hidden');
     }, 1500);
   } catch (err) {
     const m = (err?.message || 'Registration failed').replace('Firebase: ','');
-    msg.style.color = 'salmon';
-    msg.textContent = m;
+    if (msg) { msg.style.color = 'salmon'; msg.textContent = m; }
     toast(m, 'error');
   }
 });
 
+// Forgot password
 document.getElementById('getTempModal')?.addEventListener('click', async (e)=>{
   e.preventDefault();
   const email = document.getElementById('email').value.trim();
   const msg   = document.getElementById('tempMsgModal');
-  msg.style.color=''; msg.textContent='';
+  if (msg) { msg.style.color=''; msg.textContent=''; }
   if (!email) { msg.style.color='salmon'; msg.textContent='Enter your email above first.'; return; }
   try {
     await sendPasswordResetEmail(auth, email);
@@ -245,6 +207,7 @@ document.getElementById('getTempModal')?.addEventListener('click', async (e)=>{
   }
 });
 
+// Sign out
 btnSignOut?.addEventListener('click', async ()=>{
   await signOut(auth);
   toast('Signed out', 'info');
@@ -255,139 +218,198 @@ mobileSignOut?.addEventListener('click', async ()=>{
   toast('Signed out', 'info');
 });
 
-/****************************************************
- * Schedules data (exactly as provided)
- ****************************************************/
-const PREMIER = [
-  {round:1, match:1,  tier:'Premier', venue:'Play360', date:'Monday, 15 September 2025', fixture:'Rulo Apaches - Samurai Kick Smashers'},
-  {round:1, match:2,  tier:'Premier', venue:'Play360', date:'Tuesday, 16 September 2025', fixture:'Desert Falcons - Baltic Blades'},
-  {round:1, match:3,  tier:'Premier', venue:'Play360', date:'Wednesday, 17 September 2025', fixture:'Globo Boomerangs - Sonic Viboras'},
-  {round:1, match:4,  tier:'Premier', venue:'Play360', date:'Thursday, 18 September 2025', fixture:'Ice Breakers - Avalanche Aces'},
+// -----------------------------
+// FIXTURES (exact order & text)
+// -----------------------------
 
-  {round:2, match:5,  tier:'Premier', venue:'Play360', date:'Thursday, 25 September 2025', fixture:'Samurai Kick Smashers - Desert Falcons'},
-  {round:2, match:6,  tier:'Premier', venue:'Play360', date:'Monday, 22 September 2025', fixture:'Avalanche Aces - Rulo Apaches'},
-  {round:2, match:7,  tier:'Premier', venue:'Play360', date:'Tuesday, 23 September 2025', fixture:'Sonic Viboras - Ice Breakers'},
-  {round:2, match:8,  tier:'Premier', venue:'Play360', date:'Friday, 26 September 2025', fixture:'Baltic Blades - Globo Boomerangs'},
+// Helper to make item
+const fx = (round, match, tier, venue, date, fixture, status='Scheduled') =>
+  ({ round, match, tier, venue, date, fixture, status });
 
-  {round:3, match:9,  tier:'Premier', venue:'Play360', date:'Tuesday, 30 September 2025', fixture:'Desert Falcons - Avalanche Aces'},
-  {round:3, match:10, tier:'Premier', venue:'Play360', date:'Wednesday, 15 October 2025', fixture:'Samurai Kick Smashers - Baltic Blades'},
-  {round:3, match:11, tier:'Premier', venue:'Play360', date:'Monday, 29 September 2025', fixture:'Rulo Apaches - Sonic Viboras'},
-  {round:3, match:12, tier:'Premier', venue:'Play360', date:'Tuesday, 14 October 2025', fixture:'Ice Breakers - Globo Boomerangs'},
+window.PREMIER = [
+  fx(1,1,'Premier','Play360','Monday, 15 September 2025','Rulo Apaches vs Samurai Kicksmashers'),
+  fx(1,2,'Premier','Play360','Tuesday, 16 September 2025','Desert Falcons vs Baltic Blades'),
+  fx(1,3,'Premier','Play360','Wednesday, 17 September 2025','Globo Boomerangs vs Sonic Viboras'),
+  fx(1,4,'Premier','Play360','Thursday, 18 September 2025','Ice Breakers vs Avalanche Aces'),
 
-  {round:4, match:13, tier:'Premier', venue:'Play360', date:'Thursday, 23 October 2025', fixture:'Baltic Blades - Sonic Viboras'},
-  {round:4, match:14, tier:'Premier', venue:'Play360', date:'Wednesday, 22 October 2025', fixture:'Desert Falcons - Rulo Apaches'},
-  {round:4, match:15, tier:'Premier', venue:'Play360', date:'Tuesday, 21 October 2025', fixture:'Avalanche Aces - Globo Boomerangs'},
-  {round:4, match:16, tier:'Premier', venue:'Play360', date:'Monday, 20 October 2025', fixture:'Samurai Kick Smashers - Ice Breakers'},
+  fx(2,5,'Premier','Play360','Thursday, 25 September 2025','Samurai Kicksmashers vs Desert Falcons'),
+  fx(2,6,'Premier','Play360','Monday, 22 September 2025','Avalanche Aces vs Rulo Apaches'),
+  fx(2,7,'Premier','Play360','Tuesday, 23 September 2025','Sonic Viboras vs Ice Breakers'),
+  fx(2,8,'Premier','Play360','Friday, 26 September 2025','Baltic Blades vs Globo Boomerangs'),
 
-  {round:5, match:17, tier:'Premier', venue:'Play360', date:'Thursday, 30 October 2025', fixture:'Rulo Apaches - Baltic Blades'},
-  {round:5, match:18, tier:'Premier', venue:'Play360', date:'Monday, 27 October 2025', fixture:'Globo Boomerangs - Samurai Kick Smashers'},
-  {round:5, match:19, tier:'Premier', venue:'Play360', date:'Tuesday, 28 October 2025', fixture:'Ice Breakers - Desert Falcons'},
-  {round:5, match:20, tier:'Premier', venue:'Play360', date:'Wednesday, 29 October 2025', fixture:'Sonic Viboras - Avalanche Aces'},
+  fx(3,9,'Premier','Play360','Tuesday, 30 September 2025','Desert Falcons vs Avalanche Aces'),
+  fx(3,10,'Premier','Play360','Wednesday, 15 October 2025','Samurai Kicksmashers vs Baltic Blades'),
+  fx(3,11,'Premier','Play360','Monday, 29 September 2025','Rulo Apaches vs Sonic Viboras'),
+  fx(3,12,'Premier','Play360','Tuesday, 14 October 2025','Ice Breakers vs Globo Boomerangs'),
 
-  {round:6, match:21, tier:'Premier', venue:'Play360', date:'Thursday, 06 November 2025', fixture:'Baltic Blades - Avalanche Aces'},
-  {round:6, match:22, tier:'Premier', venue:'Play360', date:'Monday, 03 November 2025', fixture:'Desert Falcons - Globo Boomerangs'},
-  {round:6, match:23, tier:'Premier', venue:'Play360', date:'Wednesday, 05 November 2025', fixture:'Rulo Apaches - Ice Breakers'},
-  {round:6, match:24, tier:'Premier', venue:'Play360', date:'Tuesday, 04 November 2025', fixture:'Samurai Kick Smashers - Sonic Viboras'},
+  fx(4,13,'Premier','Play360','Thursday, 23 October 2025','Baltic Blades vs Sonic Viboras'),
+  fx(4,14,'Premier','Play360','Wednesday, 22 October 2025','Desert Falcons vs Rulo Apaches'),
+  fx(4,15,'Premier','Play360','Tuesday, 21 October 2025','Avalanche Aces vs Globo Boomerangs'),
+  fx(4,16,'Premier','Play360','Monday, 20 October 2025','Samurai Kicksmashers vs Ice Breakers'),
 
-  {round:7, match:25, tier:'Premier', venue:'Play360', date:'Wednesday, 12 November 2025', fixture:'Globo Boomerangs - Rulo Apaches'},
-  {round:7, match:26, tier:'Premier', venue:'Play360', date:'Monday, 10 November 2025', fixture:'Baltic Blades - Ice Breakers'},
-  {round:7, match:27, tier:'Premier', venue:'Play360', date:'Tuesday, 11 November 2025', fixture:'Sonic Viboras - Desert Falcons'},
-  {round:7, match:28, tier:'Premier', venue:'Play360', date:'Thursday, 13 November 2025', fixture:'Avalanche Aces - Samurai Kick Smashers'},
+  fx(5,17,'Premier','Play360','Thursday, 30 October 2025','Rulo Apaches vs Baltic Blades'),
+  fx(5,18,'Premier','Play360','Monday, 27 October 2025','Globo Boomerangs vs Samurai Kicksmashers'),
+  fx(5,19,'Premier','Play360','Tuesday, 28 October 2025','Ice Breakers vs Desert Falcons'),
+  fx(5,20,'Premier','Play360','Wednesday, 29 October 2025','Sonic Viboras vs Avalanche Aces'),
 
-  {round:29, match:29, tier:'Premier', venue:'Play360', date:'Monday, 24 November 2025', fixture:'Play off 1'},
-  {round:30, match:30, tier:'Premier', venue:'Play360', date:'Tuesday, 25 November 2025', fixture:'Play off 2'},
-  {round:31, match:31, tier:'Premier', venue:'Play360', date:'Monday, 01 December 2025', fixture:'Play off 3'},
-  {round:32, match:32, tier:'Premier', venue:'Play360', date:'Saturday, 06 December 2025', fixture:'FINALS: Premier'}
+  fx(6,21,'Premier','Play360','Thursday, 06 November 2025','Baltic Blades vs Avalanche Aces'),
+  fx(6,22,'Premier','Play360','Monday, 03 November 2025','Desert Falcons vs Globo Boomerangs'),
+  fx(6,23,'Premier','Play360','Wednesday, 05 November 2025','Rulo Apaches vs Ice Breakers'),
+  fx(6,24,'Premier','Play360','Tuesday, 04 November 2025','Samurai Kicksmashers vs Sonic Viboras'),
+
+  fx(7,25,'Premier','Play360','Wednesday, 12 November 2025','Globo Boomerangs vs Rulo Apaches'),
+  fx(7,26,'Premier','Play360','Monday, 10 November 2025','Baltic Blades vs Ice Breakers'),
+  fx(7,27,'Premier','Play360','Tuesday, 11 November 2025','Sonic Viboras vs Desert Falcons'),
+  fx(7,28,'Premier','Play360','Thursday, 13 November 2025','Avalanche Aces vs Samurai Kicksmashers'),
+
+  fx(29,1,'Premier','Play360','Monday, 24 November 2025','Play off 1'),
+  fx(30,1,'Premier','Play360','Tuesday, 25 November 2025','Play off 2'),
+  fx(31,1,'Premier','Play360','Monday, 01 December 2025','Play off 3'),
+  fx(32,1,'Premier','Play360','Saturday, 06 December 2025','FINALS: Premier'),
 ];
 
-const CHAMPIONSHIP = [
-  {round:1, match:1,  tier:'Championship', venue:'PADEL24', date:'Monday, 15 September 2025', fixture:'Globo Boomerangs - Sonic Viboras'},
-  {round:1, match:2,  tier:'Championship', venue:'PADEL24', date:'Monday, 15 September 2025', fixture:'Ice Breakers - Avalanche Aces'},
-  {round:1, match:3,  tier:'Championship', venue:'PADEL24', date:'Wednesday, 17 September 2025', fixture:'Rulo Apaches - Samurai Kicksmashers'},
-  {round:1, match:4,  tier:'Championship', venue:'PADEL24', date:'Wednesday, 17 September 2025', fixture:'Desert Falcons - Baltic Blades'},
+window.CHAMPIONSHIP = [
+  fx(1,1,'Championship','PADEL24','Monday, 15 September 2025','Globo Boomerangs vs Sonic Viboras'),
+  fx(1,2,'Championship','PADEL24','Monday, 15 September 2025','Ice Breakers vs Avalanche Aces'),
+  fx(1,3,'Championship','PADEL24','Wednesday, 17 September 2025','Rulo Apaches vs Samurai Kicksmashers'),
+  fx(1,4,'Championship','PADEL24','Wednesday, 17 September 2025','Desert Falcons vs Baltic Blades'),
 
-  {round:2, match:5,  tier:'Championship', venue:'PADEL24', date:'Thursday, 25 September 2025', fixture:'Avalanche Aces - Rulo Apaches'},
-  {round:2, match:6,  tier:'Championship', venue:'PADEL24', date:'Thursday, 25 September 2025', fixture:'Sonic Viboras - Ice Breakers'},
-  {round:2, match:7,  tier:'Championship', venue:'PADEL24', date:'Monday, 22 September 2025', fixture:'Samurai Kicksmashers  - Desert Falcons'},
-  {round:2, match:8,  tier:'Championship', venue:'PADEL24', date:'Monday, 22 September 2025', fixture:'Baltic Blades - Globo Boomerangs'},
+  fx(2,5,'Championship','PADEL24','Thursday, 25 September 2025','Avalanche Aces vs Rulo Apaches'),
+  fx(2,6,'Championship','PADEL24','Thursday, 25 September 2025','Sonic Viboras vs Ice Breakers'),
+  fx(2,7,'Championship','PADEL24','Monday, 22 September 2025','Samurai Kicksmashers vs Desert Falcons'),
+  fx(2,8,'Championship','PADEL24','Monday, 22 September 2025','Baltic Blades vs Globo Boomerangs'),
 
-  {round:3, match:9,  tier:'Championship', venue:'PADEL24', date:'Monday, 29 September 2025', fixture:'Ice Breakers - Globo Boomerangs'},
-  {round:3, match:10, tier:'Championship', venue:'PADEL24', date:'Monday, 29 September 2025', fixture:'Samurai Kicksmashers - Baltic Blades'},
-  {round:3, match:11, tier:'Championship', venue:'PADEL24', date:'Thursday, 16 October 2025', fixture:'Rulo Apaches - Sonic Viboras'},
-  {round:3, match:12, tier:'Championship', venue:'PADEL24', date:'Thursday, 16 October 2025', fixture:'Desert Falcons - Avalanche Aces'},
+  fx(3,9,'Championship','PADEL24','Monday, 29 September 2025','Ice Breakers vs Globo Boomerangs'),
+  fx(3,10,'Championship','PADEL24','Monday, 29 September 2025','Samurai Kicksmashers vs Baltic Blades'),
+  fx(3,11,'Championship','PADEL24','Thursday, 16 October 2025','Rulo Apaches vs Sonic Viboras'),
+  fx(3,12,'Championship','PADEL24','Thursday, 16 October 2025','Desert Falcons vs Avalanche Aces'),
 
-  {round:4, match:13, tier:'Championship', venue:'PADEL24', date:'Monday, 20 October 2025', fixture:'Desert Falcons - Rulo Apaches'},
-  {round:4, match:14, tier:'Championship', venue:'PADEL24', date:'Monday, 20 October 2025', fixture:'Baltic Blades - Sonic Viboras'},
-  {round:4, match:15, tier:'Championship', venue:'PADEL24', date:'Wednesday, 22 October 2025', fixture:'Samurai Kicksmashers  - Ice Breakers'},
-  {round:4, match:16, tier:'Championship', venue:'PADEL24', date:'Wednesday, 22 October 2025', fixture:'Avalanche Aces - Globo Boomerangs'},
+  fx(4,13,'Championship','PADEL24','Monday, 20 October 2025','Desert Falcons vs Rulo Apaches'),
+  fx(4,14,'Championship','PADEL24','Monday, 20 October 2025','Baltic Blades vs Sonic Viboras'),
+  fx(4,15,'Championship','PADEL24','Wednesday, 22 October 2025','Samurai Kicksmashers vs Ice Breakers'),
+  fx(4,16,'Championship','PADEL24','Wednesday, 22 October 2025','Avalanche Aces vs Globo Boomerangs'),
 
-  {round:5, match:17, tier:'Championship', venue:'PADEL24', date:'Monday, 27 October 2025', fixture:'Sonic Viboras - Avalanche Aces'},
-  {round:5, match:18, tier:'Championship', venue:'PADEL24', date:'Monday, 27 October 2025', fixture:'Rulo Apaches - Baltic Blades'},
-  {round:5, match:19, tier:'Championship', venue:'PADEL24', date:'Wednesday, 29 October 2025', fixture:'Globo Boomerangs - Samurai Kicksmashers'},
-  {round:5, match:20, tier:'Championship', venue:'PADEL24', date:'Wednesday, 29 October 2025', fixture:'Ice Breakers - Desert Falcons'},
+  fx(5,17,'Championship','PADEL24','Monday, 27 October 2025','Sonic Viboras vs Avalanche Aces'),
+  fx(5,18,'Championship','PADEL24','Monday, 27 October 2025','Rulo Apaches vs Baltic Blades'),
+  fx(5,19,'Championship','PADEL24','Wednesday, 29 October 2025','Globo Boomerangs vs Samurai Kicksmashers'),
+  fx(5,20,'Championship','PADEL24','Wednesday, 29 October 2025','Ice Breakers vs Desert Falcons'),
 
-  {round:6, match:21, tier:'Championship', venue:'PADEL24', date:'Monday, 03 November 2025', fixture:'Rulo Apaches - Ice Breakers'},
-  {round:6, match:22, tier:'Championship', venue:'PADEL24', date:'Monday, 03 November 2025', fixture:'Baltic Blades - Avalanche Aces'},
-  {round:6, match:23, tier:'Championship', venue:'PADEL24', date:'Wednesday, 05 November 2025', fixture:'Desert Falcons - Globo Boomerangs'},
-  {round:6, match:24, tier:'Championship', venue:'PADEL24', date:'Wednesday, 05 November 2025', fixture:'Samurai Kicksmashers - Sonic Viboras'},
+  fx(6,21,'Championship','PADEL24','Monday, 03 November 2025','Rulo Apaches vs Ice Breakers'),
+  fx(6,22,'Championship','PADEL24','Monday, 03 November 2025','Baltic Blades vs Avalanche Aces'),
+  fx(6,23,'Championship','PADEL24','Wednesday, 05 November 2025','Desert Falcons vs Globo Boomerangs'),
+  fx(6,24,'Championship','PADEL24','Wednesday, 05 November 2025','Samurai Kicksmashers vs Sonic Viboras'),
 
-  {round:7, match:25, tier:'Championship', venue:'PADEL24', date:'Monday, 10 November 2025', fixture:'Globo Boomerangs - Rulo Apaches'},
-  {round:7, match:26, tier:'Championship', venue:'PADEL24', date:'Monday, 10 November 2025', fixture:'Avalanche Aces - Samurai Kicksmashers'},
-  {round:7, match:27, tier:'Championship', venue:'PADEL24', date:'Wednesday, 12 November 2025', fixture:'Baltic Blades - Ice Breakers'},
-  {round:7, match:28, tier:'Championship', venue:'PADEL24', date:'Wednesday, 12 November 2025', fixture:'Sonic Viboras - Desert Falcons'},
+  fx(7,25,'Championship','PADEL24','Monday, 10 November 2025','Globo Boomerangs vs Rulo Apaches'),
+  fx(7,26,'Championship','PADEL24','Monday, 10 November 2025','Avalanche Aces vs Samurai Kicksmashers'),
+  fx(7,27,'Championship','PADEL24','Wednesday, 12 November 2025','Baltic Blades vs Ice Breakers'),
+  fx(7,28,'Championship','PADEL24','Wednesday, 12 November 2025','Sonic Viboras vs Desert Falcons'),
 
-  {round:29, match:29, tier:'Championship', venue:'PADEL24', date:'Wednesday, 26 November 2025', fixture:'Play off 1'},
-  {round:30, match:30, tier:'Championship', venue:'PADEL24', date:'Wednesday, 26 November 2025', fixture:'Play off 2'},
-  {round:31, match:31, tier:'Championship', venue:'PADEL24', date:'Tuesday, 02 December 2025', fixture:'Play off 3'},
-  {round:32, match:32, tier:'Championship', venue:'Play360', date:'Saturday, 06 December 2025', fixture:'FINALS: Championship'}
+  fx(29,1,'Championship','PADEL24','Wednesday, 26 November 2025','Play off 1'),
+  fx(30,1,'Championship','PADEL24','Wednesday, 26 November 2025','Play off 2'),
+  fx(31,1,'Championship','PADEL24','Tuesday, 02 December 2025','Play off 3'),
+  fx(32,1,'Championship','Play360','Saturday, 06 December 2025','FINALS: Championship'),
 ];
 
-window.SCHEDULE = [...PREMIER, ...CHAMPIONSHIP];
+// -----------------------------
+// HOME: Round 1 fixtures cards
+// -----------------------------
 
-/****************************************************
- * Schedule table rendering + filters
- ****************************************************/
-const tbody = document.querySelector('#schedule-table tbody');
-const tierSel = document.getElementById('filter-tier');
-const statusSel = document.getElementById('filter-status');
-const venueSel = document.getElementById('filter-venue');
+const TEAM_LOGOS = {
+  "Desert Falcons": "assets/logos/desert-falcons.jpeg",
+  "Globo Boomerangs": "assets/logos/globo-boomerangs.jpeg",
+  "Ice Breakers": "assets/logos/ice-breakers.jpeg",
+  "Baltic Blades": "assets/logos/baltic-blades.jpeg",
+  "Avalanche Aces": "assets/logos/avalanche-aces.jpeg",
+  "Rulo Apaches": "assets/logos/rulo-apaches.jpeg",
+  "Samurai Kicksmashers": "assets/logos/samurai-kicksmashers.jpeg",
+  "Sonic Viboras": "assets/logos/sonic-viboras.jpeg",
+};
 
-function renderSchedule(){
-  const tier = tierSel?.value ?? 'all';
-  const status = statusSel?.value ?? 'all';
-  const venue = venueSel?.value ?? 'all';
-
-  const rows = window.SCHEDULE
-    .filter(r => (tier==='all' || r.tier===tier))
-    .filter(r => (venue==='all' || r.venue===venue))
-    // status is static (Scheduled) right now; keep the filter for future
-    .filter(r => (status==='all' || 'Scheduled'===status))
-    .sort((a,b)=>{
-      if (a.date===b.date) return a.match-b.match;
-      return new Date(a.date) - new Date(b.date);
-    })
-    .map(r=>`
-      <tr class="border-b border-white/5 hover:bg-white/5">
-        <td class="p-4">${r.round}</td>
-        <td class="p-4">${r.match}</td>
-        <td class="p-4">${r.tier}</td>
-        <td class="p-4">${r.venue}</td>
-        <td class="p-4">${r.date}</td>
-        <td class="p-4">${r.fixture}</td>
-        <td class="p-4">Scheduled</td>
-      </tr>
-    `).join('');
-
-  if (tbody) tbody.innerHTML = rows || `<tr><td class="p-4 text-gray-400" colspan="7">No fixtures match your filters.</td></tr>`;
+function parseTeams(f) {
+  const clean = f.replace(" - ", " vs ");
+  const [home, away] = clean.split(" vs ").map(s => s.trim());
+  return [home, away];
 }
-tierSel?.addEventListener('change', renderSchedule);
-statusSel?.addEventListener('change', renderSchedule);
-venueSel?.addEventListener('change', renderSchedule);
-renderSchedule();
 
-/****************************************************
- * CSV export
- ****************************************************/
+function cardHTML(item) {
+  const [home, away] = parseTeams(item.fixture);
+  const homeLogo = TEAM_LOGOS[home] || TEAM_LOGOS["Desert Falcons"];
+  const awayLogo = TEAM_LOGOS[away] || TEAM_LOGOS["Globo Boomerangs"];
+
+  return `
+    <div class="rounded-xl bg-white/[0.03] ring-1 ring-white/10 hover:ring-white/20 p-4 transition">
+      <div class="text-xs text-white/70 mb-1">${item.date}</div>
+      <div class="text-[11px] text-white/60 mb-3">${item.venue}</div>
+      <div class="flex items-center gap-3">
+        <img src="${homeLogo}" alt="${home}" class="w-10 h-10 rounded-full ring-2 ring-white/10 object-cover">
+        <div class="text-sm font-medium truncate">${home}</div>
+        <div class="mx-2 text-white/60 text-xs">vs</div>
+        <img src="${awayLogo}" alt="${away}" class="w-10 h-10 rounded-full ring-2 ring-white/10 object-cover">
+        <div class="text-sm font-medium truncate">${away}</div>
+      </div>
+    </div>
+  `;
+}
+
+function renderRound1Home() {
+  const premWrap = document.getElementById('round1-premier');
+  const champWrap = document.getElementById('round1-champ');
+  if (!premWrap || !champWrap) return;
+
+  const premR1 = (window.PREMIER || []).filter(x => x.round === 1).sort((a,b)=>a.match-b.match);
+  const champR1 = (window.CHAMPIONSHIP || []).filter(x => x.round === 1).sort((a,b)=>a.match-b.match);
+
+  premWrap.innerHTML  = premR1.map(cardHTML).join('');
+  champWrap.innerHTML = champR1.map(cardHTML).join('');
+}
+document.addEventListener('DOMContentLoaded', renderRound1Home);
+
+// -----------------------------
+// SCHEDULE PAGE: render + filter
+// -----------------------------
+
+function renderScheduleTable() {
+  const tableBody = document.querySelector('#schedule-table tbody');
+  if (!tableBody) return;
+
+  const tierSel   = document.getElementById('filter-tier');
+  const statusSel = document.getElementById('filter-status');
+  const venueSel  = document.getElementById('filter-venue');
+
+  const all = [...window.PREMIER, ...window.CHAMPIONSHIP]
+    .sort((a,b)=> a.round-b.round || a.match-b.match);
+
+  const tier   = tierSel?.value || 'all';
+  const status = statusSel?.value || 'all';
+  const venue  = venueSel?.value || 'all';
+
+  const rows = all.filter(r=>{
+    if (tier!=='all' && r.tier!==tier) return false;
+    if (status!=='all' && (r.status||'Scheduled')!==status) return false;
+    if (venue!=='all' && r.venue!==venue) return false;
+    return true;
+  });
+
+  tableBody.innerHTML = rows.map(r=>`
+    <tr class="border-b border-white/5 hover:bg-white/[0.03]">
+      <td class="p-4">${r.round}</td>
+      <td class="p-4">${r.match}</td>
+      <td class="p-4">${r.tier}</td>
+      <td class="p-4">${r.venue}</td>
+      <td class="p-4">${r.date}</td>
+      <td class="p-4">${r.fixture}</td>
+      <td class="p-4">${r.status||'Scheduled'}</td>
+    </tr>
+  `).join('');
+}
+
+['filter-tier','filter-status','filter-venue'].forEach(id=>{
+  const el=document.getElementById(id);
+  el && el.addEventListener('change', renderScheduleTable);
+});
+document.addEventListener('DOMContentLoaded', renderScheduleTable);
+
+// CSV export (schedule page)
 document.getElementById('export-csv')?.addEventListener('click', ()=>{
   const rows = document.querySelectorAll('#schedule-table tbody tr');
   if (!rows.length) { alert('No schedule rows to export yet.'); return; }
@@ -400,71 +422,3 @@ document.getElementById('export-csv')?.addEventListener('click', ()=>{
   const url = URL.createObjectURL(new Blob([csv], {type:'text/csv'}));
   const a = document.createElement('a'); a.href=url; a.download='schedule.csv'; a.click(); URL.revokeObjectURL(url);
 });
-
-/****************************************************
- * Home Round-1 fixtures (logos + “vs”)
- ****************************************************/
-const TEAM_SLUGS = {
-  'desert falcons': 'desert-falcons',
-  'globo boomerangs': 'globo-boomerangs',
-  'ice breakers': 'ice-breakers',
-  'avalanche aces': 'avalanche-aces',
-  'rulo apaches': 'rulo-apaches',
-  'samurai kicksmashers': 'samurai-kicksmashers',
-  'samurai kick smashers': 'samurai-kicksmashers',
-  'baltic blades': 'baltic-blades',
-  'sonic viboras': 'sonic-viboras',
-};
-const logoForTeam = (name) => {
-  const key = (name || '').toLowerCase().replace(/\s+/g, ' ').trim();
-  const slug = TEAM_SLUGS[key];
-  return slug ? `assets/logos/${slug}.jpeg` : null;
-};
-const splitFixture = (fixture) => {
-  const parts = (fixture || '').split(/\s*-\s*/);
-  return [parts[0]?.trim() || '', parts[1]?.trim() || ''];
-};
-function fixtureRow({ home, away, date }) {
-  const homeLogo = logoForTeam(home);
-  const awayLogo = logoForTeam(away);
-  return `
-    <div class="rounded-xl border border-white/10 bg-white/5 p-3">
-      <div class="flex items-center justify-between gap-3">
-        <div class="flex items-center gap-3 min-w-0 w-2/5">
-          ${homeLogo ? `<img src="${homeLogo}" alt="${home}" class="h-8 w-8 rounded-full ring-1 ring-white/10">`
-                     : `<div class="h-8 w-8 rounded-full bg-white/10 grid place-items-center text-xs">${home.slice(0,1)}</div>`}
-          <span class="truncate">${home}</span>
-        </div>
-        <div class="text-sm opacity-80 w-1/5 text-center">vs</div>
-        <div class="flex items-center gap-3 min-w-0 w-2/5 justify-end">
-          <span class="truncate text-right">${away}</span>
-          ${awayLogo ? `<img src="${awayLogo}" alt="${away}" class="h-8 w-8 rounded-full ring-1 ring-white/10">`
-                     : `<div class="h-8 w-8 rounded-full bg-white/10 grid place-items-center text-xs">${away.slice(0,1)}</div>`}
-        </div>
-      </div>
-      <div class="mt-2 text-xs text-gray-400">${date}</div>
-    </div>
-  `;
-}
-function getRound1ByTier(tier) {
-  return window.SCHEDULE
-    .filter(f => f.tier===tier && Number(f.round)===1)
-    .sort((a,b)=>a.match-b.match)
-    .map(f=>({ date:f.date, fixture:f.fixture }));
-}
-function renderHomeRound1(){
-  const premWrap = document.getElementById('home-premier');
-  const champWrap = document.getElementById('home-championship');
-  if (!premWrap || !champWrap) return;
-  const prem = getRound1ByTier('Premier');
-  const champ = getRound1ByTier('Championship');
-  premWrap.innerHTML = prem.map(f => {
-    const [home, away] = splitFixture(f.fixture);
-    return fixtureRow({ home, away, date: f.date });
-  }).join('');
-  champWrap.innerHTML = champ.map(f => {
-    const [home, away] = splitFixture(f.fixture);
-    return fixtureRow({ home, away, date: f.date });
-  }).join('');
-}
-renderHomeRound1();

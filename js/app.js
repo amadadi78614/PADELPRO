@@ -1,68 +1,57 @@
-/* ============ Footer year ============ */
-document.getElementById('year')?.textContent = new Date().getFullYear();
+/****************************************************
+ * Footer year
+ ****************************************************/
+document.getElementById('year').textContent = new Date().getFullYear();
 
-/* ============ Sections / Router ============ */
+/****************************************************
+ * Smooth section toggles (anchors work everywhere)
+ ****************************************************/
 const sectionIds = ['home','franchises','fantasy','marketplace','live-stream','schedule'];
-
 function showSection(id){
   sectionIds.forEach(s=>{
-    const el = document.getElementById(s);
-    if (el) el.classList.toggle('hidden', s!==id);
+    const el=document.getElementById(s); if(!el) return;
+    el.classList.toggle('hidden', s!==id && s!=='home'); // keep home visible when going back
   });
-  const m = document.getElementById('mobileMenu');
-  if (m && !m.classList.contains('hidden')) m.classList.add('hidden');
+  const m=document.getElementById('mobileMenu');
+  if(m && !m.classList.contains('hidden')) m.classList.add('hidden');
   document.getElementById(id)?.scrollIntoView({behavior:'smooth', block:'start'});
 }
-
-// Intercept any same-page link that contains a hash (supports "#home" and "index.html#home")
-document.querySelectorAll('a[href*="#"]').forEach(a=>{
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
   a.addEventListener('click', e=>{
-    const href = a.getAttribute('href') || '';
-    const i = href.indexOf('#');
-    if (i === -1) return;
-    const id = href.slice(i+1);
-    if (sectionIds.includes(id)) {
-      e.preventDefault();
-      history.pushState(null, '', '#' + id);
-      showSection(id);
-    }
+    const id=a.getAttribute('href').slice(1);
+    if(sectionIds.includes(id)){ e.preventDefault(); showSection(id); }
   });
 });
-
-// Keep UI in sync with the URL (back/forward/manual edits)
-function handleHashChange(){
-  const id = (location.hash || '#home').slice(1);
-  showSection(sectionIds.includes(id) ? id : 'home');
-}
-window.addEventListener('hashchange', handleHashChange);
-document.addEventListener('DOMContentLoaded', handleHashChange);
-
-// Mobile menu helper
-function toggleMobileMenu(){ document.getElementById('mobileMenu')?.classList.toggle('hidden'); }
+function toggleMobileMenu(){ document.getElementById('mobileMenu').classList.toggle('hidden'); }
 window.toggleMobileMenu = toggleMobileMenu;
 
-// Polished: nav shadow on scroll
+/****************************************************
+ * Polished: nav shadow on scroll
+ ****************************************************/
 const topnav = document.getElementById('topnav');
-const navShadow = () => topnav?.classList.toggle('shadow-lg', window.scrollY > 4);
+const navShadow = () => topnav.classList.toggle('shadow-lg', window.scrollY > 4);
 navShadow(); window.addEventListener('scroll', navShadow);
 
-/* ============ Toasts ============ */
+/****************************************************
+ * Toasts
+ ****************************************************/
 const toastHost = document.getElementById('toastHost');
 function toast(msg, kind='info'){
-  if (!toastHost) return;
   const base = document.createElement('div');
   base.className = `px-4 py-3 rounded-xl text-sm shadow-2xl border ${
-    kind==='error'   ? 'bg-rose-600/90 border-rose-400/40' :
+    kind==='error' ? 'bg-rose-600/90 border-rose-400/40' :
     kind==='success' ? 'bg-emerald-600/90 border-emerald-400/40' :
-                       'bg-slate-800/90 border-white/10'
-  } transition opacity-100`;
+    'bg-slate-800/90 border-white/10'
+  }`;
   base.textContent = msg;
   toastHost.appendChild(base);
   setTimeout(()=>{ base.classList.add('opacity-0','translate-y-1'); }, 2400);
   setTimeout(()=>{ base.remove(); }, 3000);
 }
 
-/* ============ Auth Modal DOM ============ */
+/****************************************************
+ * Auth modal DOM
+ ****************************************************/
 const overlay          = document.getElementById('authOverlay');
 const authClose        = document.getElementById('authClose');
 const signInView       = document.getElementById('authSignIn');
@@ -70,7 +59,7 @@ const registerView     = document.getElementById('authRegister');
 const goRegister       = document.getElementById('goRegister');
 const goSignIn         = document.getElementById('goSignIn');
 
-/* ============ Nav DOM ============ */
+// Nav DOM
 const navGetStarted    = document.getElementById('navGetStarted');
 const mobileGetStarted = document.getElementById('mobileGetStarted');
 const ctaJoinNow       = document.getElementById('ctaJoinNow');
@@ -85,7 +74,9 @@ const mobileWelcome= document.getElementById('mobileWelcome');
 const mobileSignOut= document.getElementById('mobileSignOut');
 const btnSignOut   = document.getElementById('btnSignOut');
 
-/* ============ Firebase ============ */
+/****************************************************
+ * Firebase (leave as-is; works if configured)
+ ****************************************************/
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
 import {
   getAuth, onAuthStateChanged,
@@ -109,43 +100,46 @@ const app  = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db   = getFirestore(app);
 
-/* ============ Auth modal open/close ============ */
+/****************************************************
+ * Open/close auth modal
+ ****************************************************/
 ['navGetStarted','mobileGetStarted','ctaJoinNow'].forEach(id=>{
   const btn=document.getElementById(id); if(!btn) return;
   btn.addEventListener('click', (e)=>{
     if(auth.currentUser) return;
     e.preventDefault();
-    overlay?.classList.remove('hidden'); overlay?.classList.add('flex');
-    signInView?.classList.remove('hidden'); registerView?.classList.add('hidden');
+    overlay.classList.remove('hidden'); overlay.classList.add('flex');
+    signInView.classList.remove('hidden'); registerView.classList.add('hidden');
   });
 });
 authClose?.addEventListener('click', ()=>{
-  overlay?.classList.add('hidden'); overlay?.classList.remove('flex');
+  overlay.classList.add('hidden'); overlay.classList.remove('flex');
 });
 goRegister?.addEventListener('click', ()=>{
-  signInView?.classList.add('hidden'); registerView?.classList.remove('hidden');
+  signInView.classList.add('hidden'); registerView.classList.remove('hidden');
 });
 goSignIn?.addEventListener('click', ()=>{
-  registerView?.classList.add('hidden'); signInView?.classList.remove('hidden');
+  registerView.classList.add('hidden'); signInView.classList.remove('hidden');
 });
 
-/* ============ Profile dropdown ============ */
+// Profile dropdown
 profileBtn?.addEventListener('click', (e)=>{
   e.stopPropagation();
-  profileMenu?.classList.toggle('hidden');
+  profileMenu.classList.toggle('hidden');
 });
 document.addEventListener('click', (e)=>{
-  if (!profileMenu || !profileBtn) return;
   if(!profileMenu.classList.contains('hidden')){
     const within = profileMenu.contains(e.target) || profileBtn.contains(e.target);
     if(!within) profileMenu.classList.add('hidden');
   }
 });
 
-/* ============ Auth state → UI ============ */
+/****************************************************
+ * Auth state → UI
+ ****************************************************/
 onAuthStateChanged(auth, async (user) => {
   if (user) {
-    // Ensure user doc exists (ignore failures if rules are locked)
+    // Ensure user doc exists
     try {
       const uref = doc(db, 'users', user.uid);
       const snap = await getDoc(uref);
@@ -158,16 +152,16 @@ onAuthStateChanged(auth, async (user) => {
           createdAt: serverTimestamp()
         });
       }
-    } catch (_) {}
+    } catch (e) { /* ok in read-only / locked rules */ }
 
     const name = user.displayName || (user.email?.split('@')[0] ?? 'Player');
     const init = (name?.trim()[0] || 'U').toUpperCase();
 
     // Desktop: profile
-    navGetStarted?.classList.add('hidden');
-    profileBtn?.classList.remove('hidden');
-    if (profileName)  profileName.textContent  = name;
-    if (profileAvatar)profileAvatar.textContent = init;
+    navGetStarted.classList.add('hidden');
+    profileBtn.classList.remove('hidden');
+    profileName.textContent = name;
+    profileAvatar.textContent = init;
 
     // Buttons/sections
     ctaJoinNow?.classList.add('hidden'); ctaAdmin?.classList.remove('hidden');
@@ -175,8 +169,6 @@ onAuthStateChanged(auth, async (user) => {
     mobileWelcome?.classList.remove('hidden');
     if (mobileWelcome) mobileWelcome.textContent = `Welcome, ${name}`;
     mobileSignOut?.classList.remove('hidden');
-
-    // Optional: keep fantasy/marketplace/live-stream gated if you like.
   } else {
     profileBtn?.classList.add('hidden');
     profileMenu?.classList.add('hidden');
@@ -189,20 +181,22 @@ onAuthStateChanged(auth, async (user) => {
   }
 });
 
-/* ============ Sign in / Register / Reset / Sign out ============ */
+/****************************************************
+ * Sign in / Register / Reset / Sign out
+ ****************************************************/
 document.getElementById('signin_modal')?.addEventListener('submit', async (e)=>{
   e.preventDefault();
   const email = document.getElementById('email').value.trim();
   const pw    = document.getElementById('password').value;
   const box   = document.getElementById('error');
-  if (box) box.textContent = '';
+  box.textContent = '';
   try {
     await signInWithEmailAndPassword(auth, email, pw);
-    overlay?.classList.add('hidden'); overlay?.classList.remove('flex');
+    overlay.classList.add('hidden'); overlay.classList.remove('flex');
     toast('Signed in ✅', 'success');
   } catch (err) {
     const msg = (err?.message || 'Sign-in failed').replace('Firebase: ','');
-    if (box) box.textContent = msg;
+    box.textContent = msg;
     toast(msg, 'error');
   }
 });
@@ -212,22 +206,24 @@ document.getElementById('register_modal')?.addEventListener('submit', async (e)=
   const name  = document.getElementById('r_name').value.trim();
   const email = document.getElementById('r_email').value.trim();
   const msg   = document.getElementById('r_msg_modal');
-  if (msg){ msg.style.color = ''; msg.textContent = ''; }
+  msg.style.color = ''; msg.textContent = '';
   const tempPw = Math.random().toString(36).slice(-10) + "Aa1!";
   try {
     const cred = await createUserWithEmailAndPassword(auth, email, tempPw);
     if (name) await updateProfile(cred.user, { displayName: name });
     await setDoc(doc(db,'users',cred.user.uid), { uid:cred.user.uid, name, email, role:'player', createdAt: serverTimestamp() });
     await sendPasswordResetEmail(auth, email);
-    if (msg){ msg.style.color = 'lightgreen'; msg.textContent = 'Account created. Check your email to set your password.'; }
+    msg.style.color = 'lightgreen';
+    msg.textContent = 'Account created. Check your email to set your password.';
     toast('Account created. Reset link sent 📬', 'success');
     setTimeout(()=>{
-      signInView?.classList.remove('hidden');
-      registerView?.classList.add('hidden');
+      signInView.classList.remove('hidden');
+      registerView.classList.add('hidden');
     }, 1500);
   } catch (err) {
     const m = (err?.message || 'Registration failed').replace('Firebase: ','');
-    if (msg){ msg.style.color = 'salmon'; msg.textContent = m; }
+    msg.style.color = 'salmon';
+    msg.textContent = m;
     toast(m, 'error');
   }
 });
@@ -236,15 +232,15 @@ document.getElementById('getTempModal')?.addEventListener('click', async (e)=>{
   e.preventDefault();
   const email = document.getElementById('email').value.trim();
   const msg   = document.getElementById('tempMsgModal');
-  if (msg){ msg.style.color=''; msg.textContent=''; }
-  if (!email) { if (msg){ msg.style.color='salmon'; msg.textContent='Enter your email above first.'; } return; }
+  msg.style.color=''; msg.textContent='';
+  if (!email) { msg.style.color='salmon'; msg.textContent='Enter your email above first.'; return; }
   try {
     await sendPasswordResetEmail(auth, email);
-    if (msg){ msg.style.color='lightgreen'; msg.textContent='Reset link sent. Check your inbox/spam.'; }
+    msg.style.color='lightgreen'; msg.textContent='Reset link sent. Check your inbox/spam.';
     toast('Reset link sent 📧', 'success');
   } catch (err) {
     const m = (err?.message || 'Could not send reset email').replace('Firebase: ','');
-    if (msg){ msg.style.color='salmon'; msg.textContent=m; }
+    msg.style.color='salmon'; msg.textContent=m;
     toast(m, 'error');
   }
 });
@@ -259,9 +255,10 @@ mobileSignOut?.addEventListener('click', async ()=>{
   toast('Signed out', 'info');
 });
 
-/* ============ Schedules ============ */
-/* Premier (exactly as provided) */
-const PREMIER_FIXTURES = [
+/****************************************************
+ * Schedules data (exactly as provided)
+ ****************************************************/
+const PREMIER = [
   {round:1, match:1,  tier:'Premier', venue:'Play360', date:'Monday, 15 September 2025', fixture:'Rulo Apaches - Samurai Kick Smashers'},
   {round:1, match:2,  tier:'Premier', venue:'Play360', date:'Tuesday, 16 September 2025', fixture:'Desert Falcons - Baltic Blades'},
   {round:1, match:3,  tier:'Premier', venue:'Play360', date:'Wednesday, 17 September 2025', fixture:'Globo Boomerangs - Sonic Viboras'},
@@ -297,14 +294,13 @@ const PREMIER_FIXTURES = [
   {round:7, match:27, tier:'Premier', venue:'Play360', date:'Tuesday, 11 November 2025', fixture:'Sonic Viboras - Desert Falcons'},
   {round:7, match:28, tier:'Premier', venue:'Play360', date:'Thursday, 13 November 2025', fixture:'Avalanche Aces - Samurai Kick Smashers'},
 
-  {round:29, match:1, tier:'Premier', venue:'Play360', date:'Monday, 24 November 2025', fixture:'Play off 1'},
-  {round:30, match:1, tier:'Premier', venue:'Play360', date:'Tuesday, 25 November 2025', fixture:'Play off 2'},
-  {round:31, match:1, tier:'Premier', venue:'Play360', date:'Monday, 01 December 2025', fixture:'Play off 3'},
-  {round:32, match:1, tier:'Premier', venue:'Play360', date:'Saturday, 06 December 2025', fixture:'FINALS: Premier'},
-].map(x=>({...x, status:'Scheduled'}));
+  {round:29, match:29, tier:'Premier', venue:'Play360', date:'Monday, 24 November 2025', fixture:'Play off 1'},
+  {round:30, match:30, tier:'Premier', venue:'Play360', date:'Tuesday, 25 November 2025', fixture:'Play off 2'},
+  {round:31, match:31, tier:'Premier', venue:'Play360', date:'Monday, 01 December 2025', fixture:'Play off 3'},
+  {round:32, match:32, tier:'Premier', venue:'Play360', date:'Saturday, 06 December 2025', fixture:'FINALS: Premier'}
+];
 
-/* Championship (exactly as provided) */
-const CHAMP_FIXTURES = [
+const CHAMPIONSHIP = [
   {round:1, match:1,  tier:'Championship', venue:'PADEL24', date:'Monday, 15 September 2025', fixture:'Globo Boomerangs - Sonic Viboras'},
   {round:1, match:2,  tier:'Championship', venue:'PADEL24', date:'Monday, 15 September 2025', fixture:'Ice Breakers - Avalanche Aces'},
   {round:1, match:3,  tier:'Championship', venue:'PADEL24', date:'Wednesday, 17 September 2025', fixture:'Rulo Apaches - Samurai Kicksmashers'},
@@ -340,75 +336,135 @@ const CHAMP_FIXTURES = [
   {round:7, match:27, tier:'Championship', venue:'PADEL24', date:'Wednesday, 12 November 2025', fixture:'Baltic Blades - Ice Breakers'},
   {round:7, match:28, tier:'Championship', venue:'PADEL24', date:'Wednesday, 12 November 2025', fixture:'Sonic Viboras - Desert Falcons'},
 
-  {round:29, match:1, tier:'Championship', venue:'PADEL24', date:'Wednesday, 26 November 2025', fixture:'Play off 1'},
-  {round:30, match:1, tier:'Championship', venue:'PADEL24', date:'Wednesday, 26 November 2025', fixture:'Play off 2'},
-  {round:31, match:1, tier:'Championship', venue:'PADEL24', date:'Tuesday, 02 December 2025', fixture:'Play off 3'},
-  {round:32, match:1, tier:'Championship', venue:'Play360', date:'Saturday, 06 December 2025', fixture:'FINALS: Championship'},
-].map(x=>({...x, status:'Scheduled'}));
+  {round:29, match:29, tier:'Championship', venue:'PADEL24', date:'Wednesday, 26 November 2025', fixture:'Play off 1'},
+  {round:30, match:30, tier:'Championship', venue:'PADEL24', date:'Wednesday, 26 November 2025', fixture:'Play off 2'},
+  {round:31, match:31, tier:'Championship', venue:'PADEL24', date:'Tuesday, 02 December 2025', fixture:'Play off 3'},
+  {round:32, match:32, tier:'Championship', venue:'Play360', date:'Saturday, 06 December 2025', fixture:'FINALS: Championship'}
+];
 
-const ALL_FIXTURES = [...PREMIER_FIXTURES, ...CHAMP_FIXTURES];
+window.SCHEDULE = [...PREMIER, ...CHAMPIONSHIP];
 
-/* ============ Schedule rendering + filters ============ */
+/****************************************************
+ * Schedule table rendering + filters
+ ****************************************************/
 const tbody = document.querySelector('#schedule-table tbody');
-const tierSel   = document.getElementById('filter-tier');
+const tierSel = document.getElementById('filter-tier');
 const statusSel = document.getElementById('filter-status');
-const venueSel  = document.getElementById('filter-venue');
+const venueSel = document.getElementById('filter-venue');
 
-function renderSchedule(list){
-  if (!tbody) return;
-  tbody.innerHTML = '';
-  list
-    .slice()
-    .sort((a,b)=> (a.round - b.round) || (a.match - b.match))
-    .forEach(row=>{
-      const tr = document.createElement('tr');
-      tr.className = 'border-b border-white/5 hover:bg-white/5';
-      tr.innerHTML = `
-        <td class="p-4">${row.round ?? ''}</td>
-        <td class="p-4">${row.match ?? ''}</td>
-        <td class="p-4">${row.tier}</td>
-        <td class="p-4">${row.venue}</td>
-        <td class="p-4 whitespace-nowrap">${row.date}</td>
-        <td class="p-4">${row.fixture}</td>
-        <td class="p-4">${row.status || 'Scheduled'}</td>
-      `;
-      tbody.appendChild(tr);
-    });
+function renderSchedule(){
+  const tier = tierSel?.value ?? 'all';
+  const status = statusSel?.value ?? 'all';
+  const venue = venueSel?.value ?? 'all';
+
+  const rows = window.SCHEDULE
+    .filter(r => (tier==='all' || r.tier===tier))
+    .filter(r => (venue==='all' || r.venue===venue))
+    // status is static (Scheduled) right now; keep the filter for future
+    .filter(r => (status==='all' || 'Scheduled'===status))
+    .sort((a,b)=>{
+      if (a.date===b.date) return a.match-b.match;
+      return new Date(a.date) - new Date(b.date);
+    })
+    .map(r=>`
+      <tr class="border-b border-white/5 hover:bg-white/5">
+        <td class="p-4">${r.round}</td>
+        <td class="p-4">${r.match}</td>
+        <td class="p-4">${r.tier}</td>
+        <td class="p-4">${r.venue}</td>
+        <td class="p-4">${r.date}</td>
+        <td class="p-4">${r.fixture}</td>
+        <td class="p-4">Scheduled</td>
+      </tr>
+    `).join('');
+
+  if (tbody) tbody.innerHTML = rows || `<tr><td class="p-4 text-gray-400" colspan="7">No fixtures match your filters.</td></tr>`;
 }
+tierSel?.addEventListener('change', renderSchedule);
+statusSel?.addEventListener('change', renderSchedule);
+venueSel?.addEventListener('change', renderSchedule);
+renderSchedule();
 
-function applyFilters(){
-  let list = ALL_FIXTURES;
-  const t = tierSel?.value || 'all';
-  const s = statusSel?.value || 'all';
-  const v = venueSel?.value || 'all';
-
-  if (t !== 'all')  list = list.filter(x=>x.tier === t);
-  if (s !== 'all')  list = list.filter(x=>(x.status||'Scheduled') === s);
-  if (v !== 'all')  list = list.filter(x=>x.venue === v);
-
-  renderSchedule(list);
-}
-
-tierSel?.addEventListener('change', applyFilters);
-statusSel?.addEventListener('change', applyFilters);
-venueSel?.addEventListener('change', applyFilters);
-
-// Initial schedule paint
-document.addEventListener('DOMContentLoaded', ()=> {
-  renderSchedule(ALL_FIXTURES);
-});
-
-/* ============ CSV export ============ */
+/****************************************************
+ * CSV export
+ ****************************************************/
 document.getElementById('export-csv')?.addEventListener('click', ()=>{
-  if (!tbody) return;
-  const rows = [...tbody.querySelectorAll('tr')];
+  const rows = document.querySelectorAll('#schedule-table tbody tr');
   if (!rows.length) { alert('No schedule rows to export yet.'); return; }
-  const headers = [...document.querySelectorAll('#schedule-table thead th')].map(th=>th.textContent.trim());
+  const headers = Array.from(document.querySelectorAll('#schedule-table thead th')).map(th=>th.textContent.trim());
   const data = [headers];
   rows.forEach(tr=>{
-    data.push([...tr.querySelectorAll('td')].map(td=>td.textContent.trim()));
+    data.push(Array.from(tr.querySelectorAll('td')).map(td=>td.textContent.trim()));
   });
   const csv = data.map(r=>r.map(v=>`"${(v||'').replace(/"/g,'""')}"`).join(',')).join('\n');
   const url = URL.createObjectURL(new Blob([csv], {type:'text/csv'}));
   const a = document.createElement('a'); a.href=url; a.download='schedule.csv'; a.click(); URL.revokeObjectURL(url);
 });
+
+/****************************************************
+ * Home Round-1 fixtures (logos + “vs”)
+ ****************************************************/
+const TEAM_SLUGS = {
+  'desert falcons': 'desert-falcons',
+  'globo boomerangs': 'globo-boomerangs',
+  'ice breakers': 'ice-breakers',
+  'avalanche aces': 'avalanche-aces',
+  'rulo apaches': 'rulo-apaches',
+  'samurai kicksmashers': 'samurai-kicksmashers',
+  'samurai kick smashers': 'samurai-kicksmashers',
+  'baltic blades': 'baltic-blades',
+  'sonic viboras': 'sonic-viboras',
+};
+const logoForTeam = (name) => {
+  const key = (name || '').toLowerCase().replace(/\s+/g, ' ').trim();
+  const slug = TEAM_SLUGS[key];
+  return slug ? `assets/logos/${slug}.jpeg` : null;
+};
+const splitFixture = (fixture) => {
+  const parts = (fixture || '').split(/\s*-\s*/);
+  return [parts[0]?.trim() || '', parts[1]?.trim() || ''];
+};
+function fixtureRow({ home, away, date }) {
+  const homeLogo = logoForTeam(home);
+  const awayLogo = logoForTeam(away);
+  return `
+    <div class="rounded-xl border border-white/10 bg-white/5 p-3">
+      <div class="flex items-center justify-between gap-3">
+        <div class="flex items-center gap-3 min-w-0 w-2/5">
+          ${homeLogo ? `<img src="${homeLogo}" alt="${home}" class="h-8 w-8 rounded-full ring-1 ring-white/10">`
+                     : `<div class="h-8 w-8 rounded-full bg-white/10 grid place-items-center text-xs">${home.slice(0,1)}</div>`}
+          <span class="truncate">${home}</span>
+        </div>
+        <div class="text-sm opacity-80 w-1/5 text-center">vs</div>
+        <div class="flex items-center gap-3 min-w-0 w-2/5 justify-end">
+          <span class="truncate text-right">${away}</span>
+          ${awayLogo ? `<img src="${awayLogo}" alt="${away}" class="h-8 w-8 rounded-full ring-1 ring-white/10">`
+                     : `<div class="h-8 w-8 rounded-full bg-white/10 grid place-items-center text-xs">${away.slice(0,1)}</div>`}
+        </div>
+      </div>
+      <div class="mt-2 text-xs text-gray-400">${date}</div>
+    </div>
+  `;
+}
+function getRound1ByTier(tier) {
+  return window.SCHEDULE
+    .filter(f => f.tier===tier && Number(f.round)===1)
+    .sort((a,b)=>a.match-b.match)
+    .map(f=>({ date:f.date, fixture:f.fixture }));
+}
+function renderHomeRound1(){
+  const premWrap = document.getElementById('home-premier');
+  const champWrap = document.getElementById('home-championship');
+  if (!premWrap || !champWrap) return;
+  const prem = getRound1ByTier('Premier');
+  const champ = getRound1ByTier('Championship');
+  premWrap.innerHTML = prem.map(f => {
+    const [home, away] = splitFixture(f.fixture);
+    return fixtureRow({ home, away, date: f.date });
+  }).join('');
+  champWrap.innerHTML = champ.map(f => {
+    const [home, away] = splitFixture(f.fixture);
+    return fixtureRow({ home, away, date: f.date });
+  }).join('');
+}
+renderHomeRound1();

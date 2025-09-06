@@ -1,146 +1,106 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Franchises – Padel Pro</title>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Padel Pro – Franchises</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="css/styles.css">
 </head>
 <body class="bg-gray-900 text-white">
-  <!-- Top Nav -->
-  <nav class="bg-black/70 backdrop-blur-sm fixed w-full z-50">
-    <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
-      <a href="index.html" class="text-xl">🏓 Padel Pro</a>
-      <div class="hidden md:flex gap-6 text-sm">
-        <a href="index.html">Home</a>
-        <a href="franchises.html" class="text-blue-300">Franchises</a>
-        <a href="fantasy.html">Fantasy</a>
-        <a href="marketplace.html">Marketplace</a>
-        <a href="live.html">Live Stream</a>
-        <a href="schedule.html">Schedule</a>
-      </div>
-    </div>
-  </nav>
-  <div class="h-16"></div>
+  <header id="siteHeader"></header>
 
-  <!-- Page -->
-  <section class="max-w-7xl mx-auto px-4 py-10">
-    <div class="text-center mb-8">
-      <h1 class="text-4xl md:text-5xl font-extrabold mb-3 tracking-tight bg-gradient-to-r from-blue-300 to-purple-300 bg-clip-text text-transparent">
-        Lowveld Padel Franchises
-      </h1>
-      <p class="text-sm md:text-base tracking-widest text-indigo-200/80">MEET THE 8 POWERHOUSE FRANCHISES COMPETING FOR GLORY!!!</p>
-    </div>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-
-      <!-- Desert Falcons -->
-      <div class="bg-white/[0.03] ring-1 ring-white/10 rounded-2xl p-6 text-center">
-        <video data-logo class="w-28 h-28 mx-auto mb-4 rounded-full object-cover ring-2 ring-white/20"
-               poster="assets/logos/desert-falcons.jpeg" autoplay muted loop playsinline preload="metadata"
-               title="Desert Falcons logo animation">
-          <source src="assets/videos/DesertFalcons.mp4" type="video/mp4" />
-          <img src="assets/logos/desert-falcons.jpeg" alt="Desert Falcons" />
-        </video>
-        <h3 class="text-2xl font-extrabold text-orange-300">Desert Falcons</h3>
-        <p class="text-indigo-100/80 text-sm">Soaring to victory with precision and power</p>
+  <section class="pt-28 pb-12">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="text-center mb-10">
+        <h1 class="text-4xl md:text-5xl font-extrabold mb-3 tracking-tight
+                   bg-gradient-to-r from-blue-300 to-purple-300 bg-clip-text text-transparent">
+          Lowveld Padel Franchises
+        </h1>
+        <p class="text-sm md:text-base tracking-widest text-indigo-200/80">
+          MEET THE 8 POWERHOUSE FRANCHISES COMPETING FOR GLORY!!!
+        </p>
       </div>
 
-      <!-- Globo Boomerangs -->
-      <div class="bg-white/[0.03] ring-1 ring-white/10 rounded-2xl p-6 text-center">
-        <video data-logo class="w-28 h-28 mx-auto mb-4 rounded-full object-cover ring-2 ring-white/20"
-               poster="assets/logos/globo-boomerangs.jpeg" autoplay muted loop playsinline preload="metadata"
-               title="Globo Boomerangs logo animation">
-          <source src="assets/videos/globoboomerangs.mp4" type="video/mp4" />
-          <img src="assets/logos/globo-boomerangs.jpeg" alt="Globo Boomerangs" />
-        </video>
-        <h3 class="text-2xl font-extrabold text-blue-300">Globo Boomerangs</h3>
-        <p class="text-indigo-100/80 text-sm">What goes around, comes around stronger</p>
-      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <!-- Card helper -->
+        <!-- Desert Falcons -->
+        <a href="franchise.html?team=desert-falcons" class="frCard from-orange-900/40 to-yellow-900/40">
+          <video class="frVideo" poster="assets/logos/desert-falcons.jpeg" autoplay muted loop playsinline preload="metadata">
+            <source src="assets/videos/desertfalcons.mp4" type="video/mp4"/>
+            <img src="assets/logos/desert-falcons.jpeg" alt="Desert Falcons"/>
+          </video>
+          <h3 class="frName text-orange-300">Desert Falcons</h3>
+          <p class="frSub">Soaring to victory with precision and power</p>
+        </a>
 
-      <!-- Ice Breakers -->
-      <div class="bg-white/[0.03] ring-1 ring-white/10 rounded-2xl p-6 text-center">
-        <video data-logo class="w-28 h-28 mx-auto mb-4 rounded-full object-cover ring-2 ring-white/20"
-               poster="assets/logos/ice-breakers.jpeg" autoplay muted loop playsinline preload="metadata"
-               title="Ice Breakers logo animation">
-          <source src="assets/videos/icebreakers.mp4" type="video/mp4" />
-          <img src="assets/logos/ice-breakers.jpeg" alt="Ice Breakers" />
-        </video>
-        <h3 class="text-2xl font-extrabold text-cyan-300">Ice Breakers</h3>
-        <p class="text-indigo-100/80 text-sm">Breaking through with cool precision</p>
-      </div>
+        <a href="franchise.html?team=globo-boomerangs" class="frCard from-blue-900/40 to-red-900/40">
+          <video class="frVideo" poster="assets/logos/globo-boomerangs.jpeg" autoplay muted loop playsinline preload="metadata">
+            <source src="assets/videos/globoboomerangs.mp4" type="video/mp4"/>
+            <img src="assets/logos/globo-boomerangs.jpeg" alt="Globo Boomerangs"/>
+          </video>
+          <h3 class="frName text-blue-300">Globo Boomerangs</h3>
+          <p class="frSub">What goes around, comes around stronger</p>
+        </a>
 
-      <!-- Baltic Blades -->
-      <div class="bg-white/[0.03] ring-1 ring-white/10 rounded-2xl p-6 text-center">
-        <video data-logo class="w-28 h-28 mx-auto mb-4 rounded-full object-cover ring-2 ring-white/20"
-               poster="assets/logos/baltic-blades.jpeg" autoplay muted loop playsinline preload="metadata"
-               title="Baltic Blades logo animation">
-          <source src="assets/videos/balticblades.mp4" type="video/mp4" />
-          <img src="assets/logos/baltic-blades.jpeg" alt="Baltic Blades" />
-        </video>
-        <h3 class="text-2xl font-extrabold text-blue-300">Baltic Blades</h3>
-        <p class="text-indigo-100/80 text-sm">Sharp, swift, and unstoppable</p>
-      </div>
+        <a href="franchise.html?team=ice-breakers" class="frCard from-cyan-900/40 to-blue-900/40">
+          <video class="frVideo" poster="assets/logos/ice-breakers.jpeg" autoplay muted loop playsinline preload="metadata">
+            <source src="assets/videos/icebreakers.mp4" type="video/mp4"/>
+            <img src="assets/logos/ice-breakers.jpeg" alt="Ice Breakers"/>
+          </video>
+          <h3 class="frName text-cyan-300">Ice Breakers</h3>
+          <p class="frSub">Breaking through with cool precision</p>
+        </a>
 
-      <!-- Avalanche Aces -->
-      <div class="bg-white/[0.03] ring-1 ring-white/10 rounded-2xl p-6 text-center">
-        <video data-logo class="w-28 h-28 mx-auto mb-4 rounded-full object-cover ring-2 ring-white/20"
-               poster="assets/logos/avalanche-aces.jpeg" autoplay muted loop playsinline preload="metadata"
-               title="Avalanche Aces logo animation">
-          <source src="assets/videos/avalancheaces.mp4" type="video/mp4" />
-          <img src="assets/logos/avalanche-aces.jpeg" alt="Avalanche Aces" />
-        </video>
-        <h3 class="text-2xl font-extrabold text-blue-300">Avalanche Aces</h3>
-        <p class="text-indigo-100/80 text-sm">Unstoppable force of nature</p>
-      </div>
+        <a href="franchise.html?team=baltic-blades" class="frCard from-blue-900/40 to-purple-900/40">
+          <video class="frVideo" poster="assets/logos/baltic-blades.jpeg" autoplay muted loop playsinline preload="metadata">
+            <source src="assets/videos/balticblades.mp4" type="video/mp4"/>
+            <img src="assets/logos/baltic-blades.jpeg" alt="Baltic Blades"/>
+          </video>
+          <h3 class="frName text-blue-300">Baltic Blades</h3>
+          <p class="frSub">Sharp, swift, and unstoppable</p>
+        </a>
 
-      <!-- Rulo Apaches -->
-      <div class="bg-white/[0.03] ring-1 ring-white/10 rounded-2xl p-6 text-center">
-        <video data-logo class="w-28 h-28 mx-auto mb-4 rounded-full object-cover ring-2 ring-white/20"
-               poster="assets/logos/rulo-apaches.jpeg" autoplay muted loop playsinline preload="metadata"
-               title="Rulo Apaches logo animation">
-          <source src="assets/videos/ruloapaches.mp4" type="video/mp4" />
-          <img src="assets/logos/rulo-apaches.jpeg" alt="Rulo Apaches" />
-        </video>
-        <h3 class="text-2xl font-extrabold text-red-300">Rulo Apaches</h3>
-        <p class="text-indigo-100/80 text-sm">Warriors of the court</p>
-      </div>
+        <a href="franchise.html?team=avalanche-aces" class="frCard from-blue-900/40 to-orange-900/40">
+          <video class="frVideo" poster="assets/logos/avalanche-aces.jpeg" autoplay muted loop playsinline preload="metadata">
+            <source src="assets/videos/avalancheaces.mp4" type="video/mp4"/>
+            <img src="assets/logos/avalanche-aces.jpeg" alt="Avalanche Aces"/>
+          </video>
+          <h3 class="frName text-blue-300">Avalanche Aces</h3>
+          <p class="frSub">Unstoppable force of nature</p>
+        </a>
 
-      <!-- Samurai Kicksmashers -->
-      <div class="bg-white/[0.03] ring-1 ring-white/10 rounded-2xl p-6 text-center">
-        <video data-logo class="w-28 h-28 mx-auto mb-4 rounded-full object-cover ring-2 ring-white/20"
-               poster="assets/logos/samurai-kicksmashers.jpeg" autoplay muted loop playsinline preload="metadata"
-               title="Samurai Kicksmashers logo animation">
-          <source src="assets/videos/samuraikicksmashers.mp4" type="video/mp4" />
-          <img src="assets/logos/samurai-kicksmashers.jpeg" alt="Samurai Kicksmashers" />
-        </video>
-        <h3 class="text-2xl font-extrabold text-orange-300">Samurai Kicksmashers</h3>
-        <p class="text-indigo-100/80 text-sm">Honor, discipline, victory</p>
-      </div>
+        <a href="franchise.html?team=rulo-apaches" class="frCard from-red-900/40 to-orange-900/40">
+          <video class="frVideo" poster="assets/logos/rulo-apaches.jpeg" autoplay muted loop playsinline preload="metadata">
+            <source src="assets/videos/ruloapaches.mp4" type="video/mp4"/>
+            <img src="assets/logos/rulo-apaches.jpeg" alt="Rulo Apaches"/>
+          </video>
+          <h3 class="frName text-red-300">Rulo Apaches</h3>
+          <p class="frSub">Warriors of the court</p>
+        </a>
 
-      <!-- Sonic Viboras -->
-      <div class="bg-white/[0.03] ring-1 ring-white/10 rounded-2xl p-6 text-center">
-        <video data-logo class="w-28 h-28 mx-auto mb-4 rounded-full object-cover ring-2 ring-white/20"
-               poster="assets/logos/sonic-viboras.jpeg" autoplay muted loop playsinline preload="metadata"
-               title="Sonic Viboras logo animation">
-          <source src="assets/videos/sonicviboras.mp4" type="video/mp4" />
-          <img src="assets/logos/sonic-viboras.jpeg" alt="Sonic Viboras" />
-        </video>
-        <h3 class="text-2xl font-extrabold text-purple-300">Sonic Viboras</h3>
-        <p class="text-indigo-100/80 text-sm">Lightning fast, deadly accurate</p>
-      </div>
+        <a href="franchise.html?team=samurai-kicksmashers" class="frCard from-orange-900/40 to-blue-900/40">
+          <video class="frVideo" poster="assets/logos/samurai-kicksmashers.jpeg" autoplay muted loop playsinline preload="metadata">
+            <source src="assets/videos/samaraikicksmashers.mp4" type="video/mp4"/>
+            <img src="assets/logos/samurai-kicksmashers.jpeg" alt="Samurai Kicksmashers"/>
+          </video>
+          <h3 class="frName text-orange-300">Samurai Kicksmashers</h3>
+          <p class="frSub">Honor, discipline, victory</p>
+        </a>
 
+        <a href="franchise.html?team=sonic-viboras" class="frCard from-purple-900/40 to-pink-900/40">
+          <video class="frVideo" poster="assets/logos/sonic-viboras.jpeg" autoplay muted loop playsinline preload="metadata">
+            <source src="assets/videos/sonicviboras.mp4" type="video/mp4"/>
+            <img src="assets/logos/sonic-viboras.jpeg" alt="Sonic Viboras"/>
+          </video>
+          <h3 class="frName text-purple-300">Sonic Viboras</h3>
+          <p class="frSub">Lightning fast, deadly accurate</p>
+        </a>
+      </div>
     </div>
   </section>
 
-  <!-- Respect reduced motion -->
-  <script>
-    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      document.querySelectorAll('video[data-logo]').forEach(v => { v.removeAttribute('autoplay'); v.pause(); });
-    }
-  </script>
-
+  <footer id="siteFooter"></footer>
   <script type="module" src="js/app.js?v=7"></script>
 </body>
 </html>

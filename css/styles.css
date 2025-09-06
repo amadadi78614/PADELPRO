@@ -1,5 +1,35 @@
-/* Minimal extras on top of Tailwind */
-.feature-card { transition: transform 0.2s ease, box-shadow 0.2s ease; }
-.feature-card:hover { box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
-.franchise-card { transition: transform 0.2s ease, box-shadow 0.2s ease; }
-.franchise-card:hover { box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+/* Shared look & feel */
+.feature-card {
+  @apply bg-white/5 ring-1 ring-white/10 rounded-2xl p-5 hover:ring-white/20 hover:-translate-y-1 transition-all block;
+}
+.icon-bubble {
+  @apply w-12 h-12 rounded-full grid place-items-center text-white text-xl mb-4;
+}
+.feature-title { @apply text-base font-semibold; }
+.feature-sub   { @apply text-sm text-gray-400; }
+
+.pill-select {
+  @apply px-4 py-2 rounded-full bg-white/5 border border-white/10 text-white;
+}
+
+/* Franchise cards */
+.frCard { @apply bg-gradient-to-br rounded-2xl p-6 ring-1 ring-white/10 hover:ring-white/20 hover:-translate-y-1 transition-all; }
+.frVideo { @apply w-28 h-28 mx-auto mb-4 rounded-full object-cover ring-2 ring-white/20; }
+.frName { @apply text-xl font-extrabold text-center mb-1; }
+.frSub  { @apply text-indigo-100/80 text-sm text-center; }
+
+/* Home Round 1 fixtures */
+.round-wrap { @apply bg-white/5 ring-1 ring-white/10 rounded-2xl p-4; }
+.round-title { @apply text-lg font-semibold mb-3; }
+.fixture-card {
+  @apply bg-white/5 ring-1 ring-white/10 rounded-xl p-4;
+}
+.fixture-row {
+  @apply grid grid-cols-[32px,1fr,28px,1fr,32px] items-center gap-3;
+}
+.logo32 { @apply w-8 h-8 rounded-full object-cover; }
+.team-name { @apply text-sm font-medium; white-space: normal; }
+.vs-chip { @apply text-xs px-2 py-0.5 rounded bg-white/10; }
+
+/* Footer */
+.site-footer { @apply bg-black py-10; }

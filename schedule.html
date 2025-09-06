@@ -1,66 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Schedule – Padel Pro</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<link rel="stylesheet" href="css/styles.css">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Padel Pro – Schedule</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/styles.css">
 </head>
 <body class="bg-gray-900 text-white">
-<nav class="bg-black/70 backdrop-blur-sm fixed w-full z-50">
-  <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
-    <a href="index.html" class="text-xl">🏓 Padel Pro</a>
-    <div class="hidden md:flex gap-6 text-sm">
-      <a href="index.html">Home</a>
-      <a href="franchises.html">Franchises</a>
-      <a href="fantasy.html">Fantasy</a>
-      <a href="marketplace.html">Marketplace</a>
-      <a href="live.html">Live Stream</a>
-      <a href="schedule.html" class="text-blue-300">Schedule</a>
+  <header id="siteHeader"></header>
+
+  <section class="pt-28 pb-8">
+    <div class="max-w-7xl mx-auto px-4">
+      <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight mb-6
+                 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+        Schedule
+      </h1>
+
+      <div class="filters flex flex-wrap gap-3 mb-6">
+        <select id="filter-tier" class="pill-select">
+          <option value="all">All Tiers</option>
+          <option value="Premier">Premier</option>
+          <option value="Championship">Championship</option>
+        </select>
+        <select id="filter-venue" class="pill-select">
+          <option value="all">All Venues</option>
+          <option value="Play360">Play360</option>
+          <option value="PADEL24">PADEL24</option>
+        </select>
+        <button id="export-csv" class="px-4 py-2 rounded-full bg-blue-500/80 hover:bg-blue-500">Export CSV</button>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table id="schedule-table" class="w-full text-left border-collapse">
+          <thead>
+            <tr class="bg-white/5">
+              <th class="p-4">Round</th>
+              <th class="p-4">Match</th>
+              <th class="p-4">Tier</th>
+              <th class="p-4">Venue</th>
+              <th class="p-4">Date</th>
+              <th class="p-4">Fixture</th>
+              <th class="p-4">Status</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
     </div>
-  </div>
-</nav>
-<div class="h-16"></div>
+  </section>
 
-<section class="max-w-7xl mx-auto px-4 py-10">
-  <h1 class="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">Schedule</h1>
-
-  <div class="flex flex-wrap gap-3 mb-6">
-    <select id="filter-tier" class="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-white">
-      <option value="all">All Tiers</option>
-      <option value="Premier">Premier</option>
-      <option value="Championship">Championship</option>
-    </select>
-    <select id="filter-status" class="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-white">
-      <option value="all">All Statuses</option>
-      <option value="Scheduled">Scheduled</option>
-    </select>
-    <select id="filter-venue" class="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-white">
-      <option value="all">All Venues</option>
-      <option value="Play360">Play360</option>
-      <option value="PADEL24">PADEL24</option>
-    </select>
-    <button id="export-csv" class="px-4 py-2 rounded-full bg-blue-500/80 hover:bg-blue-500">Export CSV</button>
-  </div>
-
-  <div class="overflow-x-auto">
-    <table id="schedule-table" class="w-full text-left border-collapse">
-      <thead>
-        <tr class="bg-white/5">
-          <th class="p-4">Round</th>
-          <th class="p-4">Match</th>
-          <th class="p-4">Tier</th>
-          <th class="p-4">Venue</th>
-          <th class="p-4">Date</th>
-          <th class="p-4">Fixture</th>
-          <th class="p-4">Status</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-  </div>
-</section>
-
-<script type="module" src="js/app.js?v=6"></script>
+  <footer id="siteFooter"></footer>
+  <script type="module" src="js/app.js?v=7"></script>
 </body>
 </html>

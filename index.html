@@ -3,232 +3,102 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Padel Pro – Season 2</title>
+  <title>Padel Pro – Home</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-  <link href="css/styles.css" rel="stylesheet">
-
+  <link rel="stylesheet" href="css/styles.css">
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#0b0f1a">
   <link rel="apple-touch-icon" href="icons/icon-192x192.png">
 </head>
-
 <body class="bg-gray-900 text-white">
-  <div id="toastHost" class="fixed top-4 right-4 z-[200] space-y-2"></div>
+  <!-- Header (injected) -->
+  <header id="siteHeader"></header>
 
-  <!-- NAV -->
-  <nav id="topnav" class="bg-black/70 backdrop-blur-sm fixed w-full z-50 transition-all">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex justify-between h-16">
-        <a href="index.html" class="flex items-center gap-2">
-          <span class="text-2xl">🏓</span>
-          <h1 class="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
-            Padel Pro
-          </h1>
-        </a>
-
-        <div class="hidden md:flex items-center space-x-8">
-          <a href="index.html" class="hover:text-blue-400">Home</a>
-          <a href="franchises.html" class="hover:text-blue-400">Franchises</a>
-          <a href="fantasy.html" class="hover:text-blue-400">Fantasy</a>
-          <a href="marketplace.html" class="hover:text-blue-400">Marketplace</a>
-          <a href="live.html" class="hover:text-blue-400">Live Stream</a>
-          <a href="schedule.html" class="hover:text-blue-400">Schedule</a>
-
-          <a href="#" id="navGetStarted" class="bg-gradient-to-r from-blue-500 to-purple-600 px-6 py-2 rounded-lg hover:from-blue-600 hover:to-purple-700 transition-all">
-            Sign In / Register
-          </a>
-
-          <div class="relative">
-            <button id="profileBtn" class="hidden group relative flex items-center gap-3 rounded-full px-3 py-1.5 hover:bg-white/10 transition">
-              <span id="profileAvatar" class="h-8 w-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 grid place-items-center font-semibold">U</span>
-              <span id="profileName" class="text-sm"></span>
-              <i class="fa-solid fa-chevron-down text-xs opacity-70"></i>
-            </button>
-            <div id="profileMenu" class="hidden absolute right-0 mt-2 w-48 rounded-xl border border-white/10 bg-[#0b0f1a]/95 backdrop-blur shadow-2xl overflow-hidden">
-              <a href="dashboard.html" class="block px-4 py-2.5 hover:bg-white/5 text-sm">Dashboard</a>
-              <button id="btnSignOut" class="w-full text-left px-4 py-2.5 hover:bg-white/5 text-sm">Sign out</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="md:hidden flex items-center">
-          <button onclick="document.getElementById('mobileMenu').classList.toggle('hidden')" class="text-white" aria-label="Open menu">
-            <i class="fas fa-bars text-xl"></i>
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <div id="mobileMenu" class="hidden md:hidden bg-black/95 border-t border-white/10">
-      <div class="px-3 pt-2 pb-3 space-y-1">
-        <a href="index.html" class="block px-3 py-2 hover:bg-white/5 rounded">Home</a>
-        <a href="franchises.html" class="block px-3 py-2 hover:bg-white/5 rounded">Franchises</a>
-        <a href="fantasy.html" class="block px-3 py-2 hover:bg-white/5 rounded">Fantasy</a>
-        <a href="marketplace.html" class="block px-3 py-2 hover:bg-white/5 rounded">Marketplace</a>
-        <a href="live.html" class="block px-3 py-2 hover:bg-white/5 rounded">Live Stream</a>
-        <a href="schedule.html" class="block px-3 py-2 hover:bg-white/5 rounded">Schedule</a>
-
-        <a href="#" id="mobileGetStarted" class="block w-full px-3 py-2 bg-gradient-to-r from-blue-500 to-purple-600 rounded text-center">Sign In / Register</a>
-        <div id="mobileWelcome" class="hidden px-3 text-sm text-gray-300"></div>
-        <button id="mobileSignOut" class="hidden w-full px-3 py-2 bg-white/10 hover:bg-white/20 rounded text-left">Sign out</button>
-      </div>
-    </div>
-  </nav>
-  <div class="h-16"></div>
-
-  <!-- Tiles -->
-  <section class="py-16 bg-gradient-to-br from-gray-900 to-black">
+  <!-- Hero -->
+  <section class="pt-28 pb-8 bg-gradient-to-br from-gray-900 to-black">
     <div class="max-w-7xl mx-auto px-4">
-      <div class="text-center mb-12">
-        <h2 class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
-          Platform Features
-        </h2>
-        <p class="text-xl text-gray-400">Everything you need for the ultimate padel experience</p>
-      </div>
+      <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight mb-3
+                 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+        Platform Features
+      </h1>
+      <p class="text-gray-400 text-lg">Everything you need for the ultimate padel experience</p>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
-        <a href="franchises.html" class="group bg-white/[0.03] ring-1 ring-white/10 hover:ring-white/20 rounded-2xl p-6 transition-all">
-          <div class="w-14 h-14 rounded-full bg-gradient-to-r from-fuchsia-500 to-pink-500 grid place-items-center mb-4">
-            <i class="fa-solid fa-users text-white text-xl"></i>
+      <!-- Feature tiles -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5 mt-8">
+        <a href="franchises.html" class="feature-card">
+          <div class="icon-bubble bg-gradient-to-r from-indigo-500 to-purple-500">
+            🛡️
           </div>
-          <h3 class="text-lg font-semibold mb-1 group-hover:text-pink-300">Lowveld Padel Franchises</h3>
-          <p class="text-sm text-white/70">Meet the 8 franchises</p>
+          <div class="feature-title">Lowveld Padel Franchises</div>
+          <div class="feature-sub">Meet the 8 powerhouse teams</div>
         </a>
 
-        <a href="schedule.html" class="group bg-white/[0.03] ring-1 ring-white/10 hover:ring-white/20 rounded-2xl p-6 transition-all">
-          <div class="w-14 h-14 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 grid place-items-center mb-4">
-            <i class="fa-regular fa-calendar text-white text-xl"></i>
+        <a href="schedule.html" class="feature-card">
+          <div class="icon-bubble bg-gradient-to-r from-blue-500 to-cyan-500">
+            📅
           </div>
-          <h3 class="text-lg font-semibold mb-1 group-hover:text-cyan-300">Schedules</h3>
-          <p class="text-sm text-white/70">Fixtures & results</p>
+          <div class="feature-title">Schedules</div>
+          <div class="feature-sub">All fixtures by tier & venue</div>
         </a>
 
-        <a href="live.html" class="group bg-white/[0.03] ring-1 ring-white/10 hover:ring-white/20 rounded-2xl p-6 transition-all">
-          <div class="w-14 h-14 rounded-full bg-gradient-to-r from-emerald-500 to-green-500 grid place-items-center mb-4">
-            <i class="fa-solid fa-tower-broadcast text-white text-xl"></i>
+        <a href="live.html" class="feature-card">
+          <div class="icon-bubble bg-gradient-to-r from-emerald-500 to-green-500">
+            📺
           </div>
-          <h3 class="text-lg font-semibold mb-1 group-hover:text-emerald-300">Live Stream</h3>
-          <p class="text-sm text-white/70">Watch matches live</p>
+          <div class="feature-title">Live Stream</div>
+          <div class="feature-sub">Watch the action in real time</div>
         </a>
 
-        <a href="fantasy.html" class="group bg-white/[0.03] ring-1 ring-white/10 hover:ring-white/20 rounded-2xl p-6 transition-all">
-          <div class="w-14 h-14 rounded-full bg-gradient-to-r from-violet-500 to-purple-500 grid place-items-center mb-4">
-            <i class="fa-solid fa-gamepad text-white text-xl"></i>
+        <a href="fantasy.html" class="feature-card">
+          <div class="icon-bubble bg-gradient-to-r from-pink-500 to-rose-500">
+            🏆
           </div>
-          <h3 class="text-lg font-semibold mb-1 group-hover:text-violet-300">Fantasy League</h3>
-          <p class="text-sm text-white/70">Pick squads, win points</p>
+          <div class="feature-title">Fantasy League</div>
+          <div class="feature-sub">Pick your squad & compete</div>
         </a>
 
-        <a href="marketplace.html" class="group bg-white/[0.03] ring-1 ring-white/10 hover:ring-white/20 rounded-2xl p-6 transition-all">
-          <div class="w-14 h-14 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 grid place-items-center mb-4">
-            <i class="fa-solid fa-store text-white text-xl"></i>
+        <a href="marketplace.html" class="feature-card">
+          <div class="icon-bubble bg-gradient-to-r from-orange-500 to-amber-500">
+            🛒
           </div>
-          <h3 class="text-lg font-semibold mb-1 group-hover:text-amber-300">Marketplace</h3>
-          <p class="text-sm text-white/70">Gear, coaching & more</p>
+          <div class="feature-title">Marketplace</div>
+          <div class="feature-sub">Gear, coaching & more</div>
         </a>
       </div>
     </div>
   </section>
 
-  <!-- Round 1 cards -->
-  <section class="py-6">
+  <!-- Round 1 Fixtures (rendered by app.js) -->
+  <section class="py-10">
     <div class="max-w-7xl mx-auto px-4">
-      <div class="flex items-end justify-between mb-6">
-        <h2 class="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-300 to-purple-300 bg-clip-text text-transparent">
-          Round 1 Fixtures
-        </h2>
-        <a href="schedule.html" class="text-sm text-white/80 hover:text-white underline underline-offset-4">View full schedule</a>
+      <div class="flex items-end justify-between mb-5">
+        <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight">Round 1 Fixtures</h2>
+        <a href="schedule.html" class="text-sm text-blue-300 hover:text-blue-200 underline">
+          View full schedule
+        </a>
       </div>
 
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div class="bg-white/[0.03] ring-1 ring-white/10 rounded-2xl p-4">
-          <div class="flex items-center gap-2 mb-4">
-            <span class="h-2 w-2 rounded-full bg-blue-400"></span>
-            <h3 class="font-semibold tracking-wide text-white/90">Premier</h3>
-          </div>
-          <div id="round1-premier" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
-        </div>
-
-        <div class="bg-white/[0.03] ring-1 ring-white/10 rounded-2xl p-4">
-          <div class="flex items-center gap-2 mb-4">
-            <span class="h-2 w-2 rounded-full bg-emerald-400"></span>
-            <h3 class="font-semibold tracking-wide text-white/90">Championship</h3>
-          </div>
-          <div id="round1-champ" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
-        </div>
-      </div>
+      <div id="homeRound1" class="grid grid-cols-1 lg:grid-cols-2 gap-6"></div>
     </div>
   </section>
 
   <!-- CTA -->
-  <section class="py-20 bg-gradient-to-r from-blue-600 to-purple-700">
+  <section class="py-14 bg-gradient-to-r from-blue-600 to-purple-700">
     <div class="max-w-4xl mx-auto text-center px-4">
       <h2 class="text-4xl md:text-5xl font-bold mb-6 text-white">Ready to Dominate?</h2>
       <p class="text-xl mb-8 text-blue-100">Join Padel Pro and experience the future of padel competition</p>
-      <div class="flex flex-col sm:flex-row gap-4 justify-center">
-        <a href="#" id="ctaJoinNow" class="bg-white text-blue-600 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-100 transition-all transform hover:scale-105">Sign In / Register</a>
-        <a href="dashboard.html" id="ctaAdmin" class="hidden"></a>
-      </div>
+      <a href="#" id="ctaJoinNow"
+         class="inline-block bg-white text-blue-600 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-100 transition-all transform hover:scale-105">
+        Sign In / Register
+      </a>
+      <a href="dashboard.html" id="ctaAdmin" class="hidden"></a>
     </div>
   </section>
 
-  <footer class="bg-black py-12">
-    <div class="max-w-7xl mx-auto px-4 text-center text-gray-400">© <span id="year"></span> Nomz. All rights reserved.</div>
-  </footer>
+  <!-- Footer (injected) -->
+  <footer id="siteFooter" class="mt-8"></footer>
 
-  <!-- Auth Modal (same as before) -->
-  <div id="authOverlay" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden items-center justify-center z-[100]">
-    <div class="w-full max-w-md mx-4">
-      <div class="relative bg-gradient-to-b from-white/10 to-white/5 border border-white/10 rounded-2xl shadow-2xl p-6">
-        <button id="authClose" class="absolute top-3 right-3 text-white/70 hover:text-white" aria-label="Close">✕</button>
-
-        <div id="authSignIn">
-          <h2 class="text-xl font-semibold mb-4">Sign In</h2>
-          <form id="signin_modal" class="space-y-4">
-            <div>
-              <label class="block text-sm mb-1">Email</label>
-              <input id="email" type="email" class="w-full px-3 py-2 rounded bg-white/5 border border-white/10" required />
-            </div>
-            <div>
-              <label class="block text-sm mb-1">Password</label>
-              <input id="password" type="password" class="w-full px-3 py-2 rounded bg-white/5 border border-white/10" required />
-            </div>
-            <p id="error" class="text-rose-300 text-sm min-h-[1.25rem]"></p>
-            <button class="w-full py-2 rounded bg-blue-500/80 hover:bg-blue-500">Sign In</button>
-          </form>
-          <button id="getTempModal" type="button" class="mt-3 text-sm underline underline-offset-2 hover:no-underline opacity-90">Forgot password? Send reset link</button>
-          <p id="tempMsgModal" class="text-emerald-300 text-sm min-h-[1.25rem] mt-1"></p>
-          <div class="mt-4 text-sm text-center opacity-90">
-            Not registered? <button id="goRegister" class="underline hover:no-underline text-blue-300">Register Now</button>
-          </div>
-          <p class="text-xs opacity-75 mt-3">Tip: click “Send reset link” to set your password.</p>
-        </div>
-
-        <div id="authRegister" class="hidden">
-          <h2 class="text-xl font-semibold mb-4">Create Account</h2>
-          <form id="register_modal" class="space-y-4">
-            <div>
-              <label class="block text-sm mb-1">Full Name</label>
-              <input id="r_name" type="text" class="w-full px-3 py-2 rounded bg-white/5 border border-white/10" required />
-            </div>
-            <div>
-              <label class="block text-sm mb-1">Email</label>
-              <input id="r_email" type="email" class="w-full px-3 py-2 rounded bg-white/5 border border-white/10" required />
-            </div>
-            <button class="w-full py-2 rounded bg-emerald-500/80 hover:bg-emerald-500">Create Account</button>
-            <p id="r_msg_modal" class="text-sm mt-2 min-h-[1.25rem]"></p>
-          </form>
-          <div class="mt-4 text-sm text-center opacity-90">
-            Already have an account? <button id="goSignIn" class="underline hover:no-underline text-blue-300">Sign In</button>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </div>
-
-  <script type="module" src="js/app.js?v=6"></script>
+  <script type="module" src="js/app.js?v=7"></script>
 </body>
 </html>

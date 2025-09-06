@@ -1,53 +1,68 @@
-/* =========================
-   Padel Pro — app.js
-   ========================= */
+/* ============ Footer year ============ */
+document.getElementById('year')?.textContent = new Date().getFullYear();
 
-/* ---------- Footer year ---------- */
-const y = document.getElementById('year');
-if (y) y.textContent = new Date().getFullYear();
-
-/* ---------- Smooth section toggles (if sections exist on page) ---------- */
+/* ============ Sections / Router ============ */
 const sectionIds = ['home','franchises','fantasy','marketplace','live-stream','schedule'];
+
 function showSection(id){
   sectionIds.forEach(s=>{
-    const el=document.getElementById(s); if(!el) return;
-    el.classList.toggle('hidden', s!==id);
+    const el = document.getElementById(s);
+    if (el) el.classList.toggle('hidden', s!==id);
   });
-  const m=document.getElementById('mobileMenu');
-  if(m && !m.classList.contains('hidden')) m.classList.add('hidden');
+  const m = document.getElementById('mobileMenu');
+  if (m && !m.classList.contains('hidden')) m.classList.add('hidden');
   document.getElementById(id)?.scrollIntoView({behavior:'smooth', block:'start'});
 }
-document.querySelectorAll('a[href^="#"]').forEach(a=>{
+
+// Intercept any same-page link that contains a hash (supports "#home" and "index.html#home")
+document.querySelectorAll('a[href*="#"]').forEach(a=>{
   a.addEventListener('click', e=>{
-    const id=a.getAttribute('href').slice(1);
-    if(sectionIds.includes(id)){ e.preventDefault(); showSection(id); }
+    const href = a.getAttribute('href') || '';
+    const i = href.indexOf('#');
+    if (i === -1) return;
+    const id = href.slice(i+1);
+    if (sectionIds.includes(id)) {
+      e.preventDefault();
+      history.pushState(null, '', '#' + id);
+      showSection(id);
+    }
   });
 });
+
+// Keep UI in sync with the URL (back/forward/manual edits)
+function handleHashChange(){
+  const id = (location.hash || '#home').slice(1);
+  showSection(sectionIds.includes(id) ? id : 'home');
+}
+window.addEventListener('hashchange', handleHashChange);
+document.addEventListener('DOMContentLoaded', handleHashChange);
+
+// Mobile menu helper
 function toggleMobileMenu(){ document.getElementById('mobileMenu')?.classList.toggle('hidden'); }
 window.toggleMobileMenu = toggleMobileMenu;
 
-/* ---------- Polished: nav shadow on scroll ---------- */
+// Polished: nav shadow on scroll
 const topnav = document.getElementById('topnav');
 const navShadow = () => topnav?.classList.toggle('shadow-lg', window.scrollY > 4);
 navShadow(); window.addEventListener('scroll', navShadow);
 
-/* ---------- Toast helper ---------- */
+/* ============ Toasts ============ */
 const toastHost = document.getElementById('toastHost');
 function toast(msg, kind='info'){
   if (!toastHost) return;
   const base = document.createElement('div');
-  base.className = `px-4 py-3 rounded-xl text-sm shadow-2xl border transition-all duration-300 ${
-    kind==='error' ? 'bg-rose-600/90 border-rose-400/40' :
+  base.className = `px-4 py-3 rounded-xl text-sm shadow-2xl border ${
+    kind==='error'   ? 'bg-rose-600/90 border-rose-400/40' :
     kind==='success' ? 'bg-emerald-600/90 border-emerald-400/40' :
-    'bg-slate-800/90 border-white/10'
-  }`;
+                       'bg-slate-800/90 border-white/10'
+  } transition opacity-100`;
   base.textContent = msg;
   toastHost.appendChild(base);
   setTimeout(()=>{ base.classList.add('opacity-0','translate-y-1'); }, 2400);
   setTimeout(()=>{ base.remove(); }, 3000);
 }
 
-/* ---------- Modal DOM ---------- */
+/* ============ Auth Modal DOM ============ */
 const overlay          = document.getElementById('authOverlay');
 const authClose        = document.getElementById('authClose');
 const signInView       = document.getElementById('authSignIn');
@@ -55,7 +70,7 @@ const registerView     = document.getElementById('authRegister');
 const goRegister       = document.getElementById('goRegister');
 const goSignIn         = document.getElementById('goSignIn');
 
-/* ---------- Nav DOM ---------- */
+/* ============ Nav DOM ============ */
 const navGetStarted    = document.getElementById('navGetStarted');
 const mobileGetStarted = document.getElementById('mobileGetStarted');
 const ctaJoinNow       = document.getElementById('ctaJoinNow');
@@ -70,40 +85,7 @@ const mobileWelcome= document.getElementById('mobileWelcome');
 const mobileSignOut= document.getElementById('mobileSignOut');
 const btnSignOut   = document.getElementById('btnSignOut');
 
-/* ---------- Open/close auth modal ---------- */
-['navGetStarted','mobileGetStarted','ctaJoinNow'].forEach(id=>{
-  const btn=document.getElementById(id); if(!btn) return;
-  btn.addEventListener('click', (e)=>{
-    e.preventDefault();
-    overlay?.classList.remove('hidden'); overlay?.classList.add('flex');
-    signInView?.classList.remove('hidden'); registerView?.classList.add('hidden');
-  });
-});
-authClose?.addEventListener('click', ()=>{
-  overlay?.classList.add('hidden'); overlay?.classList.remove('flex');
-});
-goRegister?.addEventListener('click', ()=>{
-  signInView?.classList.add('hidden'); registerView?.classList.remove('hidden');
-});
-goSignIn?.addEventListener('click', ()=>{
-  registerView?.classList.add('hidden'); signInView?.classList.remove('hidden');
-});
-
-/* ---------- Profile dropdown ---------- */
-profileBtn?.addEventListener('click', (e)=>{
-  e.stopPropagation();
-  profileMenu?.classList.toggle('hidden');
-});
-document.addEventListener('click', (e)=>{
-  if(profileMenu && !profileMenu.classList.contains('hidden')){
-    const within = profileMenu.contains(e.target) || profileBtn?.contains(e.target);
-    if(!within) profileMenu.classList.add('hidden');
-  }
-});
-
-/* =========================================================
-   Firebase (auth only; schedule is public & rendered anyway)
-   ========================================================= */
+/* ============ Firebase ============ */
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
 import {
   getAuth, onAuthStateChanged,
@@ -127,9 +109,43 @@ const app  = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db   = getFirestore(app);
 
-/* ---------- Auth state → UI (Schedule stays visible!) ---------- */
+/* ============ Auth modal open/close ============ */
+['navGetStarted','mobileGetStarted','ctaJoinNow'].forEach(id=>{
+  const btn=document.getElementById(id); if(!btn) return;
+  btn.addEventListener('click', (e)=>{
+    if(auth.currentUser) return;
+    e.preventDefault();
+    overlay?.classList.remove('hidden'); overlay?.classList.add('flex');
+    signInView?.classList.remove('hidden'); registerView?.classList.add('hidden');
+  });
+});
+authClose?.addEventListener('click', ()=>{
+  overlay?.classList.add('hidden'); overlay?.classList.remove('flex');
+});
+goRegister?.addEventListener('click', ()=>{
+  signInView?.classList.add('hidden'); registerView?.classList.remove('hidden');
+});
+goSignIn?.addEventListener('click', ()=>{
+  registerView?.classList.add('hidden'); signInView?.classList.remove('hidden');
+});
+
+/* ============ Profile dropdown ============ */
+profileBtn?.addEventListener('click', (e)=>{
+  e.stopPropagation();
+  profileMenu?.classList.toggle('hidden');
+});
+document.addEventListener('click', (e)=>{
+  if (!profileMenu || !profileBtn) return;
+  if(!profileMenu.classList.contains('hidden')){
+    const within = profileMenu.contains(e.target) || profileBtn.contains(e.target);
+    if(!within) profileMenu.classList.add('hidden');
+  }
+});
+
+/* ============ Auth state → UI ============ */
 onAuthStateChanged(auth, async (user) => {
   if (user) {
+    // Ensure user doc exists (ignore failures if rules are locked)
     try {
       const uref = doc(db, 'users', user.uid);
       const snap = await getDoc(uref);
@@ -142,20 +158,25 @@ onAuthStateChanged(auth, async (user) => {
           createdAt: serverTimestamp()
         });
       }
-    } catch { /* ignore if rules readonly */ }
+    } catch (_) {}
 
     const name = user.displayName || (user.email?.split('@')[0] ?? 'Player');
     const init = (name?.trim()[0] || 'U').toUpperCase();
 
+    // Desktop: profile
     navGetStarted?.classList.add('hidden');
     profileBtn?.classList.remove('hidden');
-    if (profileName) profileName.textContent = name;
-    if (profileAvatar) profileAvatar.textContent = init;
+    if (profileName)  profileName.textContent  = name;
+    if (profileAvatar)profileAvatar.textContent = init;
 
+    // Buttons/sections
     ctaJoinNow?.classList.add('hidden'); ctaAdmin?.classList.remove('hidden');
     mobileGetStarted?.classList.add('hidden');
-    if (mobileWelcome){ mobileWelcome.classList.remove('hidden'); mobileWelcome.textContent = `Welcome, ${name}`; }
+    mobileWelcome?.classList.remove('hidden');
+    if (mobileWelcome) mobileWelcome.textContent = `Welcome, ${name}`;
     mobileSignOut?.classList.remove('hidden');
+
+    // Optional: keep fantasy/marketplace/live-stream gated if you like.
   } else {
     profileBtn?.classList.add('hidden');
     profileMenu?.classList.add('hidden');
@@ -168,7 +189,7 @@ onAuthStateChanged(auth, async (user) => {
   }
 });
 
-/* ---------- Sign in ---------- */
+/* ============ Sign in / Register / Reset / Sign out ============ */
 document.getElementById('signin_modal')?.addEventListener('submit', async (e)=>{
   e.preventDefault();
   const email = document.getElementById('email').value.trim();
@@ -186,7 +207,6 @@ document.getElementById('signin_modal')?.addEventListener('submit', async (e)=>{
   }
 });
 
-/* ---------- Register ---------- */
 document.getElementById('register_modal')?.addEventListener('submit', async (e)=>{
   e.preventDefault();
   const name  = document.getElementById('r_name').value.trim();
@@ -212,7 +232,6 @@ document.getElementById('register_modal')?.addEventListener('submit', async (e)=
   }
 });
 
-/* ---------- Forgot password ---------- */
 document.getElementById('getTempModal')?.addEventListener('click', async (e)=>{
   e.preventDefault();
   const email = document.getElementById('email').value.trim();
@@ -230,7 +249,6 @@ document.getElementById('getTempModal')?.addEventListener('click', async (e)=>{
   }
 });
 
-/* ---------- Sign out ---------- */
 btnSignOut?.addEventListener('click', async ()=>{
   await signOut(auth);
   toast('Signed out', 'info');
@@ -241,39 +259,9 @@ mobileSignOut?.addEventListener('click', async ()=>{
   toast('Signed out', 'info');
 });
 
-/* =========================================================
-   SCHEDULE (public) — EXACTLY your two fixture lists
-   ========================================================= */
-
-/** Parse "Monday, 15 September 2025" → Date */
-function parsePrettyDate(label){
-  if (!label) return null;
-  // Example: "Monday, 15 September 2025"
-  const parts = label.split(',')[1]?.trim() ?? label.trim(); // "15 September 2025"
-  const [d, monthName, y] = parts.split(' ');
-  const months = {
-    January:0, February:1, March:2, April:3, May:4, June:5,
-    July:6, August:7, September:8, October:9, November:10, December:11
-  };
-  const m = months[monthName];
-  if (m==null) return null;
-  return new Date(Number(y), m, Number(d));
-}
-
-function statusForDate(label){
-  const dt = parsePrettyDate(label);
-  if (!dt) return 'Scheduled';
-  const now = new Date();
-  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  const game  = new Date(dt.getFullYear(), dt.getMonth(), dt.getDate());
-  if (game.getTime() === today.getTime()) return 'Today';
-  if (game < today) return 'Completed';
-  return 'Scheduled';
-}
-
-/* ----- FIXTURES (order is intentional; do not sort) ----- */
-const FIXTURES = [
-  /* Premier */
+/* ============ Schedules ============ */
+/* Premier (exactly as provided) */
+const PREMIER_FIXTURES = [
   {round:1, match:1,  tier:'Premier', venue:'Play360', date:'Monday, 15 September 2025', fixture:'Rulo Apaches - Samurai Kick Smashers'},
   {round:1, match:2,  tier:'Premier', venue:'Play360', date:'Tuesday, 16 September 2025', fixture:'Desert Falcons - Baltic Blades'},
   {round:1, match:3,  tier:'Premier', venue:'Play360', date:'Wednesday, 17 September 2025', fixture:'Globo Boomerangs - Sonic Viboras'},
@@ -309,12 +297,14 @@ const FIXTURES = [
   {round:7, match:27, tier:'Premier', venue:'Play360', date:'Tuesday, 11 November 2025', fixture:'Sonic Viboras - Desert Falcons'},
   {round:7, match:28, tier:'Premier', venue:'Play360', date:'Thursday, 13 November 2025', fixture:'Avalanche Aces - Samurai Kick Smashers'},
 
-  {round:'', match:29, tier:'Premier', venue:'Play360', date:'Monday, 24 November 2025', fixture:'Play off 1'},
-  {round:'', match:30, tier:'Premier', venue:'Play360', date:'Tuesday, 25 November 2025', fixture:'Play off 2'},
-  {round:'', match:31, tier:'Premier', venue:'Play360', date:'Monday, 01 December 2025', fixture:'Play off 3'},
-  {round:'', match:32, tier:'Premier', venue:'Play360', date:'Saturday, 06 December 2025', fixture:'FINALS: Premier'},
+  {round:29, match:1, tier:'Premier', venue:'Play360', date:'Monday, 24 November 2025', fixture:'Play off 1'},
+  {round:30, match:1, tier:'Premier', venue:'Play360', date:'Tuesday, 25 November 2025', fixture:'Play off 2'},
+  {round:31, match:1, tier:'Premier', venue:'Play360', date:'Monday, 01 December 2025', fixture:'Play off 3'},
+  {round:32, match:1, tier:'Premier', venue:'Play360', date:'Saturday, 06 December 2025', fixture:'FINALS: Premier'},
+].map(x=>({...x, status:'Scheduled'}));
 
-  /* Championship */
+/* Championship (exactly as provided) */
+const CHAMP_FIXTURES = [
   {round:1, match:1,  tier:'Championship', venue:'PADEL24', date:'Monday, 15 September 2025', fixture:'Globo Boomerangs - Sonic Viboras'},
   {round:1, match:2,  tier:'Championship', venue:'PADEL24', date:'Monday, 15 September 2025', fixture:'Ice Breakers - Avalanche Aces'},
   {round:1, match:3,  tier:'Championship', venue:'PADEL24', date:'Wednesday, 17 September 2025', fixture:'Rulo Apaches - Samurai Kicksmashers'},
@@ -350,72 +340,75 @@ const FIXTURES = [
   {round:7, match:27, tier:'Championship', venue:'PADEL24', date:'Wednesday, 12 November 2025', fixture:'Baltic Blades - Ice Breakers'},
   {round:7, match:28, tier:'Championship', venue:'PADEL24', date:'Wednesday, 12 November 2025', fixture:'Sonic Viboras - Desert Falcons'},
 
-  {round:'', match:29, tier:'Championship', venue:'PADEL24', date:'Wednesday, 26 November 2025', fixture:'Play off 1'},
-  {round:'', match:30, tier:'Championship', venue:'PADEL24', date:'Wednesday, 26 November 2025', fixture:'Play off 2'},
-  {round:'', match:31, tier:'Championship', venue:'PADEL24', date:'Tuesday, 02 December 2025', fixture:'Play off 3'},
-  {round:'', match:32, tier:'Championship', venue:'Play360', date:'Saturday, 06 December 2025', fixture:'FINALS: Championship'},
-];
+  {round:29, match:1, tier:'Championship', venue:'PADEL24', date:'Wednesday, 26 November 2025', fixture:'Play off 1'},
+  {round:30, match:1, tier:'Championship', venue:'PADEL24', date:'Wednesday, 26 November 2025', fixture:'Play off 2'},
+  {round:31, match:1, tier:'Championship', venue:'PADEL24', date:'Tuesday, 02 December 2025', fixture:'Play off 3'},
+  {round:32, match:1, tier:'Championship', venue:'Play360', date:'Saturday, 06 December 2025', fixture:'FINALS: Championship'},
+].map(x=>({...x, status:'Scheduled'}));
 
-/* ---------- Rendering & filters ---------- */
-const tb = document.querySelector('#schedule-table tbody');
-const selTier   = document.getElementById('filter-tier');
-const selStatus = document.getElementById('filter-status');
-const selVenue  = document.getElementById('filter-venue');
+const ALL_FIXTURES = [...PREMIER_FIXTURES, ...CHAMP_FIXTURES];
 
-function renderSchedule(){
-  if (!tb) return; // Not on a page with the schedule table.
+/* ============ Schedule rendering + filters ============ */
+const tbody = document.querySelector('#schedule-table tbody');
+const tierSel   = document.getElementById('filter-tier');
+const statusSel = document.getElementById('filter-status');
+const venueSel  = document.getElementById('filter-venue');
 
-  const tier   = selTier?.value ?? 'all';
-  const status = selStatus?.value ?? 'all';
-  const venue  = selVenue?.value ?? 'all';
-
-  // We do NOT sort; we keep your order as declared above.
-  const filtered = FIXTURES.filter(item=>{
-    const st = statusForDate(item.date);
-    const tierOk   = (tier==='all'   || item.tier===tier);
-    const venueOk  = (venue==='all'  || item.venue===venue);
-    const statusOk = (status==='all' || st===status);
-    return tierOk && venueOk && statusOk;
-  });
-
-  tb.innerHTML = '';
-  const frag = document.createDocumentFragment();
-  filtered.forEach(row=>{
-    const tr = document.createElement('tr');
-    tr.className = 'border-b border-white/5 hover:bg-white/5';
-    const st = statusForDate(row.date);
-    tr.innerHTML = `
-      <td class="p-3">${row.round || ''}</td>
-      <td class="p-3">${row.match}</td>
-      <td class="p-3">${row.tier}</td>
-      <td class="p-3">${row.venue}</td>
-      <td class="p-3">${row.date}</td>
-      <td class="p-3">${row.fixture}</td>
-      <td class="p-3">${st}</td>
-    `;
-    frag.appendChild(tr);
-  });
-  tb.appendChild(frag);
+function renderSchedule(list){
+  if (!tbody) return;
+  tbody.innerHTML = '';
+  list
+    .slice()
+    .sort((a,b)=> (a.round - b.round) || (a.match - b.match))
+    .forEach(row=>{
+      const tr = document.createElement('tr');
+      tr.className = 'border-b border-white/5 hover:bg-white/5';
+      tr.innerHTML = `
+        <td class="p-4">${row.round ?? ''}</td>
+        <td class="p-4">${row.match ?? ''}</td>
+        <td class="p-4">${row.tier}</td>
+        <td class="p-4">${row.venue}</td>
+        <td class="p-4 whitespace-nowrap">${row.date}</td>
+        <td class="p-4">${row.fixture}</td>
+        <td class="p-4">${row.status || 'Scheduled'}</td>
+      `;
+      tbody.appendChild(tr);
+    });
 }
 
-selTier?.addEventListener('change', renderSchedule);
-selStatus?.addEventListener('change', renderSchedule);
-selVenue?.addEventListener('change', renderSchedule);
+function applyFilters(){
+  let list = ALL_FIXTURES;
+  const t = tierSel?.value || 'all';
+  const s = statusSel?.value || 'all';
+  const v = venueSel?.value || 'all';
 
-/* ---------- CSV export ---------- */
+  if (t !== 'all')  list = list.filter(x=>x.tier === t);
+  if (s !== 'all')  list = list.filter(x=>(x.status||'Scheduled') === s);
+  if (v !== 'all')  list = list.filter(x=>x.venue === v);
+
+  renderSchedule(list);
+}
+
+tierSel?.addEventListener('change', applyFilters);
+statusSel?.addEventListener('change', applyFilters);
+venueSel?.addEventListener('change', applyFilters);
+
+// Initial schedule paint
+document.addEventListener('DOMContentLoaded', ()=> {
+  renderSchedule(ALL_FIXTURES);
+});
+
+/* ============ CSV export ============ */
 document.getElementById('export-csv')?.addEventListener('click', ()=>{
-  if (!tb) { alert('No schedule on this page.'); return; }
-  const rows = tb.querySelectorAll('tr');
+  if (!tbody) return;
+  const rows = [...tbody.querySelectorAll('tr')];
   if (!rows.length) { alert('No schedule rows to export yet.'); return; }
-  const headers = Array.from(document.querySelectorAll('#schedule-table thead th')).map(th=>th.textContent.trim());
+  const headers = [...document.querySelectorAll('#schedule-table thead th')].map(th=>th.textContent.trim());
   const data = [headers];
   rows.forEach(tr=>{
-    data.push(Array.from(tr.querySelectorAll('td')).map(td=>td.textContent.trim()));
+    data.push([...tr.querySelectorAll('td')].map(td=>td.textContent.trim()));
   });
   const csv = data.map(r=>r.map(v=>`"${(v||'').replace(/"/g,'""')}"`).join(',')).join('\n');
   const url = URL.createObjectURL(new Blob([csv], {type:'text/csv'}));
   const a = document.createElement('a'); a.href=url; a.download='schedule.csv'; a.click(); URL.revokeObjectURL(url);
 });
-
-/* ---------- One single call to render ---------- */
-document.addEventListener('DOMContentLoaded', renderSchedule);

@@ -5,161 +5,161 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Padel Pro – Live Stream</title>
 
-  <!-- Tailwind (CDN) -->
+  <!-- Tailwind (CDN) + your site css -->
   <script src="https://cdn.tailwindcss.com"></script>
-
-  <!-- Page theme tweaks -->
-  <style>
-    :root { color-scheme: dark; }
-    .glass { background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.08); }
-    .brand-grad { background-image: linear-gradient(90deg, #60a5fa, #a78bfa); -webkit-background-clip: text; background-clip: text; color: transparent; }
-    .btn-grad { background-image: linear-gradient(90deg, #4f46e5, #9333ea); }
-  </style>
+  <link rel="stylesheet" href="css/styles.css">
+  <meta name="theme-color" content="#0b0f1a">
 </head>
+<body class="bg-gray-900 text-white">
+  <!-- shared nav (app.js will inject) -->
+  <header id="siteHeader"></header>
 
-<body class="bg-[#0b0f1a] text-white selection:bg-blue-600/40">
+  <main class="pt-28 pb-16">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="flex items-end justify-between mb-6">
+        <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight
+                   bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+          Live Stream
+        </h1>
+      </div>
 
-  <!-- Header / Nav (shared across pages) -->
-  <header class="fixed top-0 inset-x-0 z-50 bg-black/60 backdrop-blur border-b border-white/10">
-    <nav class="max-w-7xl mx-auto h-16 px-4 flex items-center justify-between">
-      <a href="index.html" class="flex items-center gap-2">
-        <span class="text-2xl">🏓</span>
-        <span class="text-xl font-bold brand-grad">Padel Pro</span>
-      </a>
-
-      <ul class="hidden md:flex items-center gap-6 text-sm">
-        <li><a href="index.html" class="opacity-80 hover:opacity-100">Home</a></li>
-        <li><a href="index.html#franchises" class="opacity-80 hover:opacity-100">Franchises</a></li>
-        <li><a href="fantasy.html" class="opacity-80 hover:opacity-100">Fantasy</a></li>
-        <li><a href="marketplace.html" class="opacity-80 hover:opacity-100">Marketplace</a></li>
-        <li><a href="live.html" class="opacity-100 font-semibold">Live Stream</a></li>
-        <li><a href="schedule.html" class="opacity-80 hover:opacity-100">Schedule</a></li>
-      </ul>
-
-      <a href="auth.html"
-         class="hidden md:inline-flex items-center px-4 py-2 rounded-lg btn-grad hover:opacity-95 transition">
-        Sign In / Register
-      </a>
-
-      <!-- mobile burger (optional—static for this page) -->
-      <button class="md:hidden inline-flex items-center justify-center h-10 w-10 rounded-lg glass">
-        <svg width="20" height="20" fill="none" stroke="currentColor" class="opacity-80">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M3 6h14M3 12h14M3 18h14"/>
-        </svg>
-      </button>
-    </nav>
-  </header>
-
-  <main class="max-w-7xl mx-auto px-4 pt-28 pb-16">
-    <div class="flex items-end justify-between gap-4 mb-6">
-      <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight brand-grad">Live Stream</h1>
-      <a href="https://studio.youtube.com/channel/UCcdMtDB7Md-nNpw3eGDsj79Q/livestreaming"
-         target="_blank" rel="noopener"
-         class="hidden sm:inline-flex items-center px-4 py-2 rounded-lg glass hover:bg-white/10 transition">
-        Open YouTube Live Control Room
-      </a>
-    </div>
-
-    <div class="grid grid-cols-1 lg:grid-cols-[2fr,1fr] gap-6">
-      <!-- Player -->
-      <!-- Player -->
-<div class="bg-white/5 ring-1 ring-white/10 rounded-2xl p-4">
-  <div class="aspect-video rounded-xl overflow-hidden">
-    <iframe id="ytPlayer"
-      class="w-full h-full"
-      src=""
-      title="Live stream"
-      frameborder="0"
-      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-      allowfullscreen></iframe>
-  </div>
-  <div class="mt-4">
-    <h2 class="text-xl font-semibold">Lowveld Padel – Match Day Live</h2>
-    <p class="text-gray-400 text-sm">Broadcast starts 10 minutes before first serve. Replays available after the event.</p>
-  </div>
-</div>
-
-<script>
-  // 1) If you pass ?v=VIDEO_ID in the URL, we’ll embed that exact live video
-  //    Example: https://yourdomain/live.html?v=abcdEfGh123
-  // 2) Otherwise we embed the channel’s "current live" feed.
-  const params = new URLSearchParams(location.search);
-  const videoId = params.get('v'); // optional override
-  const CHANNEL_ID = 'UCcdMtDB7Md-nNpw3eGDsj79Q';
-
-  const base = videoId
-    ? `https://www.youtube.com/embed/${videoId}`
-    : `https://www.youtube.com/embed/live_stream?channel=${CHANNEL_ID}`;
-
-  // Clean, branded player
-  const query = 'autoplay=1&mute=1&modestbranding=1&rel=0&playsinline=1';
-  document.getElementById('ytPlayer').src = `${base}&${query}`;
-</script>
-
-
-      <!-- Right rail -->
-      <aside class="space-y-4">
-        <!-- Upcoming -->
-        <div class="glass rounded-2xl p-4">
-          <div class="flex items-center justify-between mb-3">
-            <h3 class="text-lg font-semibold">Upcoming Streams</h3>
-            <a href="schedule.html" class="text-sm text-blue-300 hover:text-blue-200">View full schedule</a>
+      <div class="grid grid-cols-1 lg:grid-cols-[2fr,1fr] gap-8">
+        <!-- Player -->
+        <section class="bg-white/5 ring-1 ring-white/10 rounded-2xl p-4">
+          <div class="aspect-video rounded-xl overflow-hidden">
+            <iframe
+              id="liveFrame"
+              title="Live stream"
+              class="w-full h-full"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowfullscreen
+              referrerpolicy="origin-when-cross-origin">
+            </iframe>
           </div>
-          <ul class="space-y-3 text-sm">
-            <li class="flex items-center justify-between gap-3">
-              <span class="text-gray-300">Mon, 15 Sep • PADEL24</span>
-              <span class="font-medium text-right">Globo Boomerangs vs Sonic Viboras</span>
-            </li>
-            <li class="flex items-center justify-between gap-3">
-              <span class="text-gray-300">Mon, 15 Sep • PADEL24</span>
-              <span class="font-medium text-right">Ice Breakers vs Avalanche Aces</span>
-            </li>
-            <li class="flex items-center justify-between gap-3">
-              <span class="text-gray-300">Wed, 17 Sep • Play360</span>
-              <span class="font-medium text-right">Globo Boomerangs vs Sonic Viboras</span>
-            </li>
-            <li class="flex items-center justify-between gap-3">
-              <span class="text-gray-300">Thu, 18 Sep • Play360</span>
-              <span class="font-medium text-right">Ice Breakers vs Avalanche Aces</span>
-            </li>
-          </ul>
-        </div>
 
-        <!-- Help card -->
-        <div class="glass rounded-2xl p-4">
-          <h3 class="text-lg font-semibold mb-1">How to watch</h3>
-          <p class="text-sm text-gray-400">
-            If the player shows “Video unavailable”, the stream isn’t live yet. Refresh a few minutes before start, or
-            watch directly on
-            <a class="underline hover:no-underline text-blue-300"
-               href="https://www.youtube.com/@MohamedNomani" target="_blank" rel="noopener">our YouTube channel</a>.
-          </p>
-        </div>
+          <!-- Offline fallback -->
+          <div id="offlineCard" class="hidden mt-4 rounded-xl border border-white/10 bg-white/5 p-5">
+            <div class="flex items-start gap-4">
+              <div class="h-10 w-10 rounded-full bg-rose-500/20 grid place-items-center text-rose-300">!</div>
+              <div>
+                <h2 class="text-lg font-semibold">We’re currently offline</h2>
+                <p class="text-gray-400 text-sm">
+                  No live broadcast is active right now. Check the schedule or visit our YouTube Live page.
+                </p>
+                <div class="mt-3 flex flex-wrap gap-3">
+                  <a id="liveTabLink" target="_blank" rel="noopener"
+                     class="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500">Open YouTube Live</a>
+                  <a href="schedule.html" class="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20">View schedule</a>
+                </div>
+              </div>
+            </div>
+          </div>
 
-        <!-- Tech card -->
-        <div class="glass rounded-2xl p-4">
-          <h3 class="text-lg font-semibold mb-1">Tech info</h3>
-          <ul class="text-sm text-gray-400 list-disc pl-5 space-y-1">
-            <li>We stream via RTMPS to YouTube Live.</li>
-            <li>Best viewed in 1080p (Auto → 1080p).</li>
-            <li>Mobile data users: consider Wi-Fi for smoother playback.</li>
-          </ul>
-        </div>
-      </aside>
+          <div class="mt-4">
+            <h2 id="streamTitle" class="text-xl font-semibold">Lowveld Padel – Match Day Live</h2>
+            <p class="text-gray-400 text-sm">Broadcast starts 10 minutes before first serve. Replays available after the event.</p>
+          </div>
+        </section>
+
+        <!-- Upcoming list (edit as you like) -->
+        <aside class="space-y-4">
+          <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
+            <div class="text-sm font-semibold text-gray-300 mb-3">Upcoming Streams</div>
+            <ul class="space-y-3 text-sm">
+              <li class="flex items-center justify-between gap-3">
+                <span class="text-gray-400">Mon, 15 Sep • PADEL24</span>
+                <span class="font-medium truncate">Globo Boomerangs vs Sonic Viboras</span>
+              </li>
+              <li class="flex items-center justify-between gap-3">
+                <span class="text-gray-400">Mon, 15 Sep • PADEL24</span>
+                <span class="font-medium truncate">Ice Breakers vs Avalanche Aces</span>
+              </li>
+              <li class="flex items-center justify-between gap-3">
+                <span class="text-gray-400">Wed, 17 Sep • Play360</span>
+                <span class="font-medium truncate">Globo Boomerangs vs Sonic Viboras</span>
+              </li>
+              <li class="flex items-center justify-between gap-3">
+                <span class="text-gray-400">Thu, 18 Sep • Play360</span>
+                <span class="font-medium truncate">Ice Breakers vs Avalanche Aces</span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
+            <div class="text-sm font-semibold text-gray-300">Missed a match?</div>
+            <div class="text-gray-400 text-sm">We’ll add full replays here after each broadcast.</div>
+          </div>
+        </aside>
+      </div>
     </div>
   </main>
 
-  <!-- Footer -->
-  <footer class="border-t border-white/10">
-    <div class="max-w-7xl mx-auto px-4 py-10 text-center text-gray-400">
-      © <span id="year"></span> Nomz. All rights reserved.
-    </div>
-  </footer>
+  <!-- shared footer (app.js will inject) -->
+  <footer id="siteFooter"></footer>
 
+  <!-- Your main app (for header/footer, auth, etc.) -->
+  <script type="module" src="js/app.js?v=8"></script>
+
+  <!-- Page-local embed logic -->
   <script>
-    // footer year
-    document.getElementById('year').textContent = new Date().getFullYear();
+    // ====== CONFIG ======
+    // Your channel ID (from YouTube Studio > Settings > Advanced settings):
+    const YT_CHANNEL_ID = "UCcdMtDB7Md-nNpw3eGDsj79Q"; // <-- keep this
+    // Optional: your channel @handle (for a nice Live tab link)
+    const YT_HANDLE = "MohamedNomani"; // change to your handle if you have one
+
+    // ====== Build embed URL ======
+    const params = new URLSearchParams(location.search);
+    const v = params.get("v"); // if provided, we embed that specific event/video
+    const iframe = document.getElementById("liveFrame");
+    const offlineCard = document.getElementById("offlineCard");
+    const liveTabLink = document.getElementById("liveTabLink");
+    const titleEl = document.getElementById("streamTitle");
+
+    // link to your channel's Live tab
+    liveTabLink.href = YT_HANDLE
+      ? `https://www.youtube.com/@${encodeURIComponent(YT_HANDLE)}/live`
+      : `https://www.youtube.com/channel/${YT_CHANNEL_ID}/live`;
+
+    // Build the player src
+    // If a video id is passed (?v=VIDEO_ID) we use that event.
+    // Otherwise, the channel live feed auto-switches to "live" when you go live.
+    const base = v
+      ? `https://www.youtube.com/embed/${encodeURIComponent(v)}?`
+      : `https://www.youtube.com/embed/live_stream?channel=${encodeURIComponent(YT_CHANNEL_ID)}&`;
+
+    const qs = "autoplay=1&mute=1&rel=0&modestbranding=1&playsinline=1";
+    iframe.src = base + qs;
+
+    if (v) {
+      titleEl.textContent = "Live Event";
+    }
+
+    // Simple offline detection:
+    // If the iframe doesn’t resolve into a proper player quickly, show fallback.
+    // (YouTube doesn't give a perfect signal without API auth, but this is a friendly UX.)
+    let shown = false;
+    const revealOffline = () => {
+      if (shown) return;
+      shown = true;
+      offlineCard.classList.remove("hidden");
+    };
+
+    // If nothing shows after N seconds, assume offline.
+    setTimeout(revealOffline, 5000);
+
+    // If the player loads, hide offline card
+    iframe.addEventListener("load", () => {
+      // Give a tiny grace period for YouTube to initialize
+      setTimeout(() => {
+        // If we're here, assume the player rendered—hide fallback
+        offlineCard.classList.add("hidden");
+        shown = true;
+      }, 300);
+    });
+
+    // If iframe errors out, show fallback immediately
+    iframe.addEventListener("error", revealOffline);
   </script>
 </body>
 </html>
